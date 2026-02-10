@@ -1,14 +1,19 @@
 # x-cube-n6-ai-hand-landmarks Application
 
-Computer Vision application demonstrating the deployment of several object detection models execution in series on the STM32N6570-DK board. The chosen use case is single-hand landmark detection. It consists of two models that execute sequentially:
+Computer Vision application demonstrating the deployment of several object detection models execution in series on the STM32N6570-DK board. The chosen use case is single-hand landmark detection with **real-time finger counting gesture recognition**. It consists of two models that execute sequentially:
 
-1. A palm detection (pd) model is executed in the first stage to detect the hand’s palm.
+1. A palm detection (pd) model is executed in the first stage to detect the hand's palm.
 2. A hand landmark (hl) detection model is executed in the second stage to identify the landmarks of the hand detected during the first stage. After the execution of the first model, a resize operation takes place to provide the expected input to the second model.
    GPU2D is used to also perform a rotation to orient hand vertically.
+3. **Finger counting algorithm** analyzes the 21 hand landmarks to count raised fingers (0-5) and displays the result in large black digits on screen.
 
 This top README gives an overview of the app. Additional documentation is available in the [Doc](./Doc/) folder.
 
-![Screenshot of application running](_htmresc/screenshot.png)
+## Demo
+
+![Real-time finger counting demo](_htmresc/demo_classification_handlandmarks.gif)
+
+*Real-time hand landmark detection with finger counting (0-5) displayed on STM32N6570-DK*
 
 ---
 
@@ -17,6 +22,7 @@ This top README gives an overview of the app. Additional documentation is availa
 - [Application Overview](Doc/Application-Overview.md)
 - [Boot Overview](Doc/Boot-Overview.md)
 - [Camera Build Options](Doc/Build-Options.md)
+- [Finger Counting Logic](Doc/Finger-Counting-Logic.md) — **NEW**: Detailed explanation of the finger counting algorithm
 
 ---
 
@@ -26,6 +32,8 @@ This top README gives an overview of the app. Additional documentation is availa
 - NPU-accelerated quantized AI model inference
 - GPU2D usage to perform resize and rotation
 - Execute multiple models in series
+- **Real-time finger counting** (0-5 raised fingers) with scaled display
+- 21-point hand landmark detection (MediaPipe convention)
 - Dual DCMIPP pipelines
 - DCMIPP cropping, decimation, and downscaling
 - DCMIPP ISP usage
