@@ -1,0 +1,1437 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"isp_awb_algo.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c"
+  25              		.section	.text.ISP_AWB_Init,"ax",%progbits
+  26              		.align	1
+  27              		.global	ISP_AWB_Init
+  28              		.syntax unified
+  29              		.thumb
+  30              		.thumb_func
+  32              	ISP_AWB_Init:
+  33              	.LVL0:
+  34              	.LFB865:
+   1:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /**
+   2:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  ******************************************************************************
+   3:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * @file    isp_awb_algo.c
+   4:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * @author  AIS Application Team
+   5:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * @brief   ISP AWB algorithm
+   6:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  ******************************************************************************
+   7:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * @attention
+   8:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  *
+   9:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * Copyright (c) 2025 STMicroelectronics.
+  10:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * All rights reserved.
+  11:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  *
+  12:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  13:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * in the root directory of this software component.
+  14:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  *
+  16:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  ******************************************************************************
+  17:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****  */
+  18:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  19:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Includes ------------------------------------------------------------------*/
+  20:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #include "isp_services.h"
+  21:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #include <inttypes.h>
+  22:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  23:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Private types -------------------------------------------------------------*/
+  24:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Private constants ---------------------------------------------------------*/
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 2
+
+
+  25:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Debug logs control */
+  26:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** //#define ALGO_AWB_DBG_LOGS
+  27:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  28:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Interpolation ratio limit from where we decide to 'stick' to a reference profile */
+  29:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #define ISP_AWB_STICKY         0.05f
+  30:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Stat update limit from where we consider that the frame does not change */
+  31:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #define ISP_AWB_STAT_NO_CHANGE 1
+  32:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  33:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Private macro -------------------------------------------------------------*/
+  34:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Private function prototypes -----------------------------------------------*/
+  35:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Private variables ---------------------------------------------------------*/
+  36:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** static ISP_AWBAlgoTypeDef ISP_AWB_Config;
+  37:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** static uint32_t ISP_AWB_rbRatio[ISP_AWB_COLORTEMP_REF];
+  38:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** static uint32_t ISP_AWB_NbProfiles;
+  39:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** static ISP_StatisticsTypeDef ISP_AWB_CurrStats;
+  40:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** static uint32_t ISP_AWB_CurrTemp;
+  41:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** static ISP_ColorConvTypeDef ISP_AWB_CurrColorConv;
+  42:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** static ISP_ISPGainTypeDef ISP_AWB_CurrISPGain;
+  43:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  44:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Global variables ----------------------------------------------------------*/
+  45:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Private functions ---------------------------------------------------------*/
+  46:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /* Exported functions --------------------------------------------------------*/
+  47:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /**
+  48:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @brief  ISP_AWB_Init
+  49:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   *         Initialize and configure the AWB algo
+  50:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @param  pAWBAlgo: Pointer to the AWB tuning configuration
+  51:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @retval operation result
+  52:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   */
+  53:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** ISP_StatusTypeDef ISP_AWB_Init(ISP_AWBAlgoTypeDef *pAWBAlgo)
+  54:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** {
+  35              		.loc 1 54 1 view -0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  55:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   uint32_t profId;
+  39              		.loc 1 55 3 view .LVU1
+  56:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  57:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Copy internally the AWB tuning parameters */
+  58:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_Config = *pAWBAlgo;
+  40              		.loc 1 58 3 view .LVU2
+  54:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   uint32_t profId;
+  41              		.loc 1 54 1 is_stmt 0 view .LVU3
+  42 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+  43              		.cfi_def_cfa_offset 24
+  44              		.cfi_offset 3, -24
+  45              		.cfi_offset 4, -20
+  46              		.cfi_offset 5, -16
+  47              		.cfi_offset 6, -12
+  48              		.cfi_offset 7, -8
+  49              		.cfi_offset 14, -4
+  54:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   uint32_t profId;
+  50              		.loc 1 54 1 view .LVU4
+  51 0002 0146     		mov	r1, r0
+  52              		.loc 1 58 18 view .LVU5
+  53 0004 4FF4DC72 		mov	r2, #440
+  54 0008 2348     		ldr	r0, .L20
+  55              	.LVL1:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 3
+
+
+  56              		.loc 1 58 18 view .LVU6
+  57 000a FFF7FEFF 		bl	memcpy
+  58              	.LVL2:
+  59:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  60:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Reset internal variables */
+  61:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   memset(&ISP_AWB_CurrStats, 0, sizeof(ISP_AWB_CurrStats));
+  59              		.loc 1 61 3 is_stmt 1 view .LVU7
+  60 000e 3422     		movs	r2, #52
+  61 0010 0021     		movs	r1, #0
+  62 0012 2248     		ldr	r0, .L20+4
+  63 0014 FFF7FEFF 		bl	memset
+  64              	.LVL3:
+  62:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   memset(ISP_AWB_rbRatio, 0, sizeof(ISP_AWB_rbRatio));
+  65              		.loc 1 62 3 view .LVU8
+  66 0018 1422     		movs	r2, #20
+  67 001a 0021     		movs	r1, #0
+  68 001c 2048     		ldr	r0, .L20+8
+  69 001e FFF7FEFF 		bl	memset
+  70              	.LVL4:
+  63:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrTemp = 0;
+  71              		.loc 1 63 3 view .LVU9
+  72              		.loc 1 63 20 is_stmt 0 view .LVU10
+  73 0022 0023     		movs	r3, #0
+  74 0024 1E48     		ldr	r0, .L20+8
+  64:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrColorConv.enable = 0;
+  65:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrISPGain.enable = 0;
+  66:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_NbProfiles = 0;
+  67:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  68:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Check that the R/G/B references are not 0 */
+  69:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   for (profId = 0; profId < ISP_AWB_COLORTEMP_REF && ISP_AWB_Config.referenceColorTemp[profId] != 0
+  70:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+  71:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     if ((ISP_AWB_Config.referenceRGB[profId][0] == 0) ||
+  72:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         (ISP_AWB_Config.referenceRGB[profId][1] == 0) ||
+  73:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         (ISP_AWB_Config.referenceRGB[profId][2] == 0))
+  74:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+  75:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       return ISP_ERR_AWB;
+  76:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     }
+  77:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     ISP_AWB_rbRatio[profId] = (1000U * ISP_AWB_Config.referenceRGB[profId][0]) / ISP_AWB_Config.ref
+  75              		.loc 1 77 38 view .LVU11
+  76 0026 4FF47A7E 		mov	lr, #1000
+  66:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  77              		.loc 1 66 22 view .LVU12
+  78 002a 0746     		mov	r7, r0
+  79              		.loc 1 77 38 view .LVU13
+  80 002c 0525     		movs	r5, #5
+  63:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrTemp = 0;
+  81              		.loc 1 63 20 view .LVU14
+  82 002e 1D4A     		ldr	r2, .L20+12
+  66:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  83              		.loc 1 66 22 view .LVU15
+  84 0030 1D4E     		ldr	r6, .L20+16
+  63:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrTemp = 0;
+  85              		.loc 1 63 20 view .LVU16
+  86 0032 1360     		str	r3, [r2]
+  64:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrColorConv.enable = 0;
+  87              		.loc 1 64 3 is_stmt 1 view .LVU17
+  64:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrColorConv.enable = 0;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 4
+
+
+  88              		.loc 1 64 32 is_stmt 0 view .LVU18
+  89 0034 1D4A     		ldr	r2, .L20+20
+  90 0036 1E4C     		ldr	r4, .L20+24
+  91 0038 1370     		strb	r3, [r2]
+  65:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_NbProfiles = 0;
+  92              		.loc 1 65 3 is_stmt 1 view .LVU19
+  65:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_NbProfiles = 0;
+  93              		.loc 1 65 30 is_stmt 0 view .LVU20
+  94 003a 1E4A     		ldr	r2, .L20+28
+  66:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  95              		.loc 1 66 22 view .LVU21
+  96 003c 3360     		str	r3, [r6]
+  65:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_NbProfiles = 0;
+  97              		.loc 1 65 30 view .LVU22
+  98 003e 1370     		strb	r3, [r2]
+  66:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  99              		.loc 1 66 3 is_stmt 1 view .LVU23
+  69:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 100              		.loc 1 69 3 view .LVU24
+ 101              	.LVL5:
+  69:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 102              		.loc 1 69 51 discriminator 1 view .LVU25
+ 103 0040 A4F1A001 		sub	r1, r4, #160
+ 104              	.LVL6:
+ 105              	.L2:
+  69:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 106              		.loc 1 69 51 is_stmt 0 discriminator 3 view .LVU26
+ 107 0044 54F8042F 		ldr	r2, [r4, #4]!
+ 108 0048 D2B1     		cbz	r2, .L6
+  71:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         (ISP_AWB_Config.referenceRGB[profId][1] == 0) ||
+ 109              		.loc 1 71 5 is_stmt 1 view .LVU27
+  71:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         (ISP_AWB_Config.referenceRGB[profId][1] == 0) ||
+ 110              		.loc 1 71 45 is_stmt 0 view .LVU28
+ 111 004a 91F8A821 		ldrb	r2, [r1, #424]	@ zero_extendqisi2
+  71:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         (ISP_AWB_Config.referenceRGB[profId][1] == 0) ||
+ 112              		.loc 1 71 8 view .LVU29
+ 113 004e 0AB9     		cbnz	r2, .L3
+ 114              	.LVL7:
+ 115              	.L5:
+  75:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     }
+ 116              		.loc 1 75 14 view .LVU30
+ 117 0050 D220     		movs	r0, #210
+ 118              	.L4:
+  78:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+  79:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_NbProfiles = profId;
+  80:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  81:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Check that the R/B ratio are sorted in decreasing order */
+  82:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   for (profId = 0; profId < ISP_AWB_NbProfiles - 1; profId++)
+  83:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+  84:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     if (ISP_AWB_rbRatio[profId] <= ISP_AWB_rbRatio[profId + 1])
+  85:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+  86:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       return ISP_ERR_AWB;
+  87:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     }
+  88:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+  89:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  90:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   return ISP_OK;
+  91:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 5
+
+
+ 119              		.loc 1 91 1 view .LVU31
+ 120 0052 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 121              	.LVL8:
+ 122              	.L3:
+  71:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         (ISP_AWB_Config.referenceRGB[profId][1] == 0) ||
+ 123              		.loc 1 71 55 discriminator 1 view .LVU32
+ 124 0054 91F8A9C1 		ldrb	ip, [r1, #425]	@ zero_extendqisi2
+ 125 0058 BCF1000F 		cmp	ip, #0
+ 126 005c F8D0     		beq	.L5
+  73:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 127              		.loc 1 73 45 view .LVU33
+ 128 005e 91F8AAC1 		ldrb	ip, [r1, #426]	@ zero_extendqisi2
+  72:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         (ISP_AWB_Config.referenceRGB[profId][2] == 0))
+ 129              		.loc 1 72 55 view .LVU34
+ 130 0062 BCF1000F 		cmp	ip, #0
+ 131 0066 F3D0     		beq	.L5
+  77:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 132              		.loc 1 77 5 is_stmt 1 view .LVU35
+  77:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 133              		.loc 1 77 38 is_stmt 0 view .LVU36
+ 134 0068 0EFB02F2 		mul	r2, lr, r2
+  77:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 135              		.loc 1 77 80 view .LVU37
+ 136 006c B2FBFCF2 		udiv	r2, r2, ip
+  69:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 137              		.loc 1 69 51 discriminator 1 view .LVU38
+ 138 0070 013D     		subs	r5, r5, #1
+  77:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 139              		.loc 1 77 29 view .LVU39
+ 140 0072 47F8042B 		str	r2, [r7], #4
+  69:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 141              		.loc 1 69 108 is_stmt 1 discriminator 2 view .LVU40
+ 142 0076 03F10103 		add	r3, r3, #1
+ 143              	.LVL9:
+  69:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 144              		.loc 1 69 51 discriminator 1 view .LVU41
+ 145 007a 01F10301 		add	r1, r1, #3
+ 146 007e E1D1     		bne	.L2
+ 147              	.L6:
+  79:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 148              		.loc 1 79 3 view .LVU42
+  79:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 149              		.loc 1 79 22 is_stmt 0 view .LVU43
+ 150 0080 3360     		str	r3, [r6]
+  82:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 151              		.loc 1 82 3 is_stmt 1 view .LVU44
+ 152              	.LVL10:
+ 153              	.L8:
+  82:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 154              		.loc 1 82 27 discriminator 1 view .LVU45
+ 155 0082 013B     		subs	r3, r3, #1
+ 156 0084 01D1     		bne	.L9
+  90:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** }
+ 157              		.loc 1 90 10 is_stmt 0 view .LVU46
+ 158 0086 0020     		movs	r0, #0
+ 159 0088 E3E7     		b	.L4
+ 160              	.L9:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 6
+
+
+  84:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 161              		.loc 1 84 5 is_stmt 1 view .LVU47
+  84:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 162              		.loc 1 84 24 is_stmt 0 view .LVU48
+ 163 008a 0168     		ldr	r1, [r0]
+  84:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 164              		.loc 1 84 8 view .LVU49
+ 165 008c 50F8042F 		ldr	r2, [r0, #4]!
+ 166 0090 9142     		cmp	r1, r2
+ 167 0092 F6D8     		bhi	.L8
+ 168 0094 DCE7     		b	.L5
+ 169              	.L21:
+ 170 0096 00BF     		.align	2
+ 171              	.L20:
+ 172 0098 00000000 		.word	ISP_AWB_Config
+ 173 009c 00000000 		.word	ISP_AWB_CurrStats
+ 174 00a0 00000000 		.word	ISP_AWB_rbRatio
+ 175 00a4 00000000 		.word	ISP_AWB_CurrTemp
+ 176 00a8 00000000 		.word	ISP_AWB_NbProfiles
+ 177 00ac 00000000 		.word	ISP_AWB_CurrColorConv
+ 178 00b0 A0000000 		.word	ISP_AWB_Config+160
+ 179 00b4 00000000 		.word	ISP_AWB_CurrISPGain
+ 180              		.cfi_endproc
+ 181              	.LFE865:
+ 183              		.global	__aeabi_d2lz
+ 184              		.global	__aeabi_l2d
+ 185              		.section	.text.ISP_AWB_GetConfig,"ax",%progbits
+ 186              		.align	1
+ 187              		.global	ISP_AWB_GetConfig
+ 188              		.syntax unified
+ 189              		.thumb
+ 190              		.thumb_func
+ 192              	ISP_AWB_GetConfig:
+ 193              	.LVL11:
+ 194              	.LFB866:
+  92:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+  93:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** /**
+  94:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @brief  ISP_AWB_GetConfig
+  95:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   *         Evaluate from the input statistics, the Color Temperature and the white-balanced
+  96:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   *         ColorConv and Gain configuration.
+  97:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @param  pStats: pointer to the current RGB statistics
+  98:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @param  pColorConvConfig: pointer to the output Color Conversion configuration
+  99:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @param  pISPGainConfig: pointer to the output ISP Gain configuration
+ 100:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @param  pColorTemp: pointer to the output estimated color temperature
+ 101:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   * @retval operation result
+ 102:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   */
+ 103:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** ISP_StatusTypeDef ISP_AWB_GetConfig(ISP_StatisticsTypeDef *pStats, ISP_ColorConvTypeDef *pColorConv
+ 104:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** {
+ 195              		.loc 1 104 1 is_stmt 1 view -0
+ 196              		.cfi_startproc
+ 197              		@ args = 0, pretend = 0, frame = 24
+ 198              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int exactProfId;
+ 199              		.loc 1 105 3 view .LVU51
+ 106:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   double interpolRatio = 0.0;
+ 200              		.loc 1 106 3 view .LVU52
+ 107:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   uint32_t rb_ratio, profId, upProfId = 0, downProfId = 0;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 7
+
+
+ 201              		.loc 1 107 3 view .LVU53
+ 108:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int64_t i64;
+ 202              		.loc 1 108 3 view .LVU54
+ 109:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int i, j;
+ 203              		.loc 1 109 3 view .LVU55
+ 110:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 111:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   rb_ratio = pStats->averageB != 0 ? (uint32_t)(pStats->averageR * 1000 / pStats->averageB) : ISP_A
+ 204              		.loc 1 111 3 view .LVU56
+ 104:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int exactProfId;
+ 205              		.loc 1 104 1 is_stmt 0 view .LVU57
+ 206 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 207              		.cfi_def_cfa_offset 36
+ 208              		.cfi_offset 4, -36
+ 209              		.cfi_offset 5, -32
+ 210              		.cfi_offset 6, -28
+ 211              		.cfi_offset 7, -24
+ 212              		.cfi_offset 8, -20
+ 213              		.cfi_offset 9, -16
+ 214              		.cfi_offset 10, -12
+ 215              		.cfi_offset 11, -8
+ 216              		.cfi_offset 14, -4
+ 217 0004 2DED028B 		vpush.64	{d8}
+ 218              		.cfi_def_cfa_offset 44
+ 219              		.cfi_offset 80, -44
+ 220              		.cfi_offset 81, -40
+ 221 0008 87B0     		sub	sp, sp, #28
+ 222              		.cfi_def_cfa_offset 72
+ 104:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int exactProfId;
+ 223              		.loc 1 104 1 view .LVU58
+ 224 000a 0193     		str	r3, [sp, #4]
+ 225              		.loc 1 111 20 view .LVU59
+ 226 000c 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 227              	.LVL12:
+ 104:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int exactProfId;
+ 228              		.loc 1 104 1 view .LVU60
+ 229 000e 1546     		mov	r5, r2
+ 230 0010 0646     		mov	r6, r0
+ 231 0012 0C46     		mov	r4, r1
+ 232              		.loc 1 111 55 discriminator 1 view .LVU61
+ 233 0014 0278     		ldrb	r2, [r0]	@ zero_extendqisi2
+ 234              	.LVL13:
+ 235              		.loc 1 111 93 view .LVU62
+ 236 0016 6BB3     		cbz	r3, .L23
+ 237              		.loc 1 111 66 discriminator 1 view .LVU63
+ 238 0018 4FF47A7C 		mov	ip, #1000
+ 239 001c 0CFB02FC 		mul	ip, ip, r2
+ 240              		.loc 1 111 73 discriminator 1 view .LVU64
+ 241 0020 BCFBF3FC 		udiv	ip, ip, r3
+ 242              	.LVL14:
+ 243              	.L24:
+ 112:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 113:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Anti oscillation : if the statistics did not 'really' change, just return the last parameters 
+ 114:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   if ((abs(pStats->averageR - ISP_AWB_CurrStats.averageR) <= ISP_AWB_STAT_NO_CHANGE) &&
+ 244              		.loc 1 114 3 is_stmt 1 view .LVU65
+ 245              		.loc 1 114 48 is_stmt 0 view .LVU66
+ 246 0024 B449     		ldr	r1, .L47+24
+ 247 0026 0878     		ldrb	r0, [r1]	@ zero_extendqisi2
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 8
+
+
+ 248              	.LVL15:
+ 249              		.loc 1 114 29 view .LVU67
+ 250 0028 121A     		subs	r2, r2, r0
+ 251              		.loc 1 114 59 view .LVU68
+ 252 002a 0132     		adds	r2, r2, #1
+ 253              		.loc 1 114 6 view .LVU69
+ 254 002c 022A     		cmp	r2, #2
+ 255 002e 25D8     		bhi	.L25
+ 115:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       (abs(pStats->averageG - ISP_AWB_CurrStats.averageG) <= ISP_AWB_STAT_NO_CHANGE) &&
+ 256              		.loc 1 115 18 view .LVU70
+ 257 0030 7278     		ldrb	r2, [r6, #1]	@ zero_extendqisi2
+ 258              		.loc 1 115 48 view .LVU71
+ 259 0032 4878     		ldrb	r0, [r1, #1]	@ zero_extendqisi2
+ 260              		.loc 1 115 29 view .LVU72
+ 261 0034 121A     		subs	r2, r2, r0
+ 262              		.loc 1 115 59 view .LVU73
+ 263 0036 0132     		adds	r2, r2, #1
+ 114:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       (abs(pStats->averageG - ISP_AWB_CurrStats.averageG) <= ISP_AWB_STAT_NO_CHANGE) &&
+ 264              		.loc 1 114 86 discriminator 1 view .LVU74
+ 265 0038 022A     		cmp	r2, #2
+ 266 003a 1FD8     		bhi	.L25
+ 116:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       (abs(pStats->averageB - ISP_AWB_CurrStats.averageB) <= ISP_AWB_STAT_NO_CHANGE))
+ 267              		.loc 1 116 48 view .LVU75
+ 268 003c 8A78     		ldrb	r2, [r1, #2]	@ zero_extendqisi2
+ 269              		.loc 1 116 29 view .LVU76
+ 270 003e 9B1A     		subs	r3, r3, r2
+ 271              		.loc 1 116 59 view .LVU77
+ 272 0040 0133     		adds	r3, r3, #1
+ 115:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       (abs(pStats->averageG - ISP_AWB_CurrStats.averageG) <= ISP_AWB_STAT_NO_CHANGE) &&
+ 273              		.loc 1 115 86 view .LVU78
+ 274 0042 022B     		cmp	r3, #2
+ 275 0044 1AD8     		bhi	.L25
+ 117:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 118:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 119:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     printf("R/B=%4"PRIu32"  -  No change  -  ColorTemp = %"PRIu32"\r\n", rb_ratio, ISP_AWB_CurrTemp
+ 120:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #endif
+ 121:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     *pColorConvConfig = ISP_AWB_CurrColorConv;
+ 276              		.loc 1 121 5 is_stmt 1 view .LVU79
+ 277              		.loc 1 121 23 is_stmt 0 view .LVU80
+ 278 0046 AD4E     		ldr	r6, .L47+28
+ 279              	.LVL16:
+ 280              		.loc 1 121 23 view .LVU81
+ 281 0048 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 282 004a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 283              	.LVL17:
+ 284              		.loc 1 121 23 view .LVU82
+ 285 004c 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 286 004e 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 287              	.LVL18:
+ 288              		.loc 1 121 23 view .LVU83
+ 289 0050 96E80300 		ldm	r6, {r0, r1}
+ 122:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     *pISPGainConfig = ISP_AWB_CurrISPGain;
+ 290              		.loc 1 122 21 view .LVU84
+ 291 0054 AA4B     		ldr	r3, .L47+32
+ 121:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     *pISPGainConfig = ISP_AWB_CurrISPGain;
+ 292              		.loc 1 121 23 view .LVU85
+ 293 0056 84E80300 		stm	r4, {r0, r1}
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 9
+
+
+ 294              		.loc 1 122 5 is_stmt 1 view .LVU86
+ 295              		.loc 1 122 21 is_stmt 0 view .LVU87
+ 296 005a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 297 005c 85E80F00 		stm	r5, {r0, r1, r2, r3}
+ 123:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     *pColorTemp = ISP_AWB_CurrTemp;
+ 298              		.loc 1 123 5 is_stmt 1 view .LVU88
+ 299              		.loc 1 123 17 is_stmt 0 view .LVU89
+ 300 0060 A84B     		ldr	r3, .L47+36
+ 301 0062 019A     		ldr	r2, [sp, #4]
+ 302 0064 1B68     		ldr	r3, [r3]
+ 303 0066 1360     		str	r3, [r2]
+ 124:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     return ISP_OK;
+ 304              		.loc 1 124 5 is_stmt 1 view .LVU90
+ 305              	.LVL19:
+ 306              	.L26:
+ 125:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 126:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrStats = *pStats;
+ 127:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 128:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Find the two (up and down) profiles where R/B enclose the reported R/B */
+ 129:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   for (profId = 0; profId < ISP_AWB_NbProfiles; profId++)
+ 130:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 131:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     if (rb_ratio > ISP_AWB_rbRatio[profId])
+ 132:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       break;
+ 133:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 134:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 135:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   if (profId == 0)
+ 136:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 137:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     /* R/B ratio is greater than the largest reference. Select the first profile (lowest color temp
+ 138:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     exactProfId = 0;
+ 139:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 140:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   else if (profId == ISP_AWB_NbProfiles)
+ 141:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 142:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     /* R/B ratio is lower than the lowest reference. Select the last defined profile (highest color
+ 143:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     exactProfId = (int)profId - 1;
+ 144:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 145:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   else
+ 146:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 147:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     /* Between two profiles. Evaluate the interpolation ratio between these profiles */
+ 148:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     exactProfId = -1;
+ 149:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     upProfId = profId;
+ 150:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     downProfId = profId - 1;
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     interpolRatio = (double)(ISP_AWB_rbRatio[downProfId] - rb_ratio) / (ISP_AWB_rbRatio[downProfId]
+ 152:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 153:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     /* Check if we are close to a profile, in which case we select it instead of interpolating */
+ 154:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     if (interpolRatio <= ISP_AWB_STICKY)
+ 155:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 156:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       /* Select the 'down' profile */
+ 157:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 158:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       printf("R/B=%4"PRIu32"  -  Forcing down profile (ratio=%"PRIu16"%%)\r\n", rb_ratio, (int)(100
+ 159:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #endif
+ 160:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       exactProfId = (int)downProfId;
+ 161:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     }
+ 162:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     else if (interpolRatio >= 1.0f - ISP_AWB_STICKY)
+ 163:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 164:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       /* Select the 'up' profile */
+ 165:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 166:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       printf("R/B=%4"PRIu32"  -  Forcing up profile (ratio=%"PRIu16"%%)\r\n", rb_ratio, (int)(100 *
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 10
+
+
+ 167:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #endif
+ 168:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       exactProfId = (int)upProfId;
+ 169:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     }
+ 170:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 171:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 172:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Set the ColorConv and ISPGain configs */
+ 173:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   pColorConvConfig->enable = 1;
+ 174:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   pISPGainConfig->enable = 1;
+ 175:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Check if an 'exact' profile was found */
+ 176:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   if (exactProfId != -1)
+ 177:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 178:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     /* Use the config of this selected profile */
+ 179:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     memcpy(pColorConvConfig->coeff, ISP_AWB_Config.coeff[exactProfId], sizeof(pColorConvConfig->coe
+ 180:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 181:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainR = ISP_AWB_Config.ispGainR[exactProfId];
+ 182:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainG = ISP_AWB_Config.ispGainG[exactProfId];
+ 183:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainB = ISP_AWB_Config.ispGainB[exactProfId];
+ 184:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 185:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     *pColorTemp = ISP_AWB_Config.referenceColorTemp[exactProfId];
+ 186:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 187:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     printf("R/B=%4"PRIu32"  -  Profile exact:%"PRIu16"  -  ColorTemp = %"PRIu32"\r\n", rb_ratio, ex
+ 188:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #endif
+ 189:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 190:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   else
+ 191:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 192:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     /* Compute the interpolated configurations */
+ 193:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     for (i = 0; i < 3; i++)
+ 194:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 195:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       for (j = 0; j < 3; j++)
+ 196:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       {
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****        i64 = (int64_t)(ISP_AWB_Config.coeff[downProfId][i][j] + interpolRatio *
+ 198:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 199:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         pColorConvConfig->coeff[i][j] = (int32_t)i64;
+ 200:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       }
+ 201:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     }
+ 202:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     i64 = (int64_t)(ISP_AWB_Config.ispGainR[downProfId] + interpolRatio *
+ 204:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 205:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainR = (uint32_t)i64;
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     i64 = (int64_t)(ISP_AWB_Config.ispGainG[downProfId] + interpolRatio *
+ 207:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 208:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainG = (uint32_t)i64;
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     i64 = (int64_t)(ISP_AWB_Config.ispGainB[downProfId] + interpolRatio *
+ 210:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 211:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainB = (uint32_t)i64;
+ 212:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 213:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     *pColorTemp = (uint32_t)(ISP_AWB_Config.referenceColorTemp[downProfId] + interpolRatio *
+ 214:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****                   (ISP_AWB_Config.referenceColorTemp[upProfId] - ISP_AWB_Config.referenceColorTemp[
+ 215:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 216:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     printf("R/B=%4"PRIu32"  -  Profile between %"PRIu32" and %"PRIu32" (%"PRIu16"%%)  -  ColorTemp 
+ 217:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #endif
+ 218:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 219:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 220:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* keep a copy of the last reported config */
+ 221:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrColorConv = *pColorConvConfig;
+ 222:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrISPGain = *pISPGainConfig;
+ 223:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrTemp = *pColorTemp;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 11
+
+
+ 224:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 225:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   return ISP_OK;
+ 226:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** }
+ 307              		.loc 1 226 1 is_stmt 0 view .LVU91
+ 308 0068 0020     		movs	r0, #0
+ 309 006a 07B0     		add	sp, sp, #28
+ 310              		.cfi_remember_state
+ 311              		.cfi_def_cfa_offset 44
+ 312              		@ sp needed
+ 313 006c BDEC028B 		vldm	sp!, {d8}
+ 314              		.cfi_restore 80
+ 315              		.cfi_restore 81
+ 316              		.cfi_def_cfa_offset 36
+ 317 0070 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 318              	.LVL20:
+ 319              	.L23:
+ 320              		.cfi_restore_state
+ 111:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 321              		.loc 1 111 93 discriminator 2 view .LVU92
+ 322 0074 A449     		ldr	r1, .L47+40
+ 323              	.LVL21:
+ 111:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 324              		.loc 1 111 93 discriminator 2 view .LVU93
+ 325 0076 D1F800C0 		ldr	ip, [r1]
+ 326 007a D3E7     		b	.L24
+ 327              	.LVL22:
+ 328              	.L25:
+ 126:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 329              		.loc 1 126 3 is_stmt 1 view .LVU94
+ 126:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 330              		.loc 1 126 21 is_stmt 0 view .LVU95
+ 331 007c 9E4F     		ldr	r7, .L47+24
+ 332 007e 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 333              	.LVL23:
+ 126:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 334              		.loc 1 126 21 view .LVU96
+ 335 0080 0FC7     		stmia	r7!, {r0, r1, r2, r3}
+ 336 0082 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 337              	.LVL24:
+ 126:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 338              		.loc 1 126 21 view .LVU97
+ 339 0084 0FC7     		stmia	r7!, {r0, r1, r2, r3}
+ 340 0086 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 341              	.LVL25:
+ 126:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 342              		.loc 1 126 21 view .LVU98
+ 343 0088 0FC7     		stmia	r7!, {r0, r1, r2, r3}
+ 344 008a 9F4A     		ldr	r2, .L47+40
+ 345 008c 3368     		ldr	r3, [r6]
+ 346 008e 1146     		mov	r1, r2
+ 347 0090 3B60     		str	r3, [r7]
+ 129:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 348              		.loc 1 129 3 is_stmt 1 view .LVU99
+ 349              	.LVL26:
+ 129:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 350              		.loc 1 129 15 is_stmt 0 view .LVU100
+ 351 0092 0027     		movs	r7, #0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 12
+
+
+ 129:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 352              		.loc 1 129 27 discriminator 1 view .LVU101
+ 353 0094 9D4B     		ldr	r3, .L47+44
+ 354 0096 1868     		ldr	r0, [r3]
+ 355 0098 431C     		adds	r3, r0, #1
+ 356              	.LVL27:
+ 357              	.L27:
+ 129:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 358              		.loc 1 129 27 is_stmt 1 discriminator 1 view .LVU102
+ 359 009a 013B     		subs	r3, r3, #1
+ 360 009c 40F0B380 		bne	.L29
+ 361              	.L28:
+ 135:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 362              		.loc 1 135 3 view .LVU103
+ 135:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 363              		.loc 1 135 6 is_stmt 0 view .LVU104
+ 364 00a0 002F     		cmp	r7, #0
+ 365 00a2 00F0DD80 		beq	.L41
+ 140:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 366              		.loc 1 140 8 is_stmt 1 view .LVU105
+ 140:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 367              		.loc 1 140 11 is_stmt 0 view .LVU106
+ 368 00a6 B842     		cmp	r0, r7
+ 369 00a8 07F1FF33 		add	r3, r7, #-1
+ 370 00ac 40F0B280 		bne	.L31
+ 143:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 371              		.loc 1 143 5 is_stmt 1 view .LVU107
+ 372              	.LVL28:
+ 107:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int64_t i64;
+ 373              		.loc 1 107 44 is_stmt 0 view .LVU108
+ 374 00b0 0027     		movs	r7, #0
+ 375              	.LVL29:
+ 106:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   uint32_t rb_ratio, profId, upProfId = 0, downProfId = 0;
+ 376              		.loc 1 106 10 view .LVU109
+ 377 00b2 9FED8B8B 		vldr.64	d8, .L47
+ 107:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int64_t i64;
+ 378              		.loc 1 107 30 view .LVU110
+ 379 00b6 B846     		mov	r8, r7
+ 380              	.LVL30:
+ 381              	.L30:
+ 173:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   pISPGainConfig->enable = 1;
+ 382              		.loc 1 173 3 is_stmt 1 view .LVU111
+ 173:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   pISPGainConfig->enable = 1;
+ 383              		.loc 1 173 28 is_stmt 0 view .LVU112
+ 384 00b8 0122     		movs	r2, #1
+ 385 00ba 2270     		strb	r2, [r4]
+ 174:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Check if an 'exact' profile was found */
+ 386              		.loc 1 174 3 is_stmt 1 view .LVU113
+ 174:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   /* Check if an 'exact' profile was found */
+ 387              		.loc 1 174 26 is_stmt 0 view .LVU114
+ 388 00bc 2A70     		strb	r2, [r5]
+ 176:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 389              		.loc 1 176 3 is_stmt 1 view .LVU115
+ 176:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 390              		.loc 1 176 6 is_stmt 0 view .LVU116
+ 391 00be 5A1C     		adds	r2, r3, #1
+ 392 00c0 4FF02401 		mov	r1, #36
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 13
+
+
+ 393 00c4 924E     		ldr	r6, .L47+48
+ 394 00c6 40F0D080 		bne	.L35
+ 395              	.LVL31:
+ 176:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 396              		.loc 1 176 6 view .LVU117
+ 397 00ca 4FF00009 		mov	r9, #0
+ 398 00ce 01FB08F2 		mul	r2, r1, r8
+ 399 00d2 7943     		muls	r1, r7, r1
+ 400 00d4 B318     		adds	r3, r6, r2
+ 401 00d6 F033     		adds	r3, r3, #240
+ 402 00d8 0291     		str	r1, [sp, #8]
+ 403 00da 0393     		str	r3, [sp, #12]
+ 404              	.LVL32:
+ 405              	.L36:
+ 195:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       {
+ 406              		.loc 1 195 21 is_stmt 1 discriminator 1 view .LVU118
+ 195:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       {
+ 407              		.loc 1 195 14 is_stmt 0 view .LVU119
+ 408 00dc 4FF0000A 		mov	r10, #0
+ 409 00e0 039B     		ldr	r3, [sp, #12]
+ 410 00e2 03EB090B 		add	fp, r3, r9
+ 411 00e6 04EB0903 		add	r3, r4, r9
+ 412              	.LVL33:
+ 413              	.L39:
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 414              		.loc 1 197 59 view .LVU120
+ 415 00ea 5BF8040F 		ldr	r0, [fp, #4]!
+ 416 00ee 0593     		str	r3, [sp, #20]
+ 417              	.LVL34:
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 418              		.loc 1 197 8 is_stmt 1 view .LVU121
+ 198:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         pColorConvConfig->coeff[i][j] = (int32_t)i64;
+ 419              		.loc 1 198 52 is_stmt 0 view .LVU122
+ 420 00f0 029B     		ldr	r3, [sp, #8]
+ 198:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         pColorConvConfig->coeff[i][j] = (int32_t)i64;
+ 421              		.loc 1 198 48 view .LVU123
+ 422 00f2 ABEB0201 		sub	r1, fp, r2
+ 198:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         pColorConvConfig->coeff[i][j] = (int32_t)i64;
+ 423              		.loc 1 198 52 view .LVU124
+ 424 00f6 C958     		ldr	r1, [r1, r3]
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 425              		.loc 1 197 63 view .LVU125
+ 426 00f8 06EE900A 		vmov	s13, r0	@ int
+ 198:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         pColorConvConfig->coeff[i][j] = (int32_t)i64;
+ 427              		.loc 1 198 52 view .LVU126
+ 428 00fc 091A     		subs	r1, r1, r0
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 429              		.loc 1 197 79 view .LVU127
+ 430 00fe 07EE901A 		vmov	s15, r1	@ int
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 431              		.loc 1 197 63 view .LVU128
+ 432 0102 B8EEE66B 		vcvt.f64.s32	d6, s13
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 433              		.loc 1 197 79 view .LVU129
+ 434 0106 B8EEE77B 		vcvt.f64.s32	d7, s15
+ 435              	.LVL35:
+ 199:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 14
+
+
+ 436              		.loc 1 199 9 is_stmt 1 view .LVU130
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 437              		.loc 1 197 12 is_stmt 0 view .LVU131
+ 438 010a A7EE086B 		vfma.f64	d6, d7, d8
+ 439              	.LVL36:
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 440              		.loc 1 197 12 view .LVU132
+ 441 010e 51EC160B 		vmov	r0, r1, d6
+ 198:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****         pColorConvConfig->coeff[i][j] = (int32_t)i64;
+ 442              		.loc 1 198 48 view .LVU133
+ 443 0112 0492     		str	r2, [sp, #16]
+ 197:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****              (ISP_AWB_Config.coeff[upProfId][i][j] - ISP_AWB_Config.coeff[downProfId][i][j]));
+ 444              		.loc 1 197 12 view .LVU134
+ 445 0114 FFF7FEFF 		bl	__aeabi_d2lz
+ 446              	.LVL37:
+ 195:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       {
+ 447              		.loc 1 195 27 discriminator 3 view .LVU135
+ 448 0118 0AF1010A 		add	r10, r10, #1
+ 449              	.LVL38:
+ 199:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       }
+ 450              		.loc 1 199 41 view .LVU136
+ 451 011c 059B     		ldr	r3, [sp, #20]
+ 195:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       {
+ 452              		.loc 1 195 21 discriminator 1 view .LVU137
+ 453 011e BAF1030F 		cmp	r10, #3
+ 454 0122 049A     		ldr	r2, [sp, #16]
+ 199:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       }
+ 455              		.loc 1 199 41 view .LVU138
+ 456 0124 43F8040F 		str	r0, [r3, #4]!
+ 195:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       {
+ 457              		.loc 1 195 27 is_stmt 1 discriminator 3 view .LVU139
+ 458              	.LVL39:
+ 195:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       {
+ 459              		.loc 1 195 21 discriminator 1 view .LVU140
+ 460 0128 DFD1     		bne	.L39
+ 193:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 461              		.loc 1 193 25 discriminator 2 view .LVU141
+ 193:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 462              		.loc 1 193 19 discriminator 1 view .LVU142
+ 463 012a 09F10C09 		add	r9, r9, #12
+ 464 012e B9F1240F 		cmp	r9, #36
+ 465 0132 D3D1     		bne	.L36
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 466              		.loc 1 203 5 view .LVU143
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 467              		.loc 1 203 44 is_stmt 0 view .LVU144
+ 468 0134 08F12E03 		add	r3, r8, #46
+ 469 0138 56F82390 		ldr	r9, [r6, r3, lsl #2]
+ 204:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainR = (uint32_t)i64;
+ 470              		.loc 1 204 44 view .LVU145
+ 471 013c 07F12E03 		add	r3, r7, #46
+ 204:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainR = (uint32_t)i64;
+ 472              		.loc 1 204 12 view .LVU146
+ 473 0140 56F82300 		ldr	r0, [r6, r3, lsl #2]
+ 204:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainR = (uint32_t)i64;
+ 474              		.loc 1 204 55 view .LVU147
+ 475 0144 B0EB0900 		subs	r0, r0, r9
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 15
+
+
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 476              		.loc 1 203 73 view .LVU148
+ 477 0148 61EB0101 		sbc	r1, r1, r1
+ 478 014c FFF7FEFF 		bl	__aeabi_l2d
+ 479              	.LVL40:
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 480              		.loc 1 203 57 view .LVU149
+ 481 0150 07EE909A 		vmov	s15, r9	@ int
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 482              		.loc 1 203 73 view .LVU150
+ 483 0154 41EC160B 		vmov	d6, r0, r1
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 484              		.loc 1 203 57 view .LVU151
+ 485 0158 B8EE677B 		vcvt.f64.u32	d7, s15
+ 486              	.LVL41:
+ 205:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     i64 = (int64_t)(ISP_AWB_Config.ispGainG[downProfId] + interpolRatio *
+ 487              		.loc 1 205 5 is_stmt 1 view .LVU152
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 488              		.loc 1 203 9 is_stmt 0 view .LVU153
+ 489 015c A6EE087B 		vfma.f64	d7, d6, d8
+ 490              	.LVL42:
+ 203:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainR[upProfId] - ISP_AWB_Config.ispGainR[downProfId]));
+ 491              		.loc 1 203 9 view .LVU154
+ 492 0160 51EC170B 		vmov	r0, r1, d7
+ 493 0164 FFF7FEFF 		bl	__aeabi_d2lz
+ 494              	.LVL43:
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 495              		.loc 1 206 44 view .LVU155
+ 496 0168 06EB8803 		add	r3, r6, r8, lsl #2
+ 497 016c D3F8CC90 		ldr	r9, [r3, #204]
+ 207:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainG = (uint32_t)i64;
+ 498              		.loc 1 207 44 view .LVU156
+ 499 0170 06EB8703 		add	r3, r6, r7, lsl #2
+ 205:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     i64 = (int64_t)(ISP_AWB_Config.ispGainG[downProfId] + interpolRatio *
+ 500              		.loc 1 205 32 view .LVU157
+ 501 0174 6860     		str	r0, [r5, #4]
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 502              		.loc 1 206 5 is_stmt 1 view .LVU158
+ 207:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainG = (uint32_t)i64;
+ 503              		.loc 1 207 12 is_stmt 0 view .LVU159
+ 504 0176 D3F8CC00 		ldr	r0, [r3, #204]
+ 207:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainG = (uint32_t)i64;
+ 505              		.loc 1 207 55 view .LVU160
+ 506 017a B0EB0900 		subs	r0, r0, r9
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 507              		.loc 1 206 73 view .LVU161
+ 508 017e 61EB0101 		sbc	r1, r1, r1
+ 509 0182 FFF7FEFF 		bl	__aeabi_l2d
+ 510              	.LVL44:
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 511              		.loc 1 206 57 view .LVU162
+ 512 0186 07EE909A 		vmov	s15, r9	@ int
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 513              		.loc 1 206 73 view .LVU163
+ 514 018a 41EC160B 		vmov	d6, r0, r1
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 515              		.loc 1 206 57 view .LVU164
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 16
+
+
+ 516 018e B8EE677B 		vcvt.f64.u32	d7, s15
+ 517              	.LVL45:
+ 208:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     i64 = (int64_t)(ISP_AWB_Config.ispGainB[downProfId] + interpolRatio *
+ 518              		.loc 1 208 5 is_stmt 1 view .LVU165
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 519              		.loc 1 206 9 is_stmt 0 view .LVU166
+ 520 0192 A6EE087B 		vfma.f64	d7, d6, d8
+ 521              	.LVL46:
+ 206:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainG[upProfId] - ISP_AWB_Config.ispGainG[downProfId]));
+ 522              		.loc 1 206 9 view .LVU167
+ 523 0196 51EC170B 		vmov	r0, r1, d7
+ 524 019a FFF7FEFF 		bl	__aeabi_d2lz
+ 525              	.LVL47:
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 526              		.loc 1 209 44 view .LVU168
+ 527 019e 08F13803 		add	r3, r8, #56
+ 528 01a2 56F82390 		ldr	r9, [r6, r3, lsl #2]
+ 210:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainB = (uint32_t)i64;
+ 529              		.loc 1 210 44 view .LVU169
+ 530 01a6 07F13803 		add	r3, r7, #56
+ 208:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     i64 = (int64_t)(ISP_AWB_Config.ispGainB[downProfId] + interpolRatio *
+ 531              		.loc 1 208 32 view .LVU170
+ 532 01aa A860     		str	r0, [r5, #8]
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 533              		.loc 1 209 5 is_stmt 1 view .LVU171
+ 210:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainB = (uint32_t)i64;
+ 534              		.loc 1 210 12 is_stmt 0 view .LVU172
+ 535 01ac 56F82300 		ldr	r0, [r6, r3, lsl #2]
+ 213:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****                   (ISP_AWB_Config.referenceColorTemp[upProfId] - ISP_AWB_Config.referenceColorTemp[
+ 536              		.loc 1 213 63 view .LVU173
+ 537 01b0 06EB8808 		add	r8, r6, r8, lsl #2
+ 210:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainB = (uint32_t)i64;
+ 538              		.loc 1 210 55 view .LVU174
+ 539 01b4 B0EB0900 		subs	r0, r0, r9
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 540              		.loc 1 209 73 view .LVU175
+ 541 01b8 61EB0101 		sbc	r1, r1, r1
+ 542 01bc FFF7FEFF 		bl	__aeabi_l2d
+ 543              	.LVL48:
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 544              		.loc 1 209 57 view .LVU176
+ 545 01c0 07EE909A 		vmov	s15, r9	@ int
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 546              		.loc 1 209 73 view .LVU177
+ 547 01c4 41EC160B 		vmov	d6, r0, r1
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 548              		.loc 1 209 57 view .LVU178
+ 549 01c8 B8EE677B 		vcvt.f64.u32	d7, s15
+ 550              	.LVL49:
+ 211:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 551              		.loc 1 211 5 is_stmt 1 view .LVU179
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 552              		.loc 1 209 9 is_stmt 0 view .LVU180
+ 553 01cc A6EE087B 		vfma.f64	d7, d6, d8
+ 554              	.LVL50:
+ 214:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 555              		.loc 1 214 53 view .LVU181
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 17
+
+
+ 556 01d0 06EB8706 		add	r6, r6, r7, lsl #2
+ 209:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****           ((int64_t)ISP_AWB_Config.ispGainB[upProfId] - ISP_AWB_Config.ispGainB[downProfId]));
+ 557              		.loc 1 209 9 view .LVU182
+ 558 01d4 51EC170B 		vmov	r0, r1, d7
+ 559 01d8 FFF7FEFF 		bl	__aeabi_d2lz
+ 560              	.LVL51:
+ 213:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****                   (ISP_AWB_Config.referenceColorTemp[upProfId] - ISP_AWB_Config.referenceColorTemp[
+ 561              		.loc 1 213 63 view .LVU183
+ 562 01dc D8F8A430 		ldr	r3, [r8, #164]
+ 214:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 563              		.loc 1 214 64 view .LVU184
+ 564 01e0 D6F8A420 		ldr	r2, [r6, #164]
+ 211:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 565              		.loc 1 211 32 view .LVU185
+ 566 01e4 E860     		str	r0, [r5, #12]
+ 213:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****                   (ISP_AWB_Config.referenceColorTemp[upProfId] - ISP_AWB_Config.referenceColorTemp[
+ 567              		.loc 1 213 5 is_stmt 1 view .LVU186
+ 214:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 568              		.loc 1 214 64 is_stmt 0 view .LVU187
+ 569 01e6 D21A     		subs	r2, r2, r3
+ 213:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****                   (ISP_AWB_Config.referenceColorTemp[upProfId] - ISP_AWB_Config.referenceColorTemp[
+ 570              		.loc 1 213 92 view .LVU188
+ 571 01e8 07EE902A 		vmov	s15, r2	@ int
+ 572 01ec B8EE676B 		vcvt.f64.u32	d6, s15
+ 213:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****                   (ISP_AWB_Config.referenceColorTemp[upProfId] - ISP_AWB_Config.referenceColorTemp[
+ 573              		.loc 1 213 76 view .LVU189
+ 574 01f0 07EE903A 		vmov	s15, r3	@ int
+ 575 01f4 B8EE677B 		vcvt.f64.u32	d7, s15
+ 576 01f8 A6EE087B 		vfma.f64	d7, d6, d8
+ 213:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****                   (ISP_AWB_Config.referenceColorTemp[upProfId] - ISP_AWB_Config.referenceColorTemp[
+ 577              		.loc 1 213 19 view .LVU190
+ 578 01fc FCEEC77B 		vcvt.u32.f64	s15, d7
+ 579 0200 17EE907A 		vmov	r7, s15	@ int
+ 580 0204 58E0     		b	.L38
+ 581              	.LVL52:
+ 582              	.L29:
+ 131:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       break;
+ 583              		.loc 1 131 5 is_stmt 1 view .LVU191
+ 131:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       break;
+ 584              		.loc 1 131 35 is_stmt 0 view .LVU192
+ 585 0206 52F8046B 		ldr	r6, [r2], #4
+ 131:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****       break;
+ 586              		.loc 1 131 8 view .LVU193
+ 587 020a 6645     		cmp	r6, ip
+ 588 020c FFF448AF 		bcc	.L28
+ 129:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 589              		.loc 1 129 55 is_stmt 1 discriminator 2 view .LVU194
+ 590              	.LVL53:
+ 129:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 591              		.loc 1 129 55 is_stmt 0 discriminator 2 view .LVU195
+ 592 0210 0137     		adds	r7, r7, #1
+ 593              	.LVL54:
+ 129:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   {
+ 594              		.loc 1 129 55 discriminator 2 view .LVU196
+ 595 0212 42E7     		b	.L27
+ 596              	.LVL55:
+ 597              	.L31:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 18
+
+
+ 148:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     upProfId = profId;
+ 598              		.loc 1 148 5 is_stmt 1 view .LVU197
+ 149:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     downProfId = profId - 1;
+ 599              		.loc 1 149 5 view .LVU198
+ 150:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     interpolRatio = (double)(ISP_AWB_rbRatio[downProfId] - rb_ratio) / (ISP_AWB_rbRatio[downProfId]
+ 600              		.loc 1 150 5 view .LVU199
+ 150:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     interpolRatio = (double)(ISP_AWB_rbRatio[downProfId] - rb_ratio) / (ISP_AWB_rbRatio[downProfId]
+ 601              		.loc 1 150 16 is_stmt 0 view .LVU200
+ 602 0214 9846     		mov	r8, r3
+ 603              	.LVL56:
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 604              		.loc 1 151 5 is_stmt 1 view .LVU201
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 605              		.loc 1 151 101 is_stmt 0 view .LVU202
+ 606 0216 51F82720 		ldr	r2, [r1, r7, lsl #2]
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 607              		.loc 1 151 45 view .LVU203
+ 608 021a 51F82330 		ldr	r3, [r1, r3, lsl #2]
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 609              		.loc 1 151 58 view .LVU204
+ 610 021e A3EB0C0C 		sub	ip, r3, ip
+ 611              	.LVL57:
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 612              		.loc 1 151 101 view .LVU205
+ 613 0222 9B1A     		subs	r3, r3, r2
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 614              		.loc 1 151 70 view .LVU206
+ 615 0224 06EE903A 		vmov	s13, r3	@ int
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 616              		.loc 1 151 21 view .LVU207
+ 617 0228 07EE90CA 		vmov	s15, ip	@ int
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 618              		.loc 1 151 70 view .LVU208
+ 619 022c B8EE666B 		vcvt.f64.u32	d6, s13
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 620              		.loc 1 151 21 view .LVU209
+ 621 0230 B8EE677B 		vcvt.f64.u32	d7, s15
+ 151:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 622              		.loc 1 151 19 view .LVU210
+ 623 0234 87EE068B 		vdiv.f64	d8, d7, d6
+ 624              	.LVL58:
+ 154:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 625              		.loc 1 154 5 is_stmt 1 view .LVU211
+ 154:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 626              		.loc 1 154 8 is_stmt 0 view .LVU212
+ 627 0238 9FED2B7B 		vldr.64	d7, .L47+8
+ 628 023c B4EEC78B 		vcmpe.f64	d8, d7
+ 629 0240 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 160:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     }
+ 630              		.loc 1 160 19 view .LVU213
+ 631 0244 4346     		mov	r3, r8
+ 154:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 632              		.loc 1 154 8 view .LVU214
+ 633 0246 7FF637AF 		bls	.L30
+ 162:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ 634              		.loc 1 162 10 is_stmt 1 view .LVU215
+ 162:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 19
+
+
+ 635              		.loc 1 162 13 is_stmt 0 view .LVU216
+ 636 024a 9FED297B 		vldr.64	d7, .L47+16
+ 148:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     upProfId = profId;
+ 637              		.loc 1 148 17 view .LVU217
+ 638 024e B4EEC78B 		vcmpe.f64	d8, d7
+ 639 0252 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 640 0256 ACBF     		ite	ge
+ 641 0258 3B46     		movge	r3, r7
+ 642 025a 4FF0FF33 		movlt	r3, #-1
+ 643 025e 2BE7     		b	.L30
+ 644              	.LVL59:
+ 645              	.L41:
+ 107:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   int64_t i64;
+ 646              		.loc 1 107 44 view .LVU218
+ 647 0260 B846     		mov	r8, r7
+ 106:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   uint32_t rb_ratio, profId, upProfId = 0, downProfId = 0;
+ 648              		.loc 1 106 10 view .LVU219
+ 649 0262 9FED1F8B 		vldr.64	d8, .L47
+ 138:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   }
+ 650              		.loc 1 138 17 view .LVU220
+ 651 0266 3B46     		mov	r3, r7
+ 652 0268 26E7     		b	.L30
+ 653              	.LVL60:
+ 654              	.L35:
+ 179:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 655              		.loc 1 179 5 is_stmt 1 view .LVU221
+ 179:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 656              		.loc 1 179 57 is_stmt 0 view .LVU222
+ 657 026a 01FB0361 		mla	r1, r1, r3, r6
+ 179:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 658              		.loc 1 179 5 view .LVU223
+ 659 026e 271D     		adds	r7, r4, #4
+ 179:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 660              		.loc 1 179 57 view .LVU224
+ 661 0270 01F1F40E 		add	lr, r1, #244
+ 179:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 662              		.loc 1 179 5 view .LVU225
+ 663 0274 01F58A72 		add	r2, r1, #276
+ 664              	.LVL61:
+ 665              	.L37:
+ 179:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 666              		.loc 1 179 5 view .LVU226
+ 667 0278 F446     		mov	ip, lr
+ 668 027a BCE80300 		ldmia	ip!, {r0, r1}
+ 669 027e 9445     		cmp	ip, r2
+ 670 0280 3860     		str	r0, [r7]	@ unaligned
+ 671 0282 7960     		str	r1, [r7, #4]	@ unaligned
+ 672 0284 E646     		mov	lr, ip
+ 673 0286 07F10807 		add	r7, r7, #8
+ 674 028a F5D1     		bne	.L37
+ 675 028c DCF80000 		ldr	r0, [ip]
+ 181:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainG = ISP_AWB_Config.ispGainG[exactProfId];
+ 676              		.loc 1 181 55 view .LVU227
+ 677 0290 03F12E02 		add	r2, r3, #46
+ 179:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 678              		.loc 1 179 5 view .LVU228
+ 679 0294 3860     		str	r0, [r7]	@ unaligned
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 20
+
+
+ 181:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainG = ISP_AWB_Config.ispGainG[exactProfId];
+ 680              		.loc 1 181 5 is_stmt 1 view .LVU229
+ 181:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainG = ISP_AWB_Config.ispGainG[exactProfId];
+ 681              		.loc 1 181 30 is_stmt 0 view .LVU230
+ 682 0296 56F82220 		ldr	r2, [r6, r2, lsl #2]
+ 683 029a 6A60     		str	r2, [r5, #4]
+ 182:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainB = ISP_AWB_Config.ispGainB[exactProfId];
+ 684              		.loc 1 182 5 is_stmt 1 view .LVU231
+ 182:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainB = ISP_AWB_Config.ispGainB[exactProfId];
+ 685              		.loc 1 182 55 is_stmt 0 view .LVU232
+ 686 029c 06EB8302 		add	r2, r6, r3, lsl #2
+ 182:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****     pISPGainConfig->ispGainB = ISP_AWB_Config.ispGainB[exactProfId];
+ 687              		.loc 1 182 30 view .LVU233
+ 688 02a0 D2F8CC20 		ldr	r2, [r2, #204]
+ 689 02a4 AA60     		str	r2, [r5, #8]
+ 183:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 690              		.loc 1 183 5 is_stmt 1 view .LVU234
+ 183:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 691              		.loc 1 183 55 is_stmt 0 view .LVU235
+ 692 02a6 03F13802 		add	r2, r3, #56
+ 183:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 693              		.loc 1 183 30 view .LVU236
+ 694 02aa 56F82220 		ldr	r2, [r6, r2, lsl #2]
+ 185:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 695              		.loc 1 185 52 view .LVU237
+ 696 02ae 06EB8303 		add	r3, r6, r3, lsl #2
+ 697              	.LVL62:
+ 185:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 698              		.loc 1 185 52 view .LVU238
+ 699 02b2 D3F8A470 		ldr	r7, [r3, #164]
+ 183:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 700              		.loc 1 183 30 view .LVU239
+ 701 02b6 EA60     		str	r2, [r5, #12]
+ 185:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 702              		.loc 1 185 5 is_stmt 1 view .LVU240
+ 703              	.LVL63:
+ 704              	.L38:
+ 185:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 705              		.loc 1 185 17 is_stmt 0 view .LVU241
+ 706 02b8 019B     		ldr	r3, [sp, #4]
+ 221:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrISPGain = *pISPGainConfig;
+ 707              		.loc 1 221 25 view .LVU242
+ 708 02ba 104E     		ldr	r6, .L47+28
+ 185:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** #ifdef ALGO_AWB_DBG_LOGS
+ 709              		.loc 1 185 17 view .LVU243
+ 710 02bc 1F60     		str	r7, [r3]
+ 221:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrISPGain = *pISPGainConfig;
+ 711              		.loc 1 221 3 is_stmt 1 view .LVU244
+ 221:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrISPGain = *pISPGainConfig;
+ 712              		.loc 1 221 25 is_stmt 0 view .LVU245
+ 713 02be 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 714              	.LVL64:
+ 221:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrISPGain = *pISPGainConfig;
+ 715              		.loc 1 221 25 view .LVU246
+ 716 02c0 0FC6     		stmia	r6!, {r0, r1, r2, r3}
+ 717 02c2 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 718              	.LVL65:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 21
+
+
+ 221:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrISPGain = *pISPGainConfig;
+ 719              		.loc 1 221 25 view .LVU247
+ 720 02c4 0FC6     		stmia	r6!, {r0, r1, r2, r3}
+ 721 02c6 94E80300 		ldm	r4, {r0, r1}
+ 222:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrTemp = *pColorTemp;
+ 722              		.loc 1 222 23 view .LVU248
+ 723 02ca 0D4C     		ldr	r4, .L47+32
+ 724              	.LVL66:
+ 221:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrISPGain = *pISPGainConfig;
+ 725              		.loc 1 221 25 view .LVU249
+ 726 02cc 86E80300 		stm	r6, {r0, r1}
+ 222:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrTemp = *pColorTemp;
+ 727              		.loc 1 222 3 is_stmt 1 view .LVU250
+ 222:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c ****   ISP_AWB_CurrTemp = *pColorTemp;
+ 728              		.loc 1 222 23 is_stmt 0 view .LVU251
+ 729 02d0 95E80F00 		ldm	r5, {r0, r1, r2, r3}
+ 730 02d4 84E80F00 		stm	r4, {r0, r1, r2, r3}
+ 223:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 731              		.loc 1 223 3 is_stmt 1 view .LVU252
+ 223:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** 
+ 732              		.loc 1 223 20 is_stmt 0 view .LVU253
+ 733 02d8 0A4B     		ldr	r3, .L47+36
+ 734 02da 1F60     		str	r7, [r3]
+ 225:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** }
+ 735              		.loc 1 225 3 is_stmt 1 view .LVU254
+ 225:Lib/Camera_Middleware/ISP_Library/isp/Src/isp_awb_algo.c **** }
+ 736              		.loc 1 225 10 is_stmt 0 view .LVU255
+ 737 02dc C4E6     		b	.L26
+ 738              	.L48:
+ 739 02de 00BF     		.align	3
+ 740              	.L47:
+ 741 02e0 00000000 		.word	0
+ 742 02e4 00000000 		.word	0
+ 743 02e8 000000A0 		.word	-1610612736
+ 744 02ec 9999A93F 		.word	1068079513
+ 745 02f0 00000060 		.word	1610612736
+ 746 02f4 6666EE3F 		.word	1072588390
+ 747 02f8 00000000 		.word	ISP_AWB_CurrStats
+ 748 02fc 00000000 		.word	ISP_AWB_CurrColorConv
+ 749 0300 00000000 		.word	ISP_AWB_CurrISPGain
+ 750 0304 00000000 		.word	ISP_AWB_CurrTemp
+ 751 0308 00000000 		.word	ISP_AWB_rbRatio
+ 752 030c 00000000 		.word	ISP_AWB_NbProfiles
+ 753 0310 00000000 		.word	ISP_AWB_Config
+ 754              		.cfi_endproc
+ 755              	.LFE866:
+ 757              		.section	.bss.ISP_AWB_CurrISPGain,"aw",%nobits
+ 758              		.align	2
+ 761              	ISP_AWB_CurrISPGain:
+ 762 0000 00000000 		.space	16
+ 762      00000000 
+ 762      00000000 
+ 762      00000000 
+ 763              		.section	.bss.ISP_AWB_CurrColorConv,"aw",%nobits
+ 764              		.align	2
+ 767              	ISP_AWB_CurrColorConv:
+ 768 0000 00000000 		.space	40
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 22
+
+
+ 768      00000000 
+ 768      00000000 
+ 768      00000000 
+ 768      00000000 
+ 769              		.section	.bss.ISP_AWB_CurrTemp,"aw",%nobits
+ 770              		.align	2
+ 773              	ISP_AWB_CurrTemp:
+ 774 0000 00000000 		.space	4
+ 775              		.section	.bss.ISP_AWB_CurrStats,"aw",%nobits
+ 776              		.align	2
+ 779              	ISP_AWB_CurrStats:
+ 780 0000 00000000 		.space	52
+ 780      00000000 
+ 780      00000000 
+ 780      00000000 
+ 780      00000000 
+ 781              		.section	.bss.ISP_AWB_NbProfiles,"aw",%nobits
+ 782              		.align	2
+ 785              	ISP_AWB_NbProfiles:
+ 786 0000 00000000 		.space	4
+ 787              		.section	.bss.ISP_AWB_rbRatio,"aw",%nobits
+ 788              		.align	2
+ 791              	ISP_AWB_rbRatio:
+ 792 0000 00000000 		.space	20
+ 792      00000000 
+ 792      00000000 
+ 792      00000000 
+ 792      00000000 
+ 793              		.section	.bss.ISP_AWB_Config,"aw",%nobits
+ 794              		.align	2
+ 797              	ISP_AWB_Config:
+ 798 0000 00000000 		.space	440
+ 798      00000000 
+ 798      00000000 
+ 798      00000000 
+ 798      00000000 
+ 799              		.text
+ 800              	.Letext0:
+ 801              		.file 2 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 802              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 803              		.file 4 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 804              		.file 5 "Lib/Camera_Middleware/ISP_Library/isp/Inc/isp_core.h"
+ 805              		.file 6 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 806              		.file 7 "<built-in>"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 23
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 isp_awb_algo.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:26     .text.ISP_AWB_Init:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:32     .text.ISP_AWB_Init:00000000 ISP_AWB_Init
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:172    .text.ISP_AWB_Init:00000098 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:797    .bss.ISP_AWB_Config:00000000 ISP_AWB_Config
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:779    .bss.ISP_AWB_CurrStats:00000000 ISP_AWB_CurrStats
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:791    .bss.ISP_AWB_rbRatio:00000000 ISP_AWB_rbRatio
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:773    .bss.ISP_AWB_CurrTemp:00000000 ISP_AWB_CurrTemp
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:785    .bss.ISP_AWB_NbProfiles:00000000 ISP_AWB_NbProfiles
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:767    .bss.ISP_AWB_CurrColorConv:00000000 ISP_AWB_CurrColorConv
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:761    .bss.ISP_AWB_CurrISPGain:00000000 ISP_AWB_CurrISPGain
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:186    .text.ISP_AWB_GetConfig:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:192    .text.ISP_AWB_GetConfig:00000000 ISP_AWB_GetConfig
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:741    .text.ISP_AWB_GetConfig:000002e0 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:758    .bss.ISP_AWB_CurrISPGain:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:764    .bss.ISP_AWB_CurrColorConv:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:770    .bss.ISP_AWB_CurrTemp:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:776    .bss.ISP_AWB_CurrStats:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:782    .bss.ISP_AWB_NbProfiles:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:788    .bss.ISP_AWB_rbRatio:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s:794    .bss.ISP_AWB_Config:00000000 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4.isp_conf.h.21.bfb1d020517608810095aa56acf25d1e
+                           .group:00000000 wm4.stm32n6xx_hal_conf.h.21.004a06df6e15ac197e03f723792da58a
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.arm_cmse.h.103.a0d15a79c4c9a67da8d5831704d7248e
+                           .group:00000000 wm4.stm32n6xx.h.34.c523a1ffdf274a69e8802892c6776332
+                           .group:00000000 wm4.stm32n657xx.h.26.acd272cb67318cc1a4791ce2f0720ca6
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.e0c9f337c65cb9f22ed5f23d082bc78b
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.cmsis_version.h.30.d128735bf87720f7436b74fefeb5043c
+                           .group:00000000 wm4.core_cm55.h.67.25006a3ce7048d64bcddd2996d5fac93
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.core_cm55.h.213.0528f46a674315ef8d35c4477e230358
+                           .group:00000000 wm4.armv8m_mpu.h.24.bf28cc25bee30a7ff9d2f7a44a5e2230
+                           .group:00000000 wm4.armv8m_pmu.h.24.6ded195d2625055391fd378c0e1d2519
+                           .group:00000000 wm4.core_cm55.h.4477.396e822ef855bcfb932819ad48de1c4c
+                           .group:00000000 wm4.armv7m_cachel1.h.24.936dd92d6e204a8d0b17d5e4ea4a356e
+                           .group:00000000 wm4.stm32n657xx.h.575.78d331c417ec710388ced647138f735f
+                           .group:00000000 wm4.stm32n6xx.h.116.b4247d9785590e7c5ec9234ffb2153bf
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.e62aae2fd3ae33360b6781c8a72e5b18
+                           .group:00000000 wm4.newlib.h.7.a37ffbe9e5aff74303f4e60b1cc1c01b
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 24
+
+
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.math.h.13.47cfc34cae8a1153323939c4d32cf7c2
+                           .group:00000000 wm4.stm32n6xx_hal_def.h.63.3a8f01490e8852464e9fcb69092e9c75
+                           .group:00000000 wm4.stm32n6xx_ll_bus.h.38.2366a295ee4cdb04833997d3787fcd2d
+                           .group:00000000 wm4.stm32n6xx_ll_rcc.h.21.656bd5637db608589ad16ea57d39430c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.194.69b522b1afdf59a82d05a1f71efe03c7
+                           .group:00000000 wm4.stm32n6xx_hal_rcc_ex.h.21.cc6be0a7d168882a1a6f470236ba784c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.4361.4b490a4a19722e68c21f88cb8a774a30
+                           .group:00000000 wm4.stm32n6xx_hal_gpio.h.21.89d54af663b98eb8fc098192053f7eeb
+                           .group:00000000 wm4.stm32n6xx_hal_gpio_ex.h.22.f7e795fb05a69a19b87d946b47c8db8b
+                           .group:00000000 wm4.stm32n6xx_hal_rif.h.21.33f2c553a8a3fc14dca8c470b213ab19
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.21.61e48c5c2e8d25d22177834b232fe45c
+                           .group:00000000 wm4.stm32n6xx_hal_dma_ex.h.21.82f854ecdb6a463b06d0b4e5c217c368
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.1020.87e2180c009560b617c1f8208140c950
+                           .group:00000000 wm4.stm32n6xx_hal_cortex.h.21.f493623cc58f9454ab4eae41e395c5cc
+                           .group:00000000 wm4.stm32n6xx_hal_bsec.h.21.1ee89319140541f82434908b4267aa30
+                           .group:00000000 wm4.stm32n6xx_hal_dcmipp.h.21.e2b87dce83d7d722d696a597f6ac56bf
+                           .group:00000000 wm4.stm32n6xx_hal_dma2d.h.21.75c8d46cdbb72970123b3f34ae2043d7
+                           .group:00000000 wm4.stm32n6xx_hal_exti.h.21.e0efb23591051684dc14f1f2431c6aab
+                           .group:00000000 wm4.stm32n6xx_hal_gfxmmu.h.21.9784a9103143d48bd3c37389d0e0b8e6
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.21.3f483626ff64c5bf027265bb2e1d1331
+                           .group:00000000 wm4.stm32n6xx_hal_i2c_ex.h.21.79e9196c22282cdaf6b4047893638c45
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.741.1084702632703acc669e4282b3043372
+                           .group:00000000 wm4.stm32n6xx_hal_icache.h.21.194b4ec6e76f32b14f65c85616854850
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.21.ae1eb09930e7e550e48e418ac5849e4d
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.1002.b13ede7fc94ed5ad1c6768a157d2149a
+                           .group:00000000 wm4.stm32n6xx_ll_usb.h.21.daaf86158046f2cf02166c495d637480
+                           .group:00000000 wm4.stm32n6xx_hal_pcd.h.155.27040aac6844effe2af8c180caf1dd2e
+                           .group:00000000 wm4.stm32n6xx_hal_pwr.h.21.cdb73e4869c3fed3fc84f901ec0e5f0a
+                           .group:00000000 wm4.stm32n6xx_hal_pwr_ex.h.21.1a673224a58b0c1e5fad8eeda6514208
+                           .group:00000000 wm4.stm32n6xx_hal_ramcfg.h.21.a62dfbb4d2c14e9a8c634a215e37bd3d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.21.9f810303326e2d91749800e9911f8e4d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.906.8ad9375f39dce09dc0a4db0025ee7a76
+                           .group:00000000 wm4.stm32n6xx_hal_tim.h.21.839dd2b2a70382fb2c44f8f293a84d5f
+                           .group:00000000 wm4.stm32n6xx_hal_tim_ex.h.21.e372d5ac63c13441211ea4ecbd353150
+                           .group:00000000 wm4.stm32n6xx_hal_uart.h.21.230f549bfa0d5ebfd77bfb311b2aca15
+                           .group:00000000 wm4.stm32n6xx_hal_uart_ex.h.21.a0d5511e1d0703b7b5278c8f5472b96d
+                           .group:00000000 wm4.stm32n6xx_hal_xspi.h.21.7fd922d3bdb871475cf18436a68935bb
+                           .group:00000000 wm4.stm32n6xx_hal_cacheaxi.h.21.7c3375b7903ec42376e4883320997f74
+                           .group:00000000 wm4.stm32n6xx_hal_gpu2d.h.21.48d0249122abad294a630c39cc4ebaed
+                           .group:00000000 wm4.stm32n6xx_hal.h.81.e79d59262ba173c33cf1d69281830d15
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4.stdio.h.47.dc31ec4674d7bcb103c9f08809549f45
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.string.h.8.c4b8571ce60dff2817f43fec8b86aecd
+                           .group:00000000 wm4.string.h.177.59a005921fa78485abc80a0267de5752
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.isp_core.h.110.8c4344a3506ac8fadc31ee17c3f6f7d7
+                           .group:00000000 wm4.isp_services.h.55.aa3787e002060687ddf24cf4424c9532
+                           .group:00000000 wm4.inttypes.h.14.b28deb26920e51e0da310220ef0f9003
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccHwrkmP.s 			page 25
+
+
+                           .group:00000000 wm4.inttypes.h.28.684aa7736e7ecc9a6ffc44acc61c7a90
+
+UNDEFINED SYMBOLS
+memcpy
+memset
+__aeabi_d2lz
+__aeabi_l2d

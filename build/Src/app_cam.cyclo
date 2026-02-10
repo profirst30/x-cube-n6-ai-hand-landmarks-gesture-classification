@@ -1,0 +1,6 @@
+Src/app_cam.c:27:13:CAM_InitCropConfig	3
+Src/app_cam.c:120:6:CAM_Init	1
+Src/app_cam.c:154:6:CAM_DisplayPipe_Start	1
+Src/app_cam.c:162:6:CAM_NNPipe_Start	1
+Src/app_cam.c:170:6:CAM_IspUpdate	1
+Src/app_cam.c:178:6:CMW_CAMERA_PIPE_ErrorCallback	1

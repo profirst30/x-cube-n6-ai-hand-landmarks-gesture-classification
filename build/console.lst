@@ -1,0 +1,265 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccsdwHjI.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"console.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Gcc/Src/console.c"
+  25              		.section	.text._write,"ax",%progbits
+  26              		.align	1
+  27              		.global	_write
+  28              		.syntax unified
+  29              		.thumb
+  30              		.thumb_func
+  32              	_write:
+  33              	.LVL0:
+  34              	.LFB862:
+   1:Gcc/Src/console.c ****  /**
+   2:Gcc/Src/console.c ****  ******************************************************************************
+   3:Gcc/Src/console.c ****  * @file    console.c
+   4:Gcc/Src/console.c ****  * @author  GPM Application Team
+   5:Gcc/Src/console.c ****  *
+   6:Gcc/Src/console.c ****  ******************************************************************************
+   7:Gcc/Src/console.c ****  * @attention
+   8:Gcc/Src/console.c ****  *
+   9:Gcc/Src/console.c ****  * Copyright (c) 2023 STMicroelectronics.
+  10:Gcc/Src/console.c ****  * All rights reserved.
+  11:Gcc/Src/console.c ****  *
+  12:Gcc/Src/console.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  13:Gcc/Src/console.c ****  * in the root directory of this software component.
+  14:Gcc/Src/console.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Gcc/Src/console.c ****  *
+  16:Gcc/Src/console.c ****  ******************************************************************************
+  17:Gcc/Src/console.c ****  */
+  18:Gcc/Src/console.c **** 
+  19:Gcc/Src/console.c **** #include "main.h"
+  20:Gcc/Src/console.c **** 
+  21:Gcc/Src/console.c **** #include <errno.h>
+  22:Gcc/Src/console.c **** #include <unistd.h>
+  23:Gcc/Src/console.c **** 
+  24:Gcc/Src/console.c **** extern UART_HandleTypeDef huart1;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccsdwHjI.s 			page 2
+
+
+  25:Gcc/Src/console.c **** 
+  26:Gcc/Src/console.c **** int _write(int file, char *ptr, int len)
+  27:Gcc/Src/console.c **** {
+  35              		.loc 1 27 1 view -0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  28:Gcc/Src/console.c ****   HAL_StatusTypeDef status;
+  39              		.loc 1 28 3 view .LVU1
+  29:Gcc/Src/console.c **** 
+  30:Gcc/Src/console.c ****   if ((file != STDOUT_FILENO) && (file != STDERR_FILENO)) {
+  40              		.loc 1 30 3 view .LVU2
+  41              		.loc 1 30 31 is_stmt 0 view .LVU3
+  42 0000 0138     		subs	r0, r0, #1
+  43              	.LVL1:
+  44              		.loc 1 30 6 view .LVU4
+  45 0002 0128     		cmp	r0, #1
+  27:Gcc/Src/console.c ****   HAL_StatusTypeDef status;
+  46              		.loc 1 27 1 view .LVU5
+  47 0004 10B5     		push	{r4, lr}
+  48              		.cfi_def_cfa_offset 8
+  49              		.cfi_offset 4, -8
+  50              		.cfi_offset 14, -4
+  27:Gcc/Src/console.c ****   HAL_StatusTypeDef status;
+  51              		.loc 1 27 1 view .LVU6
+  52 0006 1446     		mov	r4, r2
+  53              		.loc 1 30 6 view .LVU7
+  54 0008 07D9     		bls	.L2
+  31:Gcc/Src/console.c ****       errno = EBADF;
+  55              		.loc 1 31 7 is_stmt 1 view .LVU8
+  56 000a FFF7FEFF 		bl	__errno
+  57              	.LVL2:
+  58              		.loc 1 31 13 is_stmt 0 discriminator 1 view .LVU9
+  59 000e 0923     		movs	r3, #9
+  32:Gcc/Src/console.c ****       return -1;
+  60              		.loc 1 32 14 view .LVU10
+  61 0010 4FF0FF34 		mov	r4, #-1
+  62              	.LVL3:
+  31:Gcc/Src/console.c ****       errno = EBADF;
+  63              		.loc 1 31 13 discriminator 1 view .LVU11
+  64 0014 0360     		str	r3, [r0]
+  65              		.loc 1 32 7 is_stmt 1 view .LVU12
+  66              	.L3:
+  33:Gcc/Src/console.c ****   }
+  34:Gcc/Src/console.c **** 
+  35:Gcc/Src/console.c ****   status = HAL_UART_Transmit(&huart1, (uint8_t*)ptr, len, ~0);
+  36:Gcc/Src/console.c **** 
+  37:Gcc/Src/console.c ****   return (status == HAL_OK ? len : 0);
+  38:Gcc/Src/console.c **** }
+  67              		.loc 1 38 1 is_stmt 0 view .LVU13
+  68 0016 2046     		mov	r0, r4
+  69 0018 10BD     		pop	{r4, pc}
+  70              	.LVL4:
+  71              	.L2:
+  35:Gcc/Src/console.c **** 
+  72              		.loc 1 35 3 is_stmt 1 view .LVU14
+  35:Gcc/Src/console.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccsdwHjI.s 			page 3
+
+
+  73              		.loc 1 35 12 is_stmt 0 view .LVU15
+  74 001a 4FF0FF33 		mov	r3, #-1
+  75 001e 0448     		ldr	r0, .L5
+  76 0020 92B2     		uxth	r2, r2
+  77              	.LVL5:
+  35:Gcc/Src/console.c **** 
+  78              		.loc 1 35 12 view .LVU16
+  79 0022 FFF7FEFF 		bl	HAL_UART_Transmit
+  80              	.LVL6:
+  37:Gcc/Src/console.c **** }
+  81              		.loc 1 37 3 is_stmt 1 view .LVU17
+  37:Gcc/Src/console.c **** }
+  82              		.loc 1 37 34 is_stmt 0 discriminator 2 view .LVU18
+  83 0026 0028     		cmp	r0, #0
+  84 0028 18BF     		it	ne
+  85 002a 0024     		movne	r4, #0
+  86              	.LVL7:
+  37:Gcc/Src/console.c **** }
+  87              		.loc 1 37 34 discriminator 2 view .LVU19
+  88 002c F3E7     		b	.L3
+  89              	.L6:
+  90 002e 00BF     		.align	2
+  91              	.L5:
+  92 0030 00000000 		.word	huart1
+  93              		.cfi_endproc
+  94              	.LFE862:
+  96              		.text
+  97              	.Letext0:
+  98              		.file 2 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+  99              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 100              		.file 4 "STM32Cube_FW_N6/Drivers/CMSIS/Device/ST/STM32N6xx/Include/stm32n657xx.h"
+ 101              		.file 5 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_def.h"
+ 102              		.file 6 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_dma.h"
+ 103              		.file 7 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_dma_ex.h"
+ 104              		.file 8 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_uart.h"
+ 105              		.file 9 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccsdwHjI.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 console.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccsdwHjI.s:26     .text._write:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccsdwHjI.s:32     .text._write:00000000 _write
+C:\Users\DJESSOU\AppData\Local\Temp\ccsdwHjI.s:92     .text._write:00000030 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4.stm32n6xx_hal_conf.h.21.004a06df6e15ac197e03f723792da58a
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.arm_cmse.h.103.a0d15a79c4c9a67da8d5831704d7248e
+                           .group:00000000 wm4.stm32n6xx.h.34.c523a1ffdf274a69e8802892c6776332
+                           .group:00000000 wm4.stm32n657xx.h.26.acd272cb67318cc1a4791ce2f0720ca6
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.e0c9f337c65cb9f22ed5f23d082bc78b
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.cmsis_version.h.30.d128735bf87720f7436b74fefeb5043c
+                           .group:00000000 wm4.core_cm55.h.67.25006a3ce7048d64bcddd2996d5fac93
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.core_cm55.h.213.0528f46a674315ef8d35c4477e230358
+                           .group:00000000 wm4.armv8m_mpu.h.24.bf28cc25bee30a7ff9d2f7a44a5e2230
+                           .group:00000000 wm4.armv8m_pmu.h.24.6ded195d2625055391fd378c0e1d2519
+                           .group:00000000 wm4.core_cm55.h.4477.396e822ef855bcfb932819ad48de1c4c
+                           .group:00000000 wm4.armv7m_cachel1.h.24.936dd92d6e204a8d0b17d5e4ea4a356e
+                           .group:00000000 wm4.stm32n657xx.h.575.78d331c417ec710388ced647138f735f
+                           .group:00000000 wm4.stm32n6xx.h.116.b4247d9785590e7c5ec9234ffb2153bf
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.e62aae2fd3ae33360b6781c8a72e5b18
+                           .group:00000000 wm4.newlib.h.7.a37ffbe9e5aff74303f4e60b1cc1c01b
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.math.h.13.47cfc34cae8a1153323939c4d32cf7c2
+                           .group:00000000 wm4.stm32n6xx_hal_def.h.63.3a8f01490e8852464e9fcb69092e9c75
+                           .group:00000000 wm4.stm32n6xx_ll_bus.h.38.2366a295ee4cdb04833997d3787fcd2d
+                           .group:00000000 wm4.stm32n6xx_ll_rcc.h.21.656bd5637db608589ad16ea57d39430c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.194.69b522b1afdf59a82d05a1f71efe03c7
+                           .group:00000000 wm4.stm32n6xx_hal_rcc_ex.h.21.cc6be0a7d168882a1a6f470236ba784c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.4361.4b490a4a19722e68c21f88cb8a774a30
+                           .group:00000000 wm4.stm32n6xx_hal_gpio.h.21.89d54af663b98eb8fc098192053f7eeb
+                           .group:00000000 wm4.stm32n6xx_hal_gpio_ex.h.22.f7e795fb05a69a19b87d946b47c8db8b
+                           .group:00000000 wm4.stm32n6xx_hal_rif.h.21.33f2c553a8a3fc14dca8c470b213ab19
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.21.61e48c5c2e8d25d22177834b232fe45c
+                           .group:00000000 wm4.stm32n6xx_hal_dma_ex.h.21.82f854ecdb6a463b06d0b4e5c217c368
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.1020.87e2180c009560b617c1f8208140c950
+                           .group:00000000 wm4.stm32n6xx_hal_cortex.h.21.f493623cc58f9454ab4eae41e395c5cc
+                           .group:00000000 wm4.stm32n6xx_hal_bsec.h.21.1ee89319140541f82434908b4267aa30
+                           .group:00000000 wm4.stm32n6xx_hal_dcmipp.h.21.e2b87dce83d7d722d696a597f6ac56bf
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccsdwHjI.s 			page 5
+
+
+                           .group:00000000 wm4.stm32n6xx_hal_dma2d.h.21.75c8d46cdbb72970123b3f34ae2043d7
+                           .group:00000000 wm4.stm32n6xx_hal_exti.h.21.e0efb23591051684dc14f1f2431c6aab
+                           .group:00000000 wm4.stm32n6xx_hal_gfxmmu.h.21.9784a9103143d48bd3c37389d0e0b8e6
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.21.3f483626ff64c5bf027265bb2e1d1331
+                           .group:00000000 wm4.stm32n6xx_hal_i2c_ex.h.21.79e9196c22282cdaf6b4047893638c45
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.741.1084702632703acc669e4282b3043372
+                           .group:00000000 wm4.stm32n6xx_hal_icache.h.21.194b4ec6e76f32b14f65c85616854850
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.21.ae1eb09930e7e550e48e418ac5849e4d
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.1002.b13ede7fc94ed5ad1c6768a157d2149a
+                           .group:00000000 wm4.stm32n6xx_ll_usb.h.21.daaf86158046f2cf02166c495d637480
+                           .group:00000000 wm4.stm32n6xx_hal_pcd.h.155.27040aac6844effe2af8c180caf1dd2e
+                           .group:00000000 wm4.stm32n6xx_hal_pwr.h.21.cdb73e4869c3fed3fc84f901ec0e5f0a
+                           .group:00000000 wm4.stm32n6xx_hal_pwr_ex.h.21.1a673224a58b0c1e5fad8eeda6514208
+                           .group:00000000 wm4.stm32n6xx_hal_ramcfg.h.21.a62dfbb4d2c14e9a8c634a215e37bd3d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.21.9f810303326e2d91749800e9911f8e4d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.906.8ad9375f39dce09dc0a4db0025ee7a76
+                           .group:00000000 wm4.stm32n6xx_hal_tim.h.21.839dd2b2a70382fb2c44f8f293a84d5f
+                           .group:00000000 wm4.stm32n6xx_hal_tim_ex.h.21.e372d5ac63c13441211ea4ecbd353150
+                           .group:00000000 wm4.stm32n6xx_hal_uart.h.21.230f549bfa0d5ebfd77bfb311b2aca15
+                           .group:00000000 wm4.stm32n6xx_hal_uart_ex.h.21.a0d5511e1d0703b7b5278c8f5472b96d
+                           .group:00000000 wm4.stm32n6xx_hal_xspi.h.21.7fd922d3bdb871475cf18436a68935bb
+                           .group:00000000 wm4.stm32n6xx_hal_cacheaxi.h.21.7c3375b7903ec42376e4883320997f74
+                           .group:00000000 wm4.stm32n6xx_hal_gpu2d.h.21.48d0249122abad294a630c39cc4ebaed
+                           .group:00000000 wm4.stm32n6xx_hal.h.81.e79d59262ba173c33cf1d69281830d15
+                           .group:00000000 wm4.errno.h.2.ba016d646105af6cad23be83630b6a3f
+                           .group:00000000 wm4.errno.h.9.ae5ea2b0ff9ea6e39e585807e35200d3
+                           .group:00000000 wm4.unistd.h.2.39165d5b7784d1815ef4b0c4be6df560
+                           .group:00000000 wm4.types.h.40.8b6acba56cefbb11746718204edc8f5e
+                           .group:00000000 wm4._endian.h.31.65a10590763c3dde1ac4a7f66d7d4891
+                           .group:00000000 wm4.endian.h.9.49f3a4695c1b61e8a0808de3c4a106cb
+                           .group:00000000 wm4._timeval.h.32.bec3221fa7a9bb0bdde696c9c57e47d2
+                           .group:00000000 wm4.timespec.h.41.d855182eb0e690443ab8651bcedca6e1
+                           .group:00000000 wm4.select.h.19.8c04bee5682eafa577cf6325dd7ee64c
+                           .group:00000000 wm4.types.h.51.e2a6e4379b4797ffcc4841f8498fd61b
+                           .group:00000000 wm4.sched.h.22.c60982713a5c428609783c78f9c78d95
+                           .group:00000000 wm4._pthreadtypes.h.36.fcee9961c35163dde6267ef772ad1972
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.unistd.h.166.64f46862ce0a3925984c663d49123e22
+
+UNDEFINED SYMBOLS
+__errno
+HAL_UART_Transmit
+huart1

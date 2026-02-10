@@ -1,0 +1,1600 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"stm32n6xx_hal_gpu2d.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c"
+  25              		.section	.text.HAL_GPU2D_MspInit,"ax",%progbits
+  26              		.align	1
+  27              		.weak	HAL_GPU2D_MspInit
+  28              		.syntax unified
+  29              		.thumb
+  30              		.thumb_func
+  32              	HAL_GPU2D_MspInit:
+  33              	.LVL0:
+  34              	.LFB864:
+   1:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+   2:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   ******************************************************************************
+   3:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @file    stm32n6xx_hal_gpu2d.c
+   4:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @author  MCD Application Team
+   5:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief   GPU2D HAL module driver.
+   6:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *          This file provides firmware functions to manage the following
+   7:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *          functionalities of the GPU2D peripheral:
+   8:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *           + Initialization and de-initialization functions
+   9:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *           + IO operation functions
+  10:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *           + Peripheral State and Errors functions
+  11:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *
+  12:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   ******************************************************************************
+  13:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @attention
+  14:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *
+  15:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * Copyright (c) 2023 STMicroelectronics.
+  16:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * All rights reserved.
+  17:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *
+  18:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  19:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * in the root directory of this software component.
+  20:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  21:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *
+  22:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   ******************************************************************************
+  23:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   @verbatim
+  24:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   ==============================================================================
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 2
+
+
+  25:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****                         ##### How to use this driver #####
+  26:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   ==============================================================================
+  27:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     [..]
+  28:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (#) Peripheral control is exclusively done by the accompanying middleware library.
+  29:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  30:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      *** Interrupt mode IO operation ***
+  31:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      ===================================
+  32:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      [..]
+  33:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****        (#) Configure the GPU2D hardware to perform graphics operation using the Third Party MW
+  34:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****            Library APIs.
+  35:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****        (#) Submit command List to the hardware.
+  36:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****        (#) Wait indefinitely for the completion of submitted Command List by GPU2D hardware.
+  37:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****        (#) Use HAL_GPU2D_IRQHandler() called under GPU2D_IRQHandler() interrupt subroutine.
+  38:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****        (#) At the end of Command List execution HAL_GPU2D_IRQHandler() function is executed
+  39:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****            and user can add his own function by customization of function pointer
+  40:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****        (#) CommandListCpltCallback (member of GPU2D handle structure) to notify the upper level
+  41:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****            about the completion of Command List execution.
+  42:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  43:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      (#) Callback HAL_GPU2D_CommandListCpltCallback is invoked when the GPU2D hardware executes
+  44:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****          the programmed command list (Command List execution completion).
+  45:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  46:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     (++) This callback is called when the compilation defines USE_HAL_GPU2D_REGISTER_CALLBACKS
+  47:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****          is set to 0 or not defined.
+  48:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  49:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         (++) This callback should be implemented in the application side. It should notify
+  50:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****              the upper level that the programmed command list is completed.
+  51:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  52:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (#) To control the GPU2D state, use the following function: HAL_GPU2D_GetState().
+  53:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  54:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (#) To read the GPU2D error code, use the following function: HAL_GPU2D_GetError().
+  55:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  56:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      *** GPU2D HAL driver macros list ***
+  57:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      =============================================
+  58:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      [..]
+  59:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****        Below the list of most used macros in GPU2D HAL driver :
+  60:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  61:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) __HAL_GPU2D_RESET_HANDLE_STATE: Reset GPU2D handle state.
+  62:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) __HAL_GPU2D_GET_FLAG: Get the GPU2D pending flags.
+  63:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) __HAL_GPU2D_CLEAR_FLAG: Clear the GPU2D pending flags.
+  64:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) __HAL_GPU2D_GET_IT_SOURCE: Check whether the specified GPU2D interrupt is enabled or not.
+  65:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  66:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      *** Callback registration ***
+  67:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      ===================================
+  68:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      [..]
+  69:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (#) The compilation define  USE_HAL_GPU2D_REGISTER_CALLBACKS when set to 1
+  70:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           allows the user to configure dynamically the driver callbacks.
+  71:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           Use function @ref HAL_GPU2D_RegisterCallback() to register a user callback.
+  72:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  73:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (#) Function @ref HAL_GPU2D_RegisterCallback() allows to register following callbacks:
+  74:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             (+) CommandListCpltCallback : callback for Command List completion.
+  75:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             (+) MspInitCallback    : GPU2D MspInit.
+  76:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             (+) MspDeInitCallback  : GPU2D MspDeInit.
+  77:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           This function takes as parameters the HAL peripheral handle, the Callback ID
+  78:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           and a pointer to the user callback function.
+  79:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  80:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (#) Use function @ref HAL_GPU2D_UnRegisterCallback() to reset a callback to the default
+  81:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           weak (surcharged) function.
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 3
+
+
+  82:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           @ref HAL_GPU2D_UnRegisterCallback() takes as parameters the HAL peripheral handle,
+  83:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           and the Callback ID.
+  84:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           This function allows to reset following callbacks:
+  85:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             (+) CommandListCpltCallback : callback for Command List completion.
+  86:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             (+) MspInitCallback    : GPU2D MspInit.
+  87:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             (+) MspDeInitCallback  : GPU2D MspDeInit.
+  88:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  89:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           Callbacks can be registered/unregistered in READY state only.
+  90:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           Exception done for MspInit/MspDeInit callbacks that can be registered/unregistered
+  91:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           in READY or RESET state, thus registered (user) MspInit/DeInit callbacks can be used
+  92:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           during the Init/DeInit.
+  93:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           In that case first register the MspInit/MspDeInit user callbacks
+  94:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           using @ref HAL_GPU2D_RegisterCallback before calling @ref HAL_GPU2D_DeInit
+  95:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           or @ref HAL_GPU2D_Init function.
+  96:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  97:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           When The compilation define USE_HAL_GPU2D_REGISTER_CALLBACKS is set to 0 or
+  98:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           not defined, the callback registering feature is not available
+  99:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           and weak (surcharged) callbacks are used.
+ 100:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 101:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****      [..]
+ 102:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (@) You can refer to the GPU2D HAL driver header file for more useful macros
+ 103:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 104:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   @endverbatim
+ 105:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   ******************************************************************************
+ 106:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 107:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 108:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Includes ------------------------------------------------------------------*/
+ 109:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #include "stm32n6xx_hal.h"
+ 110:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 111:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #ifdef HAL_GPU2D_MODULE_ENABLED
+ 112:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #if defined (GPU2D)
+ 113:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 114:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /** @addtogroup STM32N6xx_HAL_Driver
+ 115:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @{
+ 116:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 117:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 118:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /** @defgroup GPU2D  GPU2D
+ 119:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief GPU2D HAL module driver
+ 120:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @{
+ 121:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 122:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 123:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Private types -------------------------------------------------------------*/
+ 124:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Private define ------------------------------------------------------------*/
+ 125:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Private variables ---------------------------------------------------------*/
+ 126:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Private constants ---------------------------------------------------------*/
+ 127:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Private macro -------------------------------------------------------------*/
+ 128:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /** @defgroup GPU2D_Private_Macros GPU2D Private Macros
+ 129:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @{
+ 130:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 131:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 132:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /** @defgroup GPU2D_Write_Read Common write and read registers Macros
+ 133:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @{
+ 134:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 135:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 136:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 137:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Write a value in GPU2D register
+ 138:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  __INSTANCE__ GPU2D Instance
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 4
+
+
+ 139:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  __REG__ Register to be written
+ 140:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  __VALUE__ Value to be written in the register
+ 141:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval None
+ 142:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 143:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #define GPU2D_WriteReg(__INSTANCE__, __REG__, __VALUE__) WRITE_REG(*(__IO uint32_t *)(__INSTANCE__\
+ 144:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****                                                                    + __REG__), __VALUE__)
+ 145:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 146:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 147:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Read a value in GPU2D register
+ 148:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  __INSTANCE__ GPU2D Instance
+ 149:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  __REG__ Register to be read
+ 150:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval Register value
+ 151:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 152:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #define GPU2D_ReadReg(__INSTANCE__, __REG__) READ_REG(*(__IO uint32_t *)(__INSTANCE__ + __REG__))
+ 153:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 154:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @}
+ 155:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 156:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 157:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 158:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @}
+ 159:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 160:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 161:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Private function prototypes -----------------------------------------------*/
+ 162:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Private functions ---------------------------------------------------------*/
+ 163:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /* Exported functions --------------------------------------------------------*/
+ 164:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /** @defgroup GPU2D_Exported_Functions GPU2D Exported Functions
+ 165:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @{
+ 166:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 167:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 168:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /** @defgroup GPU2D_Exported_Functions_Group1 Initialization and de-initialization functions
+ 169:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief    Initialization and Configuration functions
+ 170:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *
+ 171:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** @verbatim
+ 172:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****  ===============================================================================
+ 173:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****                 ##### Initialization and Configuration functions #####
+ 174:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****  ===============================================================================
+ 175:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     [..]  This section provides functions allowing to:
+ 176:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) Initialize and configure the GPU2D
+ 177:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) De-initialize the GPU2D
+ 178:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 179:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** @endverbatim
+ 180:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @{
+ 181:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 182:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 183:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 184:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Initialize the GPU2D according to the specified
+ 185:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *         parameters in the GPU2D_InitTypeDef and create the associated handle.
+ 186:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d pointer to a GPU2D_HandleTypeDef structure that contains
+ 187:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                the configuration information for the GPU2D.
+ 188:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval HAL status
+ 189:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 190:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** HAL_StatusTypeDef HAL_GPU2D_Init(GPU2D_HandleTypeDef *hgpu2d)
+ 191:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 192:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 193:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (hgpu2d == NULL)
+ 194:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 195:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     return HAL_ERROR;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 5
+
+
+ 196:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 197:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 198:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the parameters */
+ 199:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   assert_param(IS_GPU2D_ALL_INSTANCE(hgpu2d->Instance));
+ 200:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 201:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (hgpu2d->State == HAL_GPU2D_STATE_RESET)
+ 202:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 203:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #if (USE_HAL_GPU2D_REGISTER_CALLBACKS == 1)
+ 204:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Reset Callback pointers in HAL_GPU2D_STATE_RESET only */
+ 205:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     hgpu2d->CommandListCpltCallback = HAL_GPU2D_CommandListCpltCallback;
+ 206:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     if (hgpu2d->MspInitCallback == NULL)
+ 207:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     {
+ 208:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       hgpu2d->MspInitCallback = HAL_GPU2D_MspInit;
+ 209:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     }
+ 210:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 211:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Init the low level hardware */
+ 212:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     hgpu2d->MspInitCallback(hgpu2d);
+ 213:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #else /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 0 */
+ 214:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Init the low level hardware */
+ 215:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     HAL_GPU2D_MspInit(hgpu2d);
+ 216:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 217:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 218:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Allocate lock resource and initialize it */
+ 219:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     hgpu2d->Lock = HAL_UNLOCKED;
+ 220:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 221:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 222:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Process locked */
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_LOCK(hgpu2d);
+ 224:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 225:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #if (USE_HAL_GPU2D_REGISTER_CALLBACKS == 1)
+ 226:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Reset the CommandListCpltCallback handler */
+ 227:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   hgpu2d->CommandListCpltCallback = NULL;
+ 228:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 229:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 230:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Update error code */
+ 231:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   hgpu2d->ErrorCode = HAL_GPU2D_ERROR_NONE;
+ 232:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 233:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Initialize the GPU2D state*/
+ 234:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   hgpu2d->State = HAL_GPU2D_STATE_READY;
+ 235:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 236:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Release Lock */
+ 237:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_UNLOCK(hgpu2d);
+ 238:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 239:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return HAL_OK;
+ 240:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 241:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 242:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 243:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Deinitializes the GPU2D peripheral registers to their default reset
+ 244:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *         values.
+ 245:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d pointer to a GPU2D_HandleTypeDef structure that contains
+ 246:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                the configuration information for the GPU2D.
+ 247:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval None
+ 248:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 249:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** HAL_StatusTypeDef HAL_GPU2D_DeInit(GPU2D_HandleTypeDef *hgpu2d)
+ 250:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 251:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 252:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (hgpu2d == NULL)
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 6
+
+
+ 253:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 254:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     return HAL_ERROR;
+ 255:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 256:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 257:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the parameters */
+ 258:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   assert_param(IS_GPU2D_ALL_INSTANCE(hgpu2d->Instance));
+ 259:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 260:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Process locked */
+ 261:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_LOCK(hgpu2d);
+ 262:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 263:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (hgpu2d->State == HAL_GPU2D_STATE_READY)
+ 264:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 265:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #if (USE_HAL_GPU2D_REGISTER_CALLBACKS == 1)
+ 266:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     if (hgpu2d->MspDeInitCallback == NULL)
+ 267:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     {
+ 268:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       hgpu2d->MspDeInitCallback = HAL_GPU2D_MspDeInit;
+ 269:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     }
+ 270:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 271:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* DeInit the low level hardware */
+ 272:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     hgpu2d->MspDeInitCallback(hgpu2d);
+ 273:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #else /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 0 */
+ 274:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Carry on with de-initialization of low level hardware */
+ 275:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     HAL_GPU2D_MspDeInit(hgpu2d);
+ 276:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 277:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 278:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 279:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #if (USE_HAL_GPU2D_REGISTER_CALLBACKS == 1)
+ 280:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Reset the CommandListCpltCallback handler */
+ 281:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   hgpu2d->CommandListCpltCallback = NULL;
+ 282:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 283:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 284:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Update error code */
+ 285:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   hgpu2d->ErrorCode = HAL_GPU2D_ERROR_NONE;
+ 286:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 287:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Reset the GPU2D state*/
+ 288:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   hgpu2d->State = HAL_GPU2D_STATE_RESET;
+ 289:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 290:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Release Lock */
+ 291:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_UNLOCK(hgpu2d);
+ 292:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 293:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return HAL_OK;
+ 294:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 295:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 296:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 297:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Initializes the GPU2D MSP.
+ 298:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d pointer to a GPU2D_HandleTypeDef structure that contains
+ 299:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                the configuration information for the GPU2D.
+ 300:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval None
+ 301:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 302:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** __weak void HAL_GPU2D_MspInit(GPU2D_HandleTypeDef *hgpu2d)
+ 303:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+  35              		.loc 1 303 1 view -0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 0, uses_anonymous_args = 0
+  39              		@ link register save eliminated.
+ 304:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Prevent unused argument(s) compilation warning */
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 7
+
+
+ 305:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   UNUSED(hgpu2d);
+  40              		.loc 1 305 3 view .LVU1
+ 306:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 307:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* NOTE : This function should not be modified; when the callback is needed,
+ 308:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             the HAL_GPU2D_MspInit can be implemented in the user file.
+ 309:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****    */
+ 310:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+  41              		.loc 1 310 1 is_stmt 0 view .LVU2
+  42 0000 7047     		bx	lr
+  43              		.cfi_endproc
+  44              	.LFE864:
+  46              		.section	.rodata.HAL_GPU2D_Init.str1.1,"aMS",%progbits,1
+  47              	.LC0:
+  48 0000 53544D33 		.ascii	"STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/st"
+  48      32437562 
+  48      655F4657 
+  48      5F4E362F 
+  48      44726976 
+  49 0033 6D33326E 		.ascii	"m32n6xx_hal_gpu2d.c\000"
+  49      3678785F 
+  49      68616C5F 
+  49      67707532 
+  49      642E6300 
+  50              		.section	.text.HAL_GPU2D_Init,"ax",%progbits
+  51              		.align	1
+  52              		.global	HAL_GPU2D_Init
+  53              		.syntax unified
+  54              		.thumb
+  55              		.thumb_func
+  57              	HAL_GPU2D_Init:
+  58              	.LVL1:
+  59              	.LFB862:
+ 191:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+  60              		.loc 1 191 1 is_stmt 1 view -0
+  61              		.cfi_startproc
+  62              		@ args = 0, pretend = 0, frame = 0
+  63              		@ frame_needed = 0, uses_anonymous_args = 0
+ 193:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+  64              		.loc 1 193 3 view .LVU4
+ 191:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+  65              		.loc 1 191 1 is_stmt 0 view .LVU5
+  66 0000 10B5     		push	{r4, lr}
+  67              		.cfi_def_cfa_offset 8
+  68              		.cfi_offset 4, -8
+  69              		.cfi_offset 14, -4
+ 193:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+  70              		.loc 1 193 6 view .LVU6
+  71 0002 0446     		mov	r4, r0
+  72 0004 C8B1     		cbz	r0, .L7
+ 199:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  73              		.loc 1 199 3 is_stmt 1 view .LVU7
+  74 0006 0368     		ldr	r3, [r0]
+  75 0008 0D4A     		ldr	r2, .L9
+  76 000a 23F08053 		bic	r3, r3, #268435456
+  77 000e 9342     		cmp	r3, r2
+  78 0010 03D0     		beq	.L4
+ 199:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 8
+
+
+  79              		.loc 1 199 3 is_stmt 0 discriminator 2 view .LVU8
+  80 0012 C721     		movs	r1, #199
+  81 0014 0B48     		ldr	r0, .L9+4
+  82              	.LVL2:
+ 199:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  83              		.loc 1 199 3 discriminator 2 view .LVU9
+  84 0016 FFF7FEFF 		bl	assert_failed
+  85              	.LVL3:
+  86              	.L4:
+ 201:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+  87              		.loc 1 201 3 is_stmt 1 view .LVU10
+ 201:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+  88              		.loc 1 201 13 is_stmt 0 view .LVU11
+  89 001a 6379     		ldrb	r3, [r4, #5]	@ zero_extendqisi2
+ 201:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+  90              		.loc 1 201 6 view .LVU12
+  91 001c 43B9     		cbnz	r3, .L5
+ 215:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+  92              		.loc 1 215 5 is_stmt 1 view .LVU13
+  93 001e 2046     		mov	r0, r4
+  94 0020 FFF7FEFF 		bl	HAL_GPU2D_MspInit
+  95              	.LVL4:
+ 219:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+  96              		.loc 1 219 5 view .LVU14
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  97              		.loc 1 223 3 view .LVU15
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+  98              		.loc 1 223 3 view .LVU16
+  99              	.L6:
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 100              		.loc 1 223 3 discriminator 2 view .LVU17
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 101              		.loc 1 223 3 discriminator 2 view .LVU18
+ 231:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 102              		.loc 1 231 3 view .LVU19
+ 231:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 103              		.loc 1 231 21 is_stmt 0 view .LVU20
+ 104 0024 0020     		movs	r0, #0
+ 234:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 105              		.loc 1 234 17 view .LVU21
+ 106 0026 0123     		movs	r3, #1
+ 231:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 107              		.loc 1 231 21 view .LVU22
+ 108 0028 A060     		str	r0, [r4, #8]
+ 234:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 109              		.loc 1 234 3 is_stmt 1 view .LVU23
+ 237:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 110              		.loc 1 237 3 is_stmt 0 view .LVU24
+ 111 002a 2071     		strb	r0, [r4, #4]
+ 234:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 112              		.loc 1 234 17 view .LVU25
+ 113 002c 6371     		strb	r3, [r4, #5]
+ 237:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 114              		.loc 1 237 3 is_stmt 1 view .LVU26
+ 237:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 115              		.loc 1 237 3 view .LVU27
+ 237:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 9
+
+
+ 116              		.loc 1 237 3 view .LVU28
+ 239:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 117              		.loc 1 239 3 view .LVU29
+ 118              	.L3:
+ 240:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 119              		.loc 1 240 1 is_stmt 0 view .LVU30
+ 120 002e 10BD     		pop	{r4, pc}
+ 121              	.LVL5:
+ 122              	.L5:
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 123              		.loc 1 223 3 is_stmt 1 view .LVU31
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 124              		.loc 1 223 3 view .LVU32
+ 125 0030 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 126 0032 012B     		cmp	r3, #1
+ 127 0034 F6D1     		bne	.L6
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 128              		.loc 1 223 3 is_stmt 0 discriminator 1 view .LVU33
+ 129 0036 0220     		movs	r0, #2
+ 130 0038 F9E7     		b	.L3
+ 131              	.LVL6:
+ 132              	.L7:
+ 195:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 133              		.loc 1 195 12 view .LVU34
+ 134 003a 0120     		movs	r0, #1
+ 135              	.LVL7:
+ 195:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 136              		.loc 1 195 12 view .LVU35
+ 137 003c F7E7     		b	.L3
+ 138              	.L10:
+ 139 003e 00BF     		.align	2
+ 140              	.L9:
+ 141 0040 00400348 		.word	1208172544
+ 142 0044 00000000 		.word	.LC0
+ 143              		.cfi_endproc
+ 144              	.LFE862:
+ 146              		.section	.text.HAL_GPU2D_MspDeInit,"ax",%progbits
+ 147              		.align	1
+ 148              		.weak	HAL_GPU2D_MspDeInit
+ 149              		.syntax unified
+ 150              		.thumb
+ 151              		.thumb_func
+ 153              	HAL_GPU2D_MspDeInit:
+ 154              	.LFB875:
+ 155              		.cfi_startproc
+ 311:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 312:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 313:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  DeInitializes the GPU2D MSP.
+ 314:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d pointer to a GPU2D_HandleTypeDef structure that contains
+ 315:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                 the configuration information for the GPU2D.
+ 316:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval None
+ 317:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 318:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** __weak void HAL_GPU2D_MspDeInit(GPU2D_HandleTypeDef *hgpu2d)
+ 156              		.loc 1 318 13 is_stmt 1 view -0
+ 157              		@ args = 0, pretend = 0, frame = 0
+ 158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 159              		@ link register save eliminated.
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 10
+
+
+ 160 0000 7047     		bx	lr
+ 161              		.cfi_endproc
+ 162              	.LFE875:
+ 164              		.section	.text.HAL_GPU2D_DeInit,"ax",%progbits
+ 165              		.align	1
+ 166              		.global	HAL_GPU2D_DeInit
+ 167              		.syntax unified
+ 168              		.thumb
+ 169              		.thumb_func
+ 171              	HAL_GPU2D_DeInit:
+ 172              	.LVL8:
+ 173              	.LFB863:
+ 250:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 174              		.loc 1 250 1 view -0
+ 175              		.cfi_startproc
+ 176              		@ args = 0, pretend = 0, frame = 0
+ 177              		@ frame_needed = 0, uses_anonymous_args = 0
+ 252:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 178              		.loc 1 252 3 view .LVU38
+ 250:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 179              		.loc 1 250 1 is_stmt 0 view .LVU39
+ 180 0000 10B5     		push	{r4, lr}
+ 181              		.cfi_def_cfa_offset 8
+ 182              		.cfi_offset 4, -8
+ 183              		.cfi_offset 14, -4
+ 252:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 184              		.loc 1 252 6 view .LVU40
+ 185 0002 0446     		mov	r4, r0
+ 186 0004 D0B1     		cbz	r0, .L16
+ 258:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 187              		.loc 1 258 3 is_stmt 1 view .LVU41
+ 188 0006 0368     		ldr	r3, [r0]
+ 189 0008 0E4A     		ldr	r2, .L18
+ 190 000a 23F08053 		bic	r3, r3, #268435456
+ 191 000e 9342     		cmp	r3, r2
+ 192 0010 04D0     		beq	.L14
+ 258:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 193              		.loc 1 258 3 is_stmt 0 discriminator 2 view .LVU42
+ 194 0012 4FF48171 		mov	r1, #258
+ 195 0016 0C48     		ldr	r0, .L18+4
+ 196              	.LVL9:
+ 258:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 197              		.loc 1 258 3 discriminator 2 view .LVU43
+ 198 0018 FFF7FEFF 		bl	assert_failed
+ 199              	.LVL10:
+ 200              	.L14:
+ 261:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 201              		.loc 1 261 3 is_stmt 1 view .LVU44
+ 261:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 202              		.loc 1 261 3 view .LVU45
+ 203 001c 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 204 001e 012B     		cmp	r3, #1
+ 205 0020 0ED0     		beq	.L17
+ 261:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 206              		.loc 1 261 3 discriminator 2 view .LVU46
+ 207 0022 0123     		movs	r3, #1
+ 208 0024 2371     		strb	r3, [r4, #4]
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 11
+
+
+ 261:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 209              		.loc 1 261 3 discriminator 2 view .LVU47
+ 263:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 210              		.loc 1 263 3 view .LVU48
+ 263:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 211              		.loc 1 263 13 is_stmt 0 view .LVU49
+ 212 0026 6379     		ldrb	r3, [r4, #5]	@ zero_extendqisi2
+ 263:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 213              		.loc 1 263 6 view .LVU50
+ 214 0028 012B     		cmp	r3, #1
+ 215 002a 02D1     		bne	.L15
+ 275:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 216              		.loc 1 275 5 is_stmt 1 view .LVU51
+ 217 002c 2046     		mov	r0, r4
+ 218 002e FFF7FEFF 		bl	HAL_GPU2D_MspDeInit
+ 219              	.LVL11:
+ 220              	.L15:
+ 285:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 221              		.loc 1 285 3 view .LVU52
+ 285:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 222              		.loc 1 285 21 is_stmt 0 view .LVU53
+ 223 0032 0020     		movs	r0, #0
+ 224 0034 A060     		str	r0, [r4, #8]
+ 288:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 225              		.loc 1 288 3 is_stmt 1 view .LVU54
+ 291:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 226              		.loc 1 291 3 is_stmt 0 view .LVU55
+ 227 0036 2071     		strb	r0, [r4, #4]
+ 288:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 228              		.loc 1 288 17 view .LVU56
+ 229 0038 6071     		strb	r0, [r4, #5]
+ 291:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 230              		.loc 1 291 3 is_stmt 1 view .LVU57
+ 291:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 231              		.loc 1 291 3 view .LVU58
+ 291:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 232              		.loc 1 291 3 view .LVU59
+ 293:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 233              		.loc 1 293 3 view .LVU60
+ 234              	.L13:
+ 294:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 235              		.loc 1 294 1 is_stmt 0 view .LVU61
+ 236 003a 10BD     		pop	{r4, pc}
+ 237              	.LVL12:
+ 238              	.L16:
+ 254:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 239              		.loc 1 254 12 view .LVU62
+ 240 003c 0120     		movs	r0, #1
+ 241              	.LVL13:
+ 254:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 242              		.loc 1 254 12 view .LVU63
+ 243 003e FCE7     		b	.L13
+ 244              	.L17:
+ 261:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 245              		.loc 1 261 3 discriminator 1 view .LVU64
+ 246 0040 0220     		movs	r0, #2
+ 247 0042 FAE7     		b	.L13
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 12
+
+
+ 248              	.L19:
+ 249              		.align	2
+ 250              	.L18:
+ 251 0044 00400348 		.word	1208172544
+ 252 0048 00000000 		.word	.LC0
+ 253              		.cfi_endproc
+ 254              	.LFE863:
+ 256              		.section	.text.HAL_GPU2D_ReadRegister,"ax",%progbits
+ 257              		.align	1
+ 258              		.global	HAL_GPU2D_ReadRegister
+ 259              		.syntax unified
+ 260              		.thumb
+ 261              		.thumb_func
+ 263              	HAL_GPU2D_ReadRegister:
+ 264              	.LVL14:
+ 265              	.LFB866:
+ 319:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 320:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Prevent unused argument(s) compilation warning */
+ 321:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   UNUSED(hgpu2d);
+ 322:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 323:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* NOTE : This function should not be modified; when the callback is needed,
+ 324:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             the HAL_GPU2D_MspDeInit can be implemented in the user file.
+ 325:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****    */
+ 326:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 327:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 328:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #if (USE_HAL_GPU2D_REGISTER_CALLBACKS == 1)
+ 329:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 330:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Register a User GPU2D callback
+ 331:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *         To be used instead of the weak (surcharged) predefined callback
+ 332:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param hgpu2d GPU2D handle
+ 333:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param CallbackID ID of the callback to be registered
+ 334:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *        This parameter can be one of the following values:
+ 335:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *          @arg @ref HAL_GPU2D_MSPINIT_CB_ID GPU2D MspInit callback ID
+ 336:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *          @arg @ref HAL_GPU2D_MSPDEINIT_CB_ID GPU2D MspDeInit callback ID
+ 337:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param pCallback pointer to the callback function
+ 338:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @note Weak predefined callback is defined for HAL_GPU2D_MSPINIT_CB_ID and HAL_GPU2D_MSPDEINIT_C
+ 339:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval HAL status
+ 340:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 341:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** HAL_StatusTypeDef HAL_GPU2D_RegisterCallback(GPU2D_HandleTypeDef *hgpu2d, HAL_GPU2D_CallbackIDTypeD
+ 342:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****                                              pGPU2D_CallbackTypeDef pCallback)
+ 343:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 344:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 345:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 346:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 347:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (hgpu2d == NULL)
+ 348:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 349:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     return HAL_ERROR;
+ 350:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 351:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 352:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Process locked */
+ 353:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_LOCK(hgpu2d);
+ 354:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 355:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the pCallback parameter is valid or not */
+ 356:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (pCallback == NULL)
+ 357:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 358:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Update the error code */
+ 359:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     hgpu2d->ErrorCode |= HAL_GPU2D_ERROR_INVALID_CALLBACK;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 13
+
+
+ 360:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     status = HAL_ERROR;
+ 361:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 362:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   else
+ 363:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 364:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     if ((hgpu2d->State == HAL_GPU2D_STATE_READY)
+ 365:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         || (hgpu2d->State == HAL_GPU2D_STATE_RESET))
+ 366:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     {
+ 367:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       switch (CallbackID)
+ 368:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       {
+ 369:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         case HAL_GPU2D_MSPINIT_CB_ID:
+ 370:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           hgpu2d->MspInitCallback = pCallback;
+ 371:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           break;
+ 372:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 373:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         case HAL_GPU2D_MSPDEINIT_CB_ID:
+ 374:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           hgpu2d->MspDeInitCallback = pCallback;
+ 375:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           break;
+ 376:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 377:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         default :
+ 378:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           /* Update the error code */
+ 379:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           hgpu2d->ErrorCode |= HAL_GPU2D_ERROR_INVALID_CALLBACK;
+ 380:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           status = HAL_ERROR;
+ 381:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****           break;
+ 382:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       }
+ 383:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     }
+ 384:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     else
+ 385:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     {
+ 386:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       status = HAL_ERROR;
+ 387:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     }
+ 388:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 389:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 390:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Release lock */
+ 391:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_UNLOCK(hgpu2d);
+ 392:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 393:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return status;
+ 394:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 395:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 396:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 397:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Unregister a GPU2D callback
+ 398:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *         GPU2D Callback is redirected to the weak (surcharged) predefined callback
+ 399:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param hgpu2d GPU2D handle
+ 400:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param CallbackID ID of the callback to be unregistered
+ 401:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *        This parameter can be one of the following values:
+ 402:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *          @arg @ref HAL_GPU2D_MSPINIT_CB_ID GPU2D MspInit callback ID
+ 403:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *          @arg @ref HAL_GPU2D_MSPDEINIT_CB_ID GPU2D MspDeInit callback ID
+ 404:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @note Callback pointers will be set to legacy weak predefined callbacks for HAL_GPU2D_MSPINIT_C
+ 405:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *       HAL_GPU2D_MSPDEINIT_CB_ID
+ 406:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval status
+ 407:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 408:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** HAL_StatusTypeDef HAL_GPU2D_UnRegisterCallback(GPU2D_HandleTypeDef *hgpu2d, HAL_GPU2D_CallbackIDTyp
+ 409:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 410:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 411:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 412:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 413:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (hgpu2d == NULL)
+ 414:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 415:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     return HAL_ERROR;
+ 416:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 14
+
+
+ 417:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 418:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Process locked */
+ 419:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_LOCK(hgpu2d);
+ 420:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 421:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if ((HAL_GPU2D_STATE_READY == hgpu2d->State)
+ 422:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       || (HAL_GPU2D_STATE_RESET == hgpu2d->State))
+ 423:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 424:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     switch (CallbackID)
+ 425:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     {
+ 426:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       case HAL_GPU2D_MSPINIT_CB_ID:
+ 427:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         hgpu2d->MspInitCallback = HAL_GPU2D_MspInit; /* Legacy weak Msp Init */
+ 428:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         break;
+ 429:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 430:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       case HAL_GPU2D_MSPDEINIT_CB_ID:
+ 431:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         hgpu2d->MspDeInitCallback = HAL_GPU2D_MspDeInit; /* Legacy weak Msp DeInit */
+ 432:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         break;
+ 433:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 434:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       default :
+ 435:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         /* Update the error code */
+ 436:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         hgpu2d->ErrorCode |= HAL_GPU2D_ERROR_INVALID_CALLBACK;
+ 437:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         status = HAL_ERROR;
+ 438:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         break;
+ 439:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     }
+ 440:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 441:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   else
+ 442:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 443:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     status = HAL_ERROR;
+ 444:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 445:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 446:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Release lock */
+ 447:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_UNLOCK(hgpu2d);
+ 448:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 449:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return status;
+ 450:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 451:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 452:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 453:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Register GPU2D Command List Complete Callback
+ 454:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *         To be used instead of the weak (surcharged) predefined callback
+ 455:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param hgpu2d GPU2D handle
+ 456:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param pCallback pointer to the Command List Complete Callback function
+ 457:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @note Weak predefined callback is defined for Command List Complete
+ 458:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval status
+ 459:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 460:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** HAL_StatusTypeDef HAL_GPU2D_RegisterCommandListCpltCallback(GPU2D_HandleTypeDef *hgpu2d,
+ 461:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****                                                             pGPU2D_CommandListCpltCallbackTypeDef p
+ 462:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 463:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 464:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 465:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 466:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (hgpu2d == NULL)
+ 467:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 468:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     return HAL_ERROR;
+ 469:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 470:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 471:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Process locked */
+ 472:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_LOCK(hgpu2d);
+ 473:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 15
+
+
+ 474:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the CallbackID is valid or not */
+ 475:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (pCallback == NULL)
+ 476:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 477:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Update the error code */
+ 478:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     hgpu2d->ErrorCode |= HAL_GPU2D_ERROR_INVALID_CALLBACK;
+ 479:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     status = HAL_ERROR;
+ 480:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 481:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   else
+ 482:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 483:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     if ((HAL_GPU2D_STATE_READY == hgpu2d->State)
+ 484:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****         || (HAL_GPU2D_STATE_RESET == hgpu2d->State))
+ 485:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     {
+ 486:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       hgpu2d->CommandListCpltCallback = pCallback;
+ 487:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     }
+ 488:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     else
+ 489:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     {
+ 490:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       status = HAL_ERROR;
+ 491:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     }
+ 492:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 493:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 494:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Release lock */
+ 495:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_UNLOCK(hgpu2d);
+ 496:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 497:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return status;
+ 498:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 499:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 500:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 501:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Unregister a GPU2D Command List Complete Callback
+ 502:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *         GPU2D Command List Complete Callback is redirected to the weak (surcharged) predefined 
+ 503:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param hgpu2d GPU2D handle
+ 504:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @note Callback pointer will be invalidate (NULL value)
+ 505:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval status
+ 506:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 507:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** HAL_StatusTypeDef HAL_GPU2D_UnRegisterCommandListCpltCallback(GPU2D_HandleTypeDef *hgpu2d)
+ 508:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 509:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 510:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 511:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 512:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if (hgpu2d == NULL)
+ 513:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 514:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     return HAL_ERROR;
+ 515:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 516:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 517:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Process locked */
+ 518:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_LOCK(hgpu2d);
+ 519:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 520:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if ((hgpu2d->State == HAL_GPU2D_STATE_READY)
+ 521:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       || (hgpu2d->State == HAL_GPU2D_STATE_RESET))
+ 522:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 523:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     hgpu2d->CommandListCpltCallback = NULL; /* Invalidate the Callback pointer */
+ 524:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 525:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   else
+ 526:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 527:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     status =  HAL_ERROR;
+ 528:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 529:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 530:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Release Lock */
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 16
+
+
+ 531:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   __HAL_UNLOCK(hgpu2d);
+ 532:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 533:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return status;
+ 534:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 535:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 536:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 537:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 538:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @}
+ 539:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 540:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 541:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 542:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /** @defgroup GPU2D_Exported_Functions_Group2 IO operation functions
+ 543:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *  @brief   IO operation functions
+ 544:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *
+ 545:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** @verbatim
+ 546:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****  ===============================================================================
+ 547:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****                       #####  IO operation functions  #####
+ 548:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****  ===============================================================================
+ 549:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     [..]  This section provides functions allowing to:
+ 550:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) Read GPU2D Register value.
+ 551:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) Write a value to GPU2D Register.
+ 552:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) handle GPU2D interrupt request.
+ 553:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) Command List Complete Transfer Complete callback.
+ 554:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 555:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 556:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** @endverbatim
+ 557:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @{
+ 558:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 559:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 560:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 561:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Read GPU2D Register. Helper function for the higher-level library.
+ 562:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d    Pointer to a GPU2D_HandleTypeDef structure that contains
+ 563:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                   the configuration information for the GPU2D.
+ 564:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  offset    The register offset from GPU2D base address to read.
+ 565:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval Register value
+ 566:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 567:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** uint32_t HAL_GPU2D_ReadRegister(const GPU2D_HandleTypeDef *hgpu2d, uint32_t offset)
+ 568:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 266              		.loc 1 568 1 is_stmt 1 view -0
+ 267              		.cfi_startproc
+ 268              		@ args = 0, pretend = 0, frame = 0
+ 269              		@ frame_needed = 0, uses_anonymous_args = 0
+ 569:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   uint32_t value;
+ 270              		.loc 1 569 3 view .LVU66
+ 570:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 571:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 572:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   assert_param(hgpu2d != NULL);
+ 271              		.loc 1 572 3 view .LVU67
+ 568:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   uint32_t value;
+ 272              		.loc 1 568 1 is_stmt 0 view .LVU68
+ 273 0000 38B5     		push	{r3, r4, r5, lr}
+ 274              		.cfi_def_cfa_offset 16
+ 275              		.cfi_offset 3, -16
+ 276              		.cfi_offset 4, -12
+ 277              		.cfi_offset 5, -8
+ 278              		.cfi_offset 14, -4
+ 568:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   uint32_t value;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 17
+
+
+ 279              		.loc 1 568 1 view .LVU69
+ 280 0002 0D46     		mov	r5, r1
+ 281              		.loc 1 572 3 view .LVU70
+ 282 0004 0446     		mov	r4, r0
+ 283 0006 20B9     		cbnz	r0, .L21
+ 284              		.loc 1 572 3 discriminator 1 view .LVU71
+ 285 0008 4FF40F71 		mov	r1, #572
+ 286              	.LVL15:
+ 287              		.loc 1 572 3 discriminator 1 view .LVU72
+ 288 000c 0C48     		ldr	r0, .L24
+ 289              	.LVL16:
+ 290              		.loc 1 572 3 discriminator 1 view .LVU73
+ 291 000e FFF7FEFF 		bl	assert_failed
+ 292              	.LVL17:
+ 293              	.L21:
+ 573:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 574:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the parameters */
+ 575:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   assert_param(IS_GPU2D_ALL_INSTANCE(hgpu2d->Instance));
+ 294              		.loc 1 575 3 is_stmt 1 view .LVU74
+ 295 0012 2368     		ldr	r3, [r4]
+ 296 0014 0B4A     		ldr	r2, .L24+4
+ 297 0016 23F08053 		bic	r3, r3, #268435456
+ 298 001a 9342     		cmp	r3, r2
+ 299 001c 04D0     		beq	.L22
+ 300              		.loc 1 575 3 is_stmt 0 discriminator 2 view .LVU75
+ 301 001e 40F23F21 		movw	r1, #575
+ 302 0022 0748     		ldr	r0, .L24
+ 303 0024 FFF7FEFF 		bl	assert_failed
+ 304              	.LVL18:
+ 305              	.L22:
+ 576:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   assert_param(IS_GPU2D_OFFSET(offset));
+ 306              		.loc 1 576 3 is_stmt 1 view .LVU76
+ 307 0028 B5F5805F 		cmp	r5, #4096
+ 308 002c 04D3     		bcc	.L23
+ 309              		.loc 1 576 3 is_stmt 0 discriminator 1 view .LVU77
+ 310 002e 4FF41071 		mov	r1, #576
+ 311 0032 0348     		ldr	r0, .L24
+ 312 0034 FFF7FEFF 		bl	assert_failed
+ 313              	.LVL19:
+ 314              	.L23:
+ 577:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 578:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* No locking is required since reading a register is an atomic operation
+ 579:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****    * and doesn't incur a state change in hal_gpu2d. */
+ 580:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   value = GPU2D_ReadReg(hgpu2d->Instance, offset);
+ 315              		.loc 1 580 3 is_stmt 1 view .LVU78
+ 316              		.loc 1 580 11 is_stmt 0 view .LVU79
+ 317 0038 2368     		ldr	r3, [r4]
+ 318              		.loc 1 580 9 view .LVU80
+ 319 003a E858     		ldr	r0, [r5, r3]
+ 320              	.LVL20:
+ 581:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 582:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return value;
+ 321              		.loc 1 582 3 is_stmt 1 view .LVU81
+ 583:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 322              		.loc 1 583 1 is_stmt 0 view .LVU82
+ 323 003c 38BD     		pop	{r3, r4, r5, pc}
+ 324              	.LVL21:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 18
+
+
+ 325              	.L25:
+ 326              		.loc 1 583 1 view .LVU83
+ 327 003e 00BF     		.align	2
+ 328              	.L24:
+ 329 0040 00000000 		.word	.LC0
+ 330 0044 00400348 		.word	1208172544
+ 331              		.cfi_endproc
+ 332              	.LFE866:
+ 334              		.section	.text.HAL_GPU2D_WriteRegister,"ax",%progbits
+ 335              		.align	1
+ 336              		.global	HAL_GPU2D_WriteRegister
+ 337              		.syntax unified
+ 338              		.thumb
+ 339              		.thumb_func
+ 341              	HAL_GPU2D_WriteRegister:
+ 342              	.LVL22:
+ 343              	.LFB867:
+ 584:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 585:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 586:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Write a value to GPU2D Register. Helper function for the higher-level library.
+ 587:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d    Pointer to a GPU2D_HandleTypeDef structure that contains
+ 588:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                   the configuration information for the GPU2D.
+ 589:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  offset    The register offset from GPU2D base address to write.
+ 590:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  value     The value to be written to provided register.
+ 591:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval HAL status
+ 592:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 593:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** HAL_StatusTypeDef HAL_GPU2D_WriteRegister(GPU2D_HandleTypeDef *hgpu2d, uint32_t offset, uint32_t va
+ 594:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 344              		.loc 1 594 1 is_stmt 1 view -0
+ 345              		.cfi_startproc
+ 346              		@ args = 0, pretend = 0, frame = 0
+ 347              		@ frame_needed = 0, uses_anonymous_args = 0
+ 595:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 596:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   assert_param(hgpu2d != NULL);
+ 348              		.loc 1 596 3 view .LVU85
+ 594:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 349              		.loc 1 594 1 is_stmt 0 view .LVU86
+ 350 0000 70B5     		push	{r4, r5, r6, lr}
+ 351              		.cfi_def_cfa_offset 16
+ 352              		.cfi_offset 4, -16
+ 353              		.cfi_offset 5, -12
+ 354              		.cfi_offset 6, -8
+ 355              		.cfi_offset 14, -4
+ 594:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the GPU2D handle validity */
+ 356              		.loc 1 594 1 view .LVU87
+ 357 0002 0D46     		mov	r5, r1
+ 358 0004 1646     		mov	r6, r2
+ 359              		.loc 1 596 3 view .LVU88
+ 360 0006 0446     		mov	r4, r0
+ 361 0008 20B9     		cbnz	r0, .L27
+ 362              		.loc 1 596 3 discriminator 1 view .LVU89
+ 363 000a 4FF41571 		mov	r1, #596
+ 364              	.LVL23:
+ 365              		.loc 1 596 3 discriminator 1 view .LVU90
+ 366 000e 0D48     		ldr	r0, .L30
+ 367              	.LVL24:
+ 368              		.loc 1 596 3 discriminator 1 view .LVU91
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 19
+
+
+ 369 0010 FFF7FEFF 		bl	assert_failed
+ 370              	.LVL25:
+ 371              	.L27:
+ 597:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 598:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Check the parameters */
+ 599:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   assert_param(IS_GPU2D_ALL_INSTANCE(hgpu2d->Instance));
+ 372              		.loc 1 599 3 is_stmt 1 view .LVU92
+ 373 0014 2368     		ldr	r3, [r4]
+ 374 0016 0C4A     		ldr	r2, .L30+4
+ 375 0018 23F08053 		bic	r3, r3, #268435456
+ 376 001c 9342     		cmp	r3, r2
+ 377 001e 04D0     		beq	.L28
+ 378              		.loc 1 599 3 is_stmt 0 discriminator 2 view .LVU93
+ 379 0020 40F25721 		movw	r1, #599
+ 380 0024 0748     		ldr	r0, .L30
+ 381 0026 FFF7FEFF 		bl	assert_failed
+ 382              	.LVL26:
+ 383              	.L28:
+ 600:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   assert_param(IS_GPU2D_OFFSET(offset));
+ 384              		.loc 1 600 3 is_stmt 1 view .LVU94
+ 385 002a B5F5805F 		cmp	r5, #4096
+ 386 002e 04D3     		bcc	.L29
+ 387              		.loc 1 600 3 is_stmt 0 discriminator 1 view .LVU95
+ 388 0030 4FF41671 		mov	r1, #600
+ 389 0034 0348     		ldr	r0, .L30
+ 390 0036 FFF7FEFF 		bl	assert_failed
+ 391              	.LVL27:
+ 392              	.L29:
+ 601:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 602:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* No locking is required since writing a register is an atomic operation
+ 603:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****    * and doesn't incur a state change in hal_gpu2d. */
+ 604:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   GPU2D_WriteReg(hgpu2d->Instance, offset, value);
+ 393              		.loc 1 604 3 is_stmt 1 view .LVU96
+ 394 003a 2368     		ldr	r3, [r4]
+ 605:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 606:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return HAL_OK;
+ 607:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 395              		.loc 1 607 1 is_stmt 0 view .LVU97
+ 396 003c 0020     		movs	r0, #0
+ 604:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 397              		.loc 1 604 3 view .LVU98
+ 398 003e EE50     		str	r6, [r5, r3]
+ 606:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 399              		.loc 1 606 3 is_stmt 1 view .LVU99
+ 400              		.loc 1 607 1 is_stmt 0 view .LVU100
+ 401 0040 70BD     		pop	{r4, r5, r6, pc}
+ 402              	.LVL28:
+ 403              	.L31:
+ 404              		.loc 1 607 1 view .LVU101
+ 405 0042 00BF     		.align	2
+ 406              	.L30:
+ 407 0044 00000000 		.word	.LC0
+ 408 0048 00400348 		.word	1208172544
+ 409              		.cfi_endproc
+ 410              	.LFE867:
+ 412              		.section	.text.HAL_GPU2D_CommandListCpltCallback,"ax",%progbits
+ 413              		.align	1
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 20
+
+
+ 414              		.weak	HAL_GPU2D_CommandListCpltCallback
+ 415              		.syntax unified
+ 416              		.thumb
+ 417              		.thumb_func
+ 419              	HAL_GPU2D_CommandListCpltCallback:
+ 420              	.LVL29:
+ 421              	.LFB870:
+ 608:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 609:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 610:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Handle GPU2D interrupt request.
+ 611:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d Pointer to a GPU2D_HandleTypeDef structure that contains
+ 612:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                the configuration information for the GPU2D.
+ 613:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval None
+ 614:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 615:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** void HAL_GPU2D_IRQHandler(GPU2D_HandleTypeDef *hgpu2d)
+ 616:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 617:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   uint32_t isr_flags = GPU2D_ReadReg(hgpu2d->Instance, GPU2D_ITCTRL);
+ 618:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 619:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Command List Complete Interrupt management */
+ 620:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   if ((isr_flags & GPU2D_FLAG_CLC) != 0U)
+ 621:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 622:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     uint32_t last_cl_id;
+ 623:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 624:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Clear the completion flag */
+ 625:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     __HAL_GPU2D_CLEAR_FLAG(hgpu2d, GPU2D_FLAG_CLC);
+ 626:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 627:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     last_cl_id = GPU2D_ReadReg(hgpu2d->Instance, GPU2D_CLID);
+ 628:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 629:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* Command List Complete Callback */
+ 630:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #if (USE_HAL_GPU2D_REGISTER_CALLBACKS == 1)
+ 631:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     if (hgpu2d->CommandListCpltCallback != NULL)
+ 632:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     {
+ 633:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       hgpu2d->CommandListCpltCallback(hgpu2d, last_cl_id);
+ 634:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     }
+ 635:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #else /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 0 */
+ 636:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     HAL_GPU2D_CommandListCpltCallback(hgpu2d, last_cl_id);
+ 637:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 638:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 639:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 640:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 641:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 642:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Handle GPU2D Error interrupt request.
+ 643:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d Pointer to a GPU2D_HandleTypeDef structure that contains
+ 644:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                the configuration information for the GPU2D.
+ 645:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval None
+ 646:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 647:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** void HAL_GPU2D_ER_IRQHandler(GPU2D_HandleTypeDef *hgpu2d)
+ 648:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 649:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   HAL_GPU2D_ErrorCallback(hgpu2d);
+ 650:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 651:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 652:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 653:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Command List Complete callback.
+ 654:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d pointer to a GPU2D_HandleTypeDef structure that contains
+ 655:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                the configuration information for the GPU2D.
+ 656:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  CmdListID Command list ID that got completed.
+ 657:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval None
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 21
+
+
+ 658:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 659:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** __weak void HAL_GPU2D_CommandListCpltCallback(GPU2D_HandleTypeDef *hgpu2d, uint32_t CmdListID)
+ 660:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 422              		.loc 1 660 1 is_stmt 1 view -0
+ 423              		.cfi_startproc
+ 424              		@ args = 0, pretend = 0, frame = 0
+ 425              		@ frame_needed = 0, uses_anonymous_args = 0
+ 426              		@ link register save eliminated.
+ 661:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Prevent unused argument(s) compilation warning */
+ 662:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   UNUSED(hgpu2d);
+ 427              		.loc 1 662 3 view .LVU103
+ 663:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   UNUSED(CmdListID);
+ 428              		.loc 1 663 3 view .LVU104
+ 664:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 665:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* NOTE : This function should not be modified; when the callback is needed,
+ 666:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             the HAL_GPU2D_CommandListCpltCallback can be implemented in the user file.
+ 667:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****    */
+ 668:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 429              		.loc 1 668 1 is_stmt 0 view .LVU105
+ 430 0000 7047     		bx	lr
+ 431              		.cfi_endproc
+ 432              	.LFE870:
+ 434              		.section	.text.HAL_GPU2D_IRQHandler,"ax",%progbits
+ 435              		.align	1
+ 436              		.global	HAL_GPU2D_IRQHandler
+ 437              		.syntax unified
+ 438              		.thumb
+ 439              		.thumb_func
+ 441              	HAL_GPU2D_IRQHandler:
+ 442              	.LVL30:
+ 443              	.LFB868:
+ 616:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   uint32_t isr_flags = GPU2D_ReadReg(hgpu2d->Instance, GPU2D_ITCTRL);
+ 444              		.loc 1 616 1 is_stmt 1 view -0
+ 445              		.cfi_startproc
+ 446              		@ args = 0, pretend = 0, frame = 0
+ 447              		@ frame_needed = 0, uses_anonymous_args = 0
+ 617:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 448              		.loc 1 617 3 view .LVU107
+ 617:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 449              		.loc 1 617 24 is_stmt 0 view .LVU108
+ 450 0000 0268     		ldr	r2, [r0]
+ 616:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   uint32_t isr_flags = GPU2D_ReadReg(hgpu2d->Instance, GPU2D_ITCTRL);
+ 451              		.loc 1 616 1 view .LVU109
+ 452 0002 08B5     		push	{r3, lr}
+ 453              		.cfi_def_cfa_offset 8
+ 454              		.cfi_offset 3, -8
+ 455              		.cfi_offset 14, -4
+ 617:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 456              		.loc 1 617 12 view .LVU110
+ 457 0004 D2F8F810 		ldr	r1, [r2, #248]
+ 458              	.LVL31:
+ 620:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 459              		.loc 1 620 3 is_stmt 1 view .LVU111
+ 620:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 460              		.loc 1 620 6 is_stmt 0 view .LVU112
+ 461 0008 C907     		lsls	r1, r1, #31
+ 462              	.LVL32:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 22
+
+
+ 620:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 463              		.loc 1 620 6 view .LVU113
+ 464 000a 0AD5     		bpl	.L33
+ 465              	.LBB2:
+ 622:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 466              		.loc 1 622 5 is_stmt 1 view .LVU114
+ 625:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 467              		.loc 1 625 5 view .LVU115
+ 468              	.LBB3:
+ 625:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 469              		.loc 1 625 5 view .LVU116
+ 470              	.LVL33:
+ 625:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 471              		.loc 1 625 5 view .LVU117
+ 472 000c D2F8F810 		ldr	r1, [r2, #248]
+ 473 0010 21F00101 		bic	r1, r1, #1
+ 474 0014 C2F8F810 		str	r1, [r2, #248]
+ 475              	.LBE3:
+ 625:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 476              		.loc 1 625 5 view .LVU118
+ 627:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 477              		.loc 1 627 5 view .LVU119
+ 627:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 478              		.loc 1 627 18 is_stmt 0 view .LVU120
+ 479 0018 0368     		ldr	r3, [r0]
+ 627:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 480              		.loc 1 627 16 view .LVU121
+ 481 001a D3F84811 		ldr	r1, [r3, #328]
+ 482              	.LVL34:
+ 636:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 483              		.loc 1 636 5 is_stmt 1 view .LVU122
+ 484 001e FFF7FEFF 		bl	HAL_GPU2D_CommandListCpltCallback
+ 485              	.LVL35:
+ 486              	.L33:
+ 636:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 487              		.loc 1 636 5 is_stmt 0 view .LVU123
+ 488              	.LBE2:
+ 639:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 489              		.loc 1 639 1 view .LVU124
+ 490 0022 08BD     		pop	{r3, pc}
+ 491              		.cfi_endproc
+ 492              	.LFE868:
+ 494              		.section	.text.HAL_GPU2D_ErrorCallback,"ax",%progbits
+ 495              		.align	1
+ 496              		.weak	HAL_GPU2D_ErrorCallback
+ 497              		.syntax unified
+ 498              		.thumb
+ 499              		.thumb_func
+ 501              	HAL_GPU2D_ErrorCallback:
+ 502              	.LFB871:
+ 669:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 670:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 671:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Error handler callback.
+ 672:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d pointer to a GPU2D_HandleTypeDef structure that contains
+ 673:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                the configuration information for the GPU2D.
+ 674:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval None
+ 675:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 23
+
+
+ 676:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** __weak void HAL_GPU2D_ErrorCallback(GPU2D_HandleTypeDef *hgpu2d)
+ 677:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 503              		.loc 1 677 1 is_stmt 1 view -0
+ 504              		.cfi_startproc
+ 505              		@ args = 0, pretend = 0, frame = 0
+ 506              		@ frame_needed = 0, uses_anonymous_args = 0
+ 507              		@ link register save eliminated.
+ 508              	.LVL36:
+ 509              	.L39:
+ 678:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* Prevent unused argument(s) compilation warning */
+ 679:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   UNUSED(hgpu2d);
+ 510              		.loc 1 679 3 view .LVU126
+ 680:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 681:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   /* NOTE : This function should not be modified; when the callback is needed,
+ 682:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             the HAL_GPU2D_ErrorCallback can be implemented in the user file.
+ 683:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             The default implementation stops the execution as an error is considered
+ 684:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****             fatal and non recoverable.
+ 685:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****    */
+ 686:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 687:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   for (;;)
+ 511              		.loc 1 687 3 view .LVU127
+ 688:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 689:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     /* infinite loop */
+ 690:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   }
+ 512              		.loc 1 690 3 view .LVU128
+ 687:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   {
+ 513              		.loc 1 687 3 view .LVU129
+ 514 0000 FEE7     		b	.L39
+ 515              		.cfi_endproc
+ 516              	.LFE871:
+ 518              		.section	.text.HAL_GPU2D_ER_IRQHandler,"ax",%progbits
+ 519              		.align	1
+ 520              		.global	HAL_GPU2D_ER_IRQHandler
+ 521              		.syntax unified
+ 522              		.thumb
+ 523              		.thumb_func
+ 525              	HAL_GPU2D_ER_IRQHandler:
+ 526              	.LVL37:
+ 527              	.LFB869:
+ 648:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   HAL_GPU2D_ErrorCallback(hgpu2d);
+ 528              		.loc 1 648 1 view -0
+ 529              		.cfi_startproc
+ 530              		@ args = 0, pretend = 0, frame = 0
+ 531              		@ frame_needed = 0, uses_anonymous_args = 0
+ 649:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 532              		.loc 1 649 3 view .LVU131
+ 648:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   HAL_GPU2D_ErrorCallback(hgpu2d);
+ 533              		.loc 1 648 1 is_stmt 0 view .LVU132
+ 534 0000 08B5     		push	{r3, lr}
+ 535              		.cfi_def_cfa_offset 8
+ 536              		.cfi_offset 3, -8
+ 537              		.cfi_offset 14, -4
+ 649:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 538              		.loc 1 649 3 view .LVU133
+ 539 0002 FFF7FEFF 		bl	HAL_GPU2D_ErrorCallback
+ 540              	.LVL38:
+ 650:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 24
+
+
+ 541              		.loc 1 650 1 view .LVU134
+ 542 0006 08BD     		pop	{r3, pc}
+ 543              		.cfi_endproc
+ 544              	.LFE869:
+ 546              		.section	.text.HAL_GPU2D_GetState,"ax",%progbits
+ 547              		.align	1
+ 548              		.global	HAL_GPU2D_GetState
+ 549              		.syntax unified
+ 550              		.thumb
+ 551              		.thumb_func
+ 553              	HAL_GPU2D_GetState:
+ 554              	.LVL39:
+ 555              	.LFB872:
+ 691:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 692:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 693:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 694:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @}
+ 695:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 696:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 697:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 698:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /** @defgroup GPU2D_Exported_Functions_Group3 Peripheral State and Error functions
+ 699:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *  @brief    Peripheral State functions
+ 700:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *
+ 701:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** @verbatim
+ 702:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****  ===============================================================================
+ 703:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****                   ##### Peripheral State and Errors functions #####
+ 704:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****  ===============================================================================
+ 705:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     [..]
+ 706:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****     This subsection provides functions allowing to:
+ 707:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) Get the GPU2D state
+ 708:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****       (+) Get the GPU2D error code
+ 709:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 710:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** @endverbatim
+ 711:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @{
+ 712:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 713:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 714:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 715:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Return the GPU2D state
+ 716:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d pointer to a GPU2D_HandleTypeDef structure that contains
+ 717:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                the configuration information for the GPU2D.
+ 718:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval GPU2D state
+ 719:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 720:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** HAL_GPU2D_StateTypeDef HAL_GPU2D_GetState(GPU2D_HandleTypeDef const *const hgpu2d)
+ 721:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 556              		.loc 1 721 1 is_stmt 1 view -0
+ 557              		.cfi_startproc
+ 558              		@ args = 0, pretend = 0, frame = 0
+ 559              		@ frame_needed = 0, uses_anonymous_args = 0
+ 560              		@ link register save eliminated.
+ 722:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return hgpu2d->State;
+ 561              		.loc 1 722 3 view .LVU136
+ 562              		.loc 1 722 16 is_stmt 0 view .LVU137
+ 563 0000 4079     		ldrb	r0, [r0, #5]	@ zero_extendqisi2
+ 564              	.LVL40:
+ 723:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 565              		.loc 1 723 1 view .LVU138
+ 566 0002 7047     		bx	lr
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 25
+
+
+ 567              		.cfi_endproc
+ 568              	.LFE872:
+ 570              		.section	.text.HAL_GPU2D_GetError,"ax",%progbits
+ 571              		.align	1
+ 572              		.global	HAL_GPU2D_GetError
+ 573              		.syntax unified
+ 574              		.thumb
+ 575              		.thumb_func
+ 577              	HAL_GPU2D_GetError:
+ 578              	.LVL41:
+ 579              	.LFB873:
+ 724:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** 
+ 725:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** /**
+ 726:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @brief  Return the GPU2D error code
+ 727:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @param  hgpu2d  pointer to a GPU2D_HandleTypeDef structure that contains
+ 728:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   *                 the configuration information for GPU2D.
+ 729:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   * @retval GPU2D Error Code
+ 730:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   */
+ 731:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** uint32_t HAL_GPU2D_GetError(GPU2D_HandleTypeDef const *const hgpu2d)
+ 732:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** {
+ 580              		.loc 1 732 1 is_stmt 1 view -0
+ 581              		.cfi_startproc
+ 582              		@ args = 0, pretend = 0, frame = 0
+ 583              		@ frame_needed = 0, uses_anonymous_args = 0
+ 584              		@ link register save eliminated.
+ 733:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c ****   return hgpu2d->ErrorCode;
+ 585              		.loc 1 733 3 view .LVU140
+ 586              		.loc 1 733 16 is_stmt 0 view .LVU141
+ 587 0000 8068     		ldr	r0, [r0, #8]
+ 588              	.LVL42:
+ 734:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_gpu2d.c **** }
+ 589              		.loc 1 734 1 view .LVU142
+ 590 0002 7047     		bx	lr
+ 591              		.cfi_endproc
+ 592              	.LFE873:
+ 594              		.text
+ 595              	.Letext0:
+ 596              		.file 2 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 597              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 598              		.file 4 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_def.h"
+ 599              		.file 5 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_gpu2d.h"
+ 600              		.file 6 "Inc/stm32n6xx_hal_conf.h"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 26
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32n6xx_hal_gpu2d.c
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:26     .text.HAL_GPU2D_MspInit:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:32     .text.HAL_GPU2D_MspInit:00000000 HAL_GPU2D_MspInit
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:51     .text.HAL_GPU2D_Init:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:57     .text.HAL_GPU2D_Init:00000000 HAL_GPU2D_Init
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:141    .text.HAL_GPU2D_Init:00000040 $d
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:147    .text.HAL_GPU2D_MspDeInit:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:153    .text.HAL_GPU2D_MspDeInit:00000000 HAL_GPU2D_MspDeInit
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:165    .text.HAL_GPU2D_DeInit:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:171    .text.HAL_GPU2D_DeInit:00000000 HAL_GPU2D_DeInit
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:251    .text.HAL_GPU2D_DeInit:00000044 $d
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:257    .text.HAL_GPU2D_ReadRegister:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:263    .text.HAL_GPU2D_ReadRegister:00000000 HAL_GPU2D_ReadRegister
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:329    .text.HAL_GPU2D_ReadRegister:00000040 $d
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:335    .text.HAL_GPU2D_WriteRegister:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:341    .text.HAL_GPU2D_WriteRegister:00000000 HAL_GPU2D_WriteRegister
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:407    .text.HAL_GPU2D_WriteRegister:00000044 $d
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:413    .text.HAL_GPU2D_CommandListCpltCallback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:419    .text.HAL_GPU2D_CommandListCpltCallback:00000000 HAL_GPU2D_CommandListCpltCallback
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:435    .text.HAL_GPU2D_IRQHandler:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:441    .text.HAL_GPU2D_IRQHandler:00000000 HAL_GPU2D_IRQHandler
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:495    .text.HAL_GPU2D_ErrorCallback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:501    .text.HAL_GPU2D_ErrorCallback:00000000 HAL_GPU2D_ErrorCallback
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:519    .text.HAL_GPU2D_ER_IRQHandler:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:525    .text.HAL_GPU2D_ER_IRQHandler:00000000 HAL_GPU2D_ER_IRQHandler
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:547    .text.HAL_GPU2D_GetState:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:553    .text.HAL_GPU2D_GetState:00000000 HAL_GPU2D_GetState
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:571    .text.HAL_GPU2D_GetError:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s:577    .text.HAL_GPU2D_GetError:00000000 HAL_GPU2D_GetError
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4.stm32n6xx_hal_conf.h.21.004a06df6e15ac197e03f723792da58a
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.arm_cmse.h.103.a0d15a79c4c9a67da8d5831704d7248e
+                           .group:00000000 wm4.stm32n6xx.h.34.c523a1ffdf274a69e8802892c6776332
+                           .group:00000000 wm4.stm32n657xx.h.26.acd272cb67318cc1a4791ce2f0720ca6
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.e0c9f337c65cb9f22ed5f23d082bc78b
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.cmsis_version.h.30.d128735bf87720f7436b74fefeb5043c
+                           .group:00000000 wm4.core_cm55.h.67.25006a3ce7048d64bcddd2996d5fac93
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.core_cm55.h.213.0528f46a674315ef8d35c4477e230358
+                           .group:00000000 wm4.armv8m_mpu.h.24.bf28cc25bee30a7ff9d2f7a44a5e2230
+                           .group:00000000 wm4.armv8m_pmu.h.24.6ded195d2625055391fd378c0e1d2519
+                           .group:00000000 wm4.core_cm55.h.4477.396e822ef855bcfb932819ad48de1c4c
+                           .group:00000000 wm4.armv7m_cachel1.h.24.936dd92d6e204a8d0b17d5e4ea4a356e
+                           .group:00000000 wm4.stm32n657xx.h.575.78d331c417ec710388ced647138f735f
+                           .group:00000000 wm4.stm32n6xx.h.116.b4247d9785590e7c5ec9234ffb2153bf
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.e62aae2fd3ae33360b6781c8a72e5b18
+                           .group:00000000 wm4.newlib.h.7.a37ffbe9e5aff74303f4e60b1cc1c01b
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\cc5uLzgZ.s 			page 27
+
+
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.math.h.13.47cfc34cae8a1153323939c4d32cf7c2
+                           .group:00000000 wm4.stm32n6xx_hal_def.h.63.3a8f01490e8852464e9fcb69092e9c75
+                           .group:00000000 wm4.stm32n6xx_ll_bus.h.38.2366a295ee4cdb04833997d3787fcd2d
+                           .group:00000000 wm4.stm32n6xx_ll_rcc.h.21.656bd5637db608589ad16ea57d39430c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.194.69b522b1afdf59a82d05a1f71efe03c7
+                           .group:00000000 wm4.stm32n6xx_hal_rcc_ex.h.21.cc6be0a7d168882a1a6f470236ba784c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.4361.4b490a4a19722e68c21f88cb8a774a30
+                           .group:00000000 wm4.stm32n6xx_hal_gpio.h.21.89d54af663b98eb8fc098192053f7eeb
+                           .group:00000000 wm4.stm32n6xx_hal_gpio_ex.h.22.f7e795fb05a69a19b87d946b47c8db8b
+                           .group:00000000 wm4.stm32n6xx_hal_rif.h.21.33f2c553a8a3fc14dca8c470b213ab19
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.21.61e48c5c2e8d25d22177834b232fe45c
+                           .group:00000000 wm4.stm32n6xx_hal_dma_ex.h.21.82f854ecdb6a463b06d0b4e5c217c368
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.1020.87e2180c009560b617c1f8208140c950
+                           .group:00000000 wm4.stm32n6xx_hal_cortex.h.21.f493623cc58f9454ab4eae41e395c5cc
+                           .group:00000000 wm4.stm32n6xx_hal_bsec.h.21.1ee89319140541f82434908b4267aa30
+                           .group:00000000 wm4.stm32n6xx_hal_dcmipp.h.21.e2b87dce83d7d722d696a597f6ac56bf
+                           .group:00000000 wm4.stm32n6xx_hal_dma2d.h.21.75c8d46cdbb72970123b3f34ae2043d7
+                           .group:00000000 wm4.stm32n6xx_hal_exti.h.21.e0efb23591051684dc14f1f2431c6aab
+                           .group:00000000 wm4.stm32n6xx_hal_gfxmmu.h.21.9784a9103143d48bd3c37389d0e0b8e6
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.21.3f483626ff64c5bf027265bb2e1d1331
+                           .group:00000000 wm4.stm32n6xx_hal_i2c_ex.h.21.79e9196c22282cdaf6b4047893638c45
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.741.1084702632703acc669e4282b3043372
+                           .group:00000000 wm4.stm32n6xx_hal_icache.h.21.194b4ec6e76f32b14f65c85616854850
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.21.ae1eb09930e7e550e48e418ac5849e4d
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.1002.b13ede7fc94ed5ad1c6768a157d2149a
+                           .group:00000000 wm4.stm32n6xx_ll_usb.h.21.daaf86158046f2cf02166c495d637480
+                           .group:00000000 wm4.stm32n6xx_hal_pcd.h.155.27040aac6844effe2af8c180caf1dd2e
+                           .group:00000000 wm4.stm32n6xx_hal_pwr.h.21.cdb73e4869c3fed3fc84f901ec0e5f0a
+                           .group:00000000 wm4.stm32n6xx_hal_pwr_ex.h.21.1a673224a58b0c1e5fad8eeda6514208
+                           .group:00000000 wm4.stm32n6xx_hal_ramcfg.h.21.a62dfbb4d2c14e9a8c634a215e37bd3d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.21.9f810303326e2d91749800e9911f8e4d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.906.8ad9375f39dce09dc0a4db0025ee7a76
+                           .group:00000000 wm4.stm32n6xx_hal_tim.h.21.839dd2b2a70382fb2c44f8f293a84d5f
+                           .group:00000000 wm4.stm32n6xx_hal_tim_ex.h.21.e372d5ac63c13441211ea4ecbd353150
+                           .group:00000000 wm4.stm32n6xx_hal_uart.h.21.230f549bfa0d5ebfd77bfb311b2aca15
+                           .group:00000000 wm4.stm32n6xx_hal_uart_ex.h.21.a0d5511e1d0703b7b5278c8f5472b96d
+                           .group:00000000 wm4.stm32n6xx_hal_xspi.h.21.7fd922d3bdb871475cf18436a68935bb
+                           .group:00000000 wm4.stm32n6xx_hal_cacheaxi.h.21.7c3375b7903ec42376e4883320997f74
+                           .group:00000000 wm4.stm32n6xx_hal_gpu2d.h.21.48d0249122abad294a630c39cc4ebaed
+                           .group:00000000 wm4.stm32n6xx_hal.h.81.e79d59262ba173c33cf1d69281830d15
+
+UNDEFINED SYMBOLS
+assert_failed

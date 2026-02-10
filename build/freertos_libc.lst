@@ -1,0 +1,702 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"freertos_libc.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Gcc/Src/freertos_libc.c"
+  25              		.section	.rodata.freertos_libc_init.str1.1,"aMS",%progbits,1
+  26              	.LC0:
+  27 0000 6C696263 		.ascii	"libc_lock\000"
+  27      5F6C6F63 
+  27      6B00
+  28              	.LC1:
+  29 000a 4763632F 		.ascii	"Gcc/Src/freertos_libc.c\000"
+  29      5372632F 
+  29      66726565 
+  29      72746F73 
+  29      5F6C6962 
+  30              		.section	.text.freertos_libc_init,"ax",%progbits
+  31              		.align	1
+  32              		.global	freertos_libc_init
+  33              		.syntax unified
+  34              		.thumb
+  35              		.thumb_func
+  37              	freertos_libc_init:
+  38              	.LFB167:
+   1:Gcc/Src/freertos_libc.c ****  /**
+   2:Gcc/Src/freertos_libc.c ****  ******************************************************************************
+   3:Gcc/Src/freertos_libc.c ****  * @file    freertos_libc.c
+   4:Gcc/Src/freertos_libc.c ****  * @author  GPM Application Team
+   5:Gcc/Src/freertos_libc.c ****  *
+   6:Gcc/Src/freertos_libc.c ****  ******************************************************************************
+   7:Gcc/Src/freertos_libc.c ****  * @attention
+   8:Gcc/Src/freertos_libc.c ****  *
+   9:Gcc/Src/freertos_libc.c ****  * Copyright (c) 2024 STMicroelectronics.
+  10:Gcc/Src/freertos_libc.c ****  * All rights reserved.
+  11:Gcc/Src/freertos_libc.c ****  *
+  12:Gcc/Src/freertos_libc.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  13:Gcc/Src/freertos_libc.c ****  * in the root directory of this software component.
+  14:Gcc/Src/freertos_libc.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 2
+
+
+  15:Gcc/Src/freertos_libc.c ****  *
+  16:Gcc/Src/freertos_libc.c ****  ******************************************************************************
+  17:Gcc/Src/freertos_libc.c ****  */
+  18:Gcc/Src/freertos_libc.c **** 
+  19:Gcc/Src/freertos_libc.c **** #include <assert.h>
+  20:Gcc/Src/freertos_libc.c **** #include <stdint.h>
+  21:Gcc/Src/freertos_libc.c **** #include <stdlib.h>
+  22:Gcc/Src/freertos_libc.c **** 
+  23:Gcc/Src/freertos_libc.c **** #include "cmsis_compiler.h"
+  24:Gcc/Src/freertos_libc.c **** #include "FreeRTOS.h"
+  25:Gcc/Src/freertos_libc.c **** #include "task.h"
+  26:Gcc/Src/freertos_libc.c **** #include "semphr.h"
+  27:Gcc/Src/freertos_libc.c **** 
+  28:Gcc/Src/freertos_libc.c **** #define IS_IRQ_MODE()     (__get_IPSR() != 0U)
+  29:Gcc/Src/freertos_libc.c **** 
+  30:Gcc/Src/freertos_libc.c **** static int is_tx_rt_init_done;
+  31:Gcc/Src/freertos_libc.c **** static SemaphoreHandle_t libc_lock;
+  32:Gcc/Src/freertos_libc.c **** static StaticSemaphore_t libc_lock_buffer;
+  33:Gcc/Src/freertos_libc.c **** 
+  34:Gcc/Src/freertos_libc.c **** void freertos_libc_init()
+  35:Gcc/Src/freertos_libc.c **** {
+  39              		.loc 1 35 1 view -0
+  40              		.cfi_startproc
+  41              		@ args = 0, pretend = 0, frame = 0
+  42              		@ frame_needed = 0, uses_anonymous_args = 0
+  36:Gcc/Src/freertos_libc.c ****   libc_lock = xSemaphoreCreateMutexStatic(&libc_lock_buffer);
+  43              		.loc 1 36 3 view .LVU1
+  35:Gcc/Src/freertos_libc.c ****   libc_lock = xSemaphoreCreateMutexStatic(&libc_lock_buffer);
+  44              		.loc 1 35 1 is_stmt 0 view .LVU2
+  45 0000 08B5     		push	{r3, lr}
+  46              		.cfi_def_cfa_offset 8
+  47              		.cfi_offset 3, -8
+  48              		.cfi_offset 14, -4
+  49              		.loc 1 36 15 view .LVU3
+  50 0002 0120     		movs	r0, #1
+  51 0004 0749     		ldr	r1, .L3
+  52 0006 FFF7FEFF 		bl	xQueueCreateMutexStatic
+  53              	.LVL0:
+  54              		.loc 1 36 13 discriminator 1 view .LVU4
+  55 000a 074B     		ldr	r3, .L3+4
+  56 000c 1860     		str	r0, [r3]
+  37:Gcc/Src/freertos_libc.c ****   assert(libc_lock);
+  57              		.loc 1 37 3 is_stmt 1 view .LVU5
+  58 000e 28B9     		cbnz	r0, .L2
+  59              		.loc 1 37 3 is_stmt 0 discriminator 1 view .LVU6
+  60 0010 2521     		movs	r1, #37
+  61 0012 064B     		ldr	r3, .L3+8
+  62 0014 064A     		ldr	r2, .L3+12
+  63 0016 0748     		ldr	r0, .L3+16
+  64 0018 FFF7FEFF 		bl	__assert_func
+  65              	.LVL1:
+  66              	.L2:
+  38:Gcc/Src/freertos_libc.c **** 
+  39:Gcc/Src/freertos_libc.c ****   is_tx_rt_init_done = 1;
+  67              		.loc 1 39 3 is_stmt 1 view .LVU7
+  68              		.loc 1 39 22 is_stmt 0 view .LVU8
+  69 001c 0122     		movs	r2, #1
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 3
+
+
+  70 001e 064B     		ldr	r3, .L3+20
+  71 0020 1A60     		str	r2, [r3]
+  40:Gcc/Src/freertos_libc.c **** }
+  72              		.loc 1 40 1 view .LVU9
+  73 0022 08BD     		pop	{r3, pc}
+  74              	.L4:
+  75              		.align	2
+  76              	.L3:
+  77 0024 00000000 		.word	libc_lock_buffer
+  78 0028 00000000 		.word	libc_lock
+  79 002c 00000000 		.word	.LC0
+  80 0030 00000000 		.word	__func__.2
+  81 0034 0A000000 		.word	.LC1
+  82 0038 00000000 		.word	is_tx_rt_init_done
+  83              		.cfi_endproc
+  84              	.LFE167:
+  86              		.section	.rodata.__malloc_lock.str1.1,"aMS",%progbits,1
+  87              	.LC2:
+  88 0000 2149535F 		.ascii	"!IS_IRQ_MODE()\000"
+  88      4952515F 
+  88      4D4F4445 
+  88      282900
+  89              	.LC3:
+  90 000f 72657420 		.ascii	"ret == pdTRUE\000"
+  90      3D3D2070 
+  90      64545255 
+  90      4500
+  91              		.section	.text.__malloc_lock,"ax",%progbits
+  92              		.align	1
+  93              		.global	__malloc_lock
+  94              		.syntax unified
+  95              		.thumb
+  96              		.thumb_func
+  98              	__malloc_lock:
+  99              	.LVL2:
+ 100              	.LFB168:
+  41:Gcc/Src/freertos_libc.c **** 
+  42:Gcc/Src/freertos_libc.c **** void __malloc_lock (struct _reent *reent)
+  43:Gcc/Src/freertos_libc.c **** {
+ 101              		.loc 1 43 1 is_stmt 1 view -0
+ 102              		.cfi_startproc
+ 103              		@ args = 0, pretend = 0, frame = 0
+ 104              		@ frame_needed = 0, uses_anonymous_args = 0
+  44:Gcc/Src/freertos_libc.c ****   int ret;
+ 105              		.loc 1 44 3 view .LVU11
+  45:Gcc/Src/freertos_libc.c **** 
+  46:Gcc/Src/freertos_libc.c ****   if (!is_tx_rt_init_done)
+ 106              		.loc 1 46 3 view .LVU12
+  43:Gcc/Src/freertos_libc.c ****   int ret;
+ 107              		.loc 1 43 1 is_stmt 0 view .LVU13
+ 108 0000 08B5     		push	{r3, lr}
+ 109              		.cfi_def_cfa_offset 8
+ 110              		.cfi_offset 3, -8
+ 111              		.cfi_offset 14, -4
+ 112              		.loc 1 46 7 view .LVU14
+ 113 0002 0C4B     		ldr	r3, .L15
+ 114              		.loc 1 46 6 view .LVU15
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 4
+
+
+ 115 0004 1B68     		ldr	r3, [r3]
+ 116 0006 A3B1     		cbz	r3, .L5
+  47:Gcc/Src/freertos_libc.c ****     return ;
+  48:Gcc/Src/freertos_libc.c **** 
+  49:Gcc/Src/freertos_libc.c ****   assert(is_tx_rt_init_done);
+ 117              		.loc 1 49 3 is_stmt 1 view .LVU16
+  50:Gcc/Src/freertos_libc.c ****   assert(!IS_IRQ_MODE());
+ 118              		.loc 1 50 3 view .LVU17
+ 119              	.LBB6:
+ 120              	.LBI6:
+ 121              		.file 2 "STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h"
+   1:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /*
+   2:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * Copyright (c) 2009-2023 Arm Limited. All rights reserved.
+   3:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  *
+   4:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * SPDX-License-Identifier: Apache-2.0
+   5:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  *
+   6:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * not use this file except in compliance with the License.
+   8:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * You may obtain a copy of the License at
+   9:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  *
+  10:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * www.apache.org/licenses/LICENSE-2.0
+  11:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  *
+  12:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * Unless required by applicable law or agreed to in writing, software
+  13:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * See the License for the specific language governing permissions and
+  16:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * limitations under the License.
+  17:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+  18:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  19:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /*
+  20:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  * CMSIS-Core(M) Compiler GCC Header File
+  21:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+  22:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  23:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __CMSIS_GCC_M_H
+  24:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __CMSIS_GCC_M_H
+  25:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  26:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __CMSIS_GCC_H
+  27:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   #error "This file must not be included directly"
+  28:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+  29:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  30:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #include <arm_acle.h>
+  31:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  32:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /* #########################  Startup and Lowlevel Init  ######################## */
+  33:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __PROGRAM_START
+  34:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  35:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /**
+  36:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \brief   Initializes data and bss sections
+  37:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \details This default implementations initialized all data and additional bss
+  38:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****            sections relying on .copy.table and .zero.table specified properly
+  39:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****            in the used linker script.
+  40:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  41:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+  42:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
+  43:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** {
+  44:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   extern void _start(void) __NO_RETURN;
+  45:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  46:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   typedef struct __copy_table {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 5
+
+
+  47:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     uint32_t const* src;
+  48:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     uint32_t* dest;
+  49:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     uint32_t  wlen;
+  50:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   } __copy_table_t;
+  51:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  52:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   typedef struct __zero_table {
+  53:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     uint32_t* dest;
+  54:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     uint32_t  wlen;
+  55:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   } __zero_table_t;
+  56:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  57:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   extern const __copy_table_t __copy_table_start__;
+  58:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   extern const __copy_table_t __copy_table_end__;
+  59:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   extern const __zero_table_t __zero_table_start__;
+  60:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   extern const __zero_table_t __zero_table_end__;
+  61:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  62:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   for (__copy_table_t const* pTable = &__copy_table_start__; pTable < &__copy_table_end__; ++pTable
+  63:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+  64:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****       pTable->dest[i] = pTable->src[i];
+  65:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     }
+  66:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   }
+  67:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  68:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   for (__zero_table_t const* pTable = &__zero_table_start__; pTable < &__zero_table_end__; ++pTable
+  69:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+  70:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****       pTable->dest[i] = 0u;
+  71:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     }
+  72:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   }
+  73:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  74:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   _start();
+  75:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** }
+  76:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  77:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __PROGRAM_START           __cmsis_start
+  78:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+  79:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  80:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __INITIAL_SP
+  81:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __INITIAL_SP              __StackTop
+  82:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+  83:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  84:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __STACK_LIMIT
+  85:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __STACK_LIMIT             __StackLimit
+  86:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+  87:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  88:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __VECTOR_TABLE
+  89:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __VECTOR_TABLE            __Vectors
+  90:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+  91:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  92:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __VECTOR_TABLE_ATTRIBUTE
+  93:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __VECTOR_TABLE_ATTRIBUTE  __attribute__((used, section(".vectors")))
+  94:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+  95:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+  96:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3)
+  97:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __STACK_SEAL
+  98:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __STACK_SEAL              __StackSeal
+  99:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+ 100:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 101:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __TZ_STACK_SEAL_SIZE
+ 102:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __TZ_STACK_SEAL_SIZE      8U
+ 103:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 6
+
+
+ 104:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 105:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #ifndef __TZ_STACK_SEAL_VALUE
+ 106:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #define __TZ_STACK_SEAL_VALUE     0xFEF5EDA5FEF5EDA5ULL
+ 107:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+ 108:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 109:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** __STATIC_FORCEINLINE void __TZ_set_STACKSEAL_S (uint32_t* stackTop)
+ 110:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** {
+ 111:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   *((uint64_t *)stackTop) = __TZ_STACK_SEAL_VALUE;
+ 112:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** }
+ 113:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+ 114:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 115:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 116:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /* ###########################  Core Function Access  ########################### */
+ 117:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 118:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 119:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   @{
+ 120:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+ 121:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 122:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /**
+ 123:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \brief   Get Control Register
+ 124:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \details Returns the content of the Control Register.
+ 125:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \return               Control Register value
+ 126:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+ 127:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 128:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** {
+ 129:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   uint32_t result;
+ 130:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 131:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 132:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   return (result);
+ 133:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** }
+ 134:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 135:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 136:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3)
+ 137:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /**
+ 138:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \brief   Get Control Register (non-secure)
+ 139:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 140:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \return               non-secure Control Register value
+ 141:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+ 142:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 143:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** {
+ 144:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   uint32_t result;
+ 145:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 146:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 147:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   return (result);
+ 148:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** }
+ 149:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+ 150:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 151:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 152:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /**
+ 153:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \brief   Set Control Register
+ 154:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \details Writes the given value to the Control Register.
+ 155:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \param [in]    control  Control Register value to set
+ 156:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+ 157:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 158:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** {
+ 159:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 160:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   __ISB();
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 7
+
+
+ 161:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** }
+ 162:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 163:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 164:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3)
+ 165:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /**
+ 166:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \brief   Set Control Register (non-secure)
+ 167:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 168:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \param [in]    control  Control Register value to set
+ 169:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+ 170:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 171:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** {
+ 172:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 173:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   __ISB();
+ 174:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** }
+ 175:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** #endif
+ 176:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 177:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 178:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** /**
+ 179:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \brief   Get IPSR Register
+ 180:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \details Returns the content of the IPSR Register.
+ 181:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   \return               IPSR Register value
+ 182:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****  */
+ 183:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 122              		.loc 2 183 31 view .LVU18
+ 123              	.LBB7:
+ 184:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** {
+ 185:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   uint32_t result;
+ 124              		.loc 2 185 3 view .LVU19
+ 186:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 187:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 125              		.loc 2 187 3 view .LVU20
+ 126              		.syntax unified
+ 127              	@ 187 "STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h" 1
+ 128 0008 EFF30583 		MRS r3, ipsr
+ 129              	@ 0 "" 2
+ 130              	.LVL3:
+ 188:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   return (result);
+ 131              		.loc 2 188 3 view .LVU21
+ 132              		.loc 2 188 3 is_stmt 0 view .LVU22
+ 133              		.thumb
+ 134              		.syntax unified
+ 135              	.LBE7:
+ 136              	.LBE6:
+ 137              		.loc 1 50 3 discriminator 1 view .LVU23
+ 138 000c 2BB1     		cbz	r3, .L7
+ 139 000e 3221     		movs	r1, #50
+ 140 0010 094B     		ldr	r3, .L15+4
+ 141 0012 0A4A     		ldr	r2, .L15+8
+ 142              	.LVL4:
+ 143              	.L14:
+  51:Gcc/Src/freertos_libc.c **** 
+  52:Gcc/Src/freertos_libc.c ****   ret = xSemaphoreTake(libc_lock, portMAX_DELAY);
+  53:Gcc/Src/freertos_libc.c ****   assert(ret == pdTRUE);
+ 144              		.loc 1 53 3 discriminator 1 view .LVU24
+ 145 0014 0A48     		ldr	r0, .L15+12
+ 146 0016 FFF7FEFF 		bl	__assert_func
+ 147              	.LVL5:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 8
+
+
+ 148              	.L7:
+  52:Gcc/Src/freertos_libc.c ****   assert(ret == pdTRUE);
+ 149              		.loc 1 52 3 is_stmt 1 view .LVU25
+  52:Gcc/Src/freertos_libc.c ****   assert(ret == pdTRUE);
+ 150              		.loc 1 52 9 is_stmt 0 view .LVU26
+ 151 001a 0A4B     		ldr	r3, .L15+16
+ 152 001c 4FF0FF31 		mov	r1, #-1
+ 153 0020 1868     		ldr	r0, [r3]
+ 154              	.LVL6:
+  52:Gcc/Src/freertos_libc.c ****   assert(ret == pdTRUE);
+ 155              		.loc 1 52 9 view .LVU27
+ 156 0022 FFF7FEFF 		bl	xQueueSemaphoreTake
+ 157              	.LVL7:
+ 158              		.loc 1 53 3 is_stmt 1 view .LVU28
+ 159 0026 0128     		cmp	r0, #1
+ 160 0028 03D0     		beq	.L5
+ 161              		.loc 1 53 3 is_stmt 0 discriminator 1 view .LVU29
+ 162 002a 3521     		movs	r1, #53
+ 163 002c 064B     		ldr	r3, .L15+20
+ 164 002e 034A     		ldr	r2, .L15+8
+ 165 0030 F0E7     		b	.L14
+ 166              	.LVL8:
+ 167              	.L5:
+  54:Gcc/Src/freertos_libc.c **** }
+ 168              		.loc 1 54 1 view .LVU30
+ 169 0032 08BD     		pop	{r3, pc}
+ 170              	.L16:
+ 171              		.align	2
+ 172              	.L15:
+ 173 0034 00000000 		.word	is_tx_rt_init_done
+ 174 0038 00000000 		.word	.LC2
+ 175 003c 00000000 		.word	__func__.1
+ 176 0040 0A000000 		.word	.LC1
+ 177 0044 00000000 		.word	libc_lock
+ 178 0048 0F000000 		.word	.LC3
+ 179              		.cfi_endproc
+ 180              	.LFE168:
+ 182              		.section	.text.__malloc_unlock,"ax",%progbits
+ 183              		.align	1
+ 184              		.global	__malloc_unlock
+ 185              		.syntax unified
+ 186              		.thumb
+ 187              		.thumb_func
+ 189              	__malloc_unlock:
+ 190              	.LVL9:
+ 191              	.LFB169:
+  55:Gcc/Src/freertos_libc.c **** 
+  56:Gcc/Src/freertos_libc.c **** void __malloc_unlock (struct _reent *reent)
+  57:Gcc/Src/freertos_libc.c **** {
+ 192              		.loc 1 57 1 is_stmt 1 view -0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+  58:Gcc/Src/freertos_libc.c ****   int ret;
+ 196              		.loc 1 58 3 view .LVU32
+  59:Gcc/Src/freertos_libc.c **** 
+  60:Gcc/Src/freertos_libc.c ****   if (!is_tx_rt_init_done)
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 9
+
+
+ 197              		.loc 1 60 3 view .LVU33
+  57:Gcc/Src/freertos_libc.c ****   int ret;
+ 198              		.loc 1 57 1 is_stmt 0 view .LVU34
+ 199 0000 08B5     		push	{r3, lr}
+ 200              		.cfi_def_cfa_offset 8
+ 201              		.cfi_offset 3, -8
+ 202              		.cfi_offset 14, -4
+ 203              		.loc 1 60 7 view .LVU35
+ 204 0002 0C4B     		ldr	r3, .L27
+ 205              		.loc 1 60 6 view .LVU36
+ 206 0004 1B68     		ldr	r3, [r3]
+ 207 0006 A3B1     		cbz	r3, .L17
+  61:Gcc/Src/freertos_libc.c ****     return ;
+  62:Gcc/Src/freertos_libc.c **** 
+  63:Gcc/Src/freertos_libc.c ****   assert(is_tx_rt_init_done);
+ 208              		.loc 1 63 3 is_stmt 1 view .LVU37
+  64:Gcc/Src/freertos_libc.c ****   assert(!IS_IRQ_MODE());
+ 209              		.loc 1 64 3 view .LVU38
+ 210              	.LBB8:
+ 211              	.LBI8:
+ 183:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** {
+ 212              		.loc 2 183 31 view .LVU39
+ 213              	.LBB9:
+ 185:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h **** 
+ 214              		.loc 2 185 3 view .LVU40
+ 187:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h ****   return (result);
+ 215              		.loc 2 187 3 view .LVU41
+ 216              		.syntax unified
+ 217              	@ 187 "STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/cmsis_gcc_m.h" 1
+ 218 0008 EFF30583 		MRS r3, ipsr
+ 219              	@ 0 "" 2
+ 220              	.LVL10:
+ 221              		.loc 2 188 3 view .LVU42
+ 222              		.loc 2 188 3 is_stmt 0 view .LVU43
+ 223              		.thumb
+ 224              		.syntax unified
+ 225              	.LBE9:
+ 226              	.LBE8:
+ 227              		.loc 1 64 3 discriminator 1 view .LVU44
+ 228 000c 2BB1     		cbz	r3, .L19
+ 229 000e 4021     		movs	r1, #64
+ 230 0010 094B     		ldr	r3, .L27+4
+ 231 0012 0A4A     		ldr	r2, .L27+8
+ 232              	.LVL11:
+ 233              	.L26:
+  65:Gcc/Src/freertos_libc.c **** 
+  66:Gcc/Src/freertos_libc.c ****   ret = xSemaphoreGive(libc_lock);
+  67:Gcc/Src/freertos_libc.c ****   assert(ret == pdTRUE);
+ 234              		.loc 1 67 3 discriminator 1 view .LVU45
+ 235 0014 0A48     		ldr	r0, .L27+12
+ 236 0016 FFF7FEFF 		bl	__assert_func
+ 237              	.LVL12:
+ 238              	.L19:
+  66:Gcc/Src/freertos_libc.c ****   assert(ret == pdTRUE);
+ 239              		.loc 1 66 3 is_stmt 1 view .LVU46
+  66:Gcc/Src/freertos_libc.c ****   assert(ret == pdTRUE);
+ 240              		.loc 1 66 9 is_stmt 0 view .LVU47
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 10
+
+
+ 241 001a 0A48     		ldr	r0, .L27+16
+ 242              	.LVL13:
+  66:Gcc/Src/freertos_libc.c ****   assert(ret == pdTRUE);
+ 243              		.loc 1 66 9 view .LVU48
+ 244 001c 1A46     		mov	r2, r3
+ 245 001e 1946     		mov	r1, r3
+ 246 0020 0068     		ldr	r0, [r0]
+ 247 0022 FFF7FEFF 		bl	xQueueGenericSend
+ 248              	.LVL14:
+ 249              		.loc 1 67 3 is_stmt 1 view .LVU49
+ 250 0026 0128     		cmp	r0, #1
+ 251 0028 03D0     		beq	.L17
+ 252              		.loc 1 67 3 is_stmt 0 discriminator 1 view .LVU50
+ 253 002a 4321     		movs	r1, #67
+ 254 002c 064B     		ldr	r3, .L27+20
+ 255 002e 034A     		ldr	r2, .L27+8
+ 256 0030 F0E7     		b	.L26
+ 257              	.LVL15:
+ 258              	.L17:
+  68:Gcc/Src/freertos_libc.c **** }
+ 259              		.loc 1 68 1 view .LVU51
+ 260 0032 08BD     		pop	{r3, pc}
+ 261              	.L28:
+ 262              		.align	2
+ 263              	.L27:
+ 264 0034 00000000 		.word	is_tx_rt_init_done
+ 265 0038 00000000 		.word	.LC2
+ 266 003c 00000000 		.word	__func__.0
+ 267 0040 0A000000 		.word	.LC1
+ 268 0044 00000000 		.word	libc_lock
+ 269 0048 0F000000 		.word	.LC3
+ 270              		.cfi_endproc
+ 271              	.LFE169:
+ 273              		.section	.rodata.__func__.0,"a"
+ 276              	__func__.0:
+ 277 0000 5F5F6D61 		.ascii	"__malloc_unlock\000"
+ 277      6C6C6F63 
+ 277      5F756E6C 
+ 277      6F636B00 
+ 278              		.section	.rodata.__func__.1,"a"
+ 281              	__func__.1:
+ 282 0000 5F5F6D61 		.ascii	"__malloc_lock\000"
+ 282      6C6C6F63 
+ 282      5F6C6F63 
+ 282      6B00
+ 283              		.section	.rodata.__func__.2,"a"
+ 286              	__func__.2:
+ 287 0000 66726565 		.ascii	"freertos_libc_init\000"
+ 287      72746F73 
+ 287      5F6C6962 
+ 287      635F696E 
+ 287      697400
+ 288              		.section	.bss.libc_lock_buffer,"aw",%nobits
+ 289              		.align	2
+ 292              	libc_lock_buffer:
+ 293 0000 00000000 		.space	80
+ 293      00000000 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 11
+
+
+ 293      00000000 
+ 293      00000000 
+ 293      00000000 
+ 294              		.section	.bss.libc_lock,"aw",%nobits
+ 295              		.align	2
+ 298              	libc_lock:
+ 299 0000 00000000 		.space	4
+ 300              		.section	.bss.is_tx_rt_init_done,"aw",%nobits
+ 301              		.align	2
+ 304              	is_tx_rt_init_done:
+ 305 0000 00000000 		.space	4
+ 306              		.text
+ 307              	.Letext0:
+ 308              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 309              		.file 4 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 310              		.file 5 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 311              		.file 6 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 312              		.file 7 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 313              		.file 8 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 314              		.file 9 "Lib/FreeRTOS/Source/portable/GCC/ARM_CM55_NTZ/non_secure/portmacrocommon.h"
+ 315              		.file 10 "Lib/FreeRTOS/Source/include/FreeRTOS.h"
+ 316              		.file 11 "Lib/FreeRTOS/Source/include/queue.h"
+ 317              		.file 12 "Lib/FreeRTOS/Source/include/semphr.h"
+ 318              		.file 13 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltoo
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 freertos_libc.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:31     .text.freertos_libc_init:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:37     .text.freertos_libc_init:00000000 freertos_libc_init
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:77     .text.freertos_libc_init:00000024 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:292    .bss.libc_lock_buffer:00000000 libc_lock_buffer
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:298    .bss.libc_lock:00000000 libc_lock
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:286    .rodata.__func__.2:00000000 __func__.2
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:304    .bss.is_tx_rt_init_done:00000000 is_tx_rt_init_done
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:92     .text.__malloc_lock:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:98     .text.__malloc_lock:00000000 __malloc_lock
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:173    .text.__malloc_lock:00000034 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:281    .rodata.__func__.1:00000000 __func__.1
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:183    .text.__malloc_unlock:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:189    .text.__malloc_unlock:00000000 __malloc_unlock
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:264    .text.__malloc_unlock:00000034 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:276    .rodata.__func__.0:00000000 __func__.0
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:289    .bss.libc_lock_buffer:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:295    .bss.libc_lock:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s:301    .bss.is_tx_rt_init_done:00000000 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.newlib.h.27.a82728f74da661df333d09507bfef510
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.features.h.22.9dfb1293666eb4caf24cccb81c86a551
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.assert.h.11.db24e541f16414db224bf986d21017e2
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.stddef.h.185.882514a1a6169ceba9142f401cbe27c6
+                           .group:00000000 wm4.stddef.h.39.794fa375de48dda278c4aebb5c74aa5b
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.FreeRTOS.h.59.647b1b0da38e4e98108aae13c8abe9ee
+                           .group:00000000 wm4.assert.h.11.d99a111e320bc5106fc4046225782672
+                           .group:00000000 wm4.FreeRTOSConfig.h.59.2629c72cff9e6dbe880a2dc225eae516
+                           .group:00000000 wm4.FreeRTOS.h.80.7742fabaf5accf3762dc12f7f259a8a0
+                           .group:00000000 wm4.projdefs.h.30.55a824156f299c075c33148a9fdadb99
+                           .group:00000000 wm4.portmacro.h.30.cbb4b2da41f551c2a9904f0d03a1ce3e
+                           .group:00000000 wm4.portmacrocommon.h.30.d5cb67896ab50a95311be7e023da5c4f
+                           .group:00000000 wm4.portmacro.h.68.4051ecf710d074fb55b16d91dfebeeaa
+                           .group:00000000 wm4.portable.h.61.d557c57974d490f056246a26cdcddd6c
+                           .group:00000000 wm4.mpu_wrappers.h.30.ccc5f1a6903f941a88c268f5f62af3fe
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccojQ47S.s 			page 13
+
+
+                           .group:00000000 wm4.portable.h.189.522b8bd52a171d3fd1432ef06d0caa63
+                           .group:00000000 wm4.FreeRTOS.h.102.fb871f3e464d99c5a57b3115545a02ad
+                           .group:00000000 wm4.list.h.59.bce6419520cd4f5f98779a1530bf2118
+                           .group:00000000 wm4.task.h.56.84290139c73b47f5b9aac361361a2a31
+                           .group:00000000 wm4.queue.h.68.219f47fba8b59640449b84d04c5bd6d8
+                           .group:00000000 wm4.semphr.h.40.c1a9c6f5bf0feb4da0b6a45d234a79d0
+
+UNDEFINED SYMBOLS
+xQueueCreateMutexStatic
+__assert_func
+xQueueSemaphoreTake
+xQueueGenericSend

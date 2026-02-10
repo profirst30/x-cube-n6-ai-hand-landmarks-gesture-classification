@@ -1,0 +1,2118 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"ll_aton_stai_internal.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c"
+  25              		.section	.text._stai_aton_internal_rt_callback,"ax",%progbits
+  26              		.align	1
+  27              		.syntax unified
+  28              		.thumb
+  29              		.thumb_func
+  31              	_stai_aton_internal_rt_callback:
+  32              	.LVL0:
+  33              	.LFB314:
+   1:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /**
+   2:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  ******************************************************************************
+   3:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * @file    ll_aton_stai_internal.c
+   4:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * @author  SRA Artificial Intelligence & Embedded Architectures
+   5:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * @brief   Implementation of ST.AI public & internal APIs for ATON
+   6:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  ******************************************************************************
+   7:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * @attention
+   8:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  *
+   9:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * Copyright (c) 2024 STMicroelectronics.
+  10:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * All rights reserved.
+  11:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  *
+  12:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  13:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * in the root directory of this software component.
+  14:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  *
+  16:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  ******************************************************************************
+  17:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  */
+  18:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  19:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #include <stdint.h>
+  20:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  21:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #include "stai_debug.h"
+  22:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  23:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #include "ll_aton_caches_interface.h"
+  24:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #include "ll_aton_rt_user_api.h"
+  25:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #include "ll_aton_runtime.h"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 2
+
+
+  26:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #include "ll_aton_stai_internal.h"
+  27:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #include "ll_aton_version.h"
+  28:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  29:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* -----------------------------------------------------------------------------
+  30:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * MACRO - ARM tool chain definition
+  31:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  * -----------------------------------------------------------------------------
+  32:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****  */
+  33:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  34:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #undef _IS_AC5_COMPILER
+  35:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #undef _IS_AC6_COMPILER
+  36:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #undef _IS_GHS_COMPILER
+  37:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #undef _IS_HTC_COMPILER
+  38:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #undef _IS_GCC_COMPILER
+  39:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #undef _IS_IAR_COMPILER
+  40:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  41:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* ARM Compiler 5 tool-chain */
+  42:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #if defined(__CC_ARM)
+  43:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** // #if ((__ARMCC_VERSION >= 5000000) && (__ARMCC_VERSION < 6000000))
+  44:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _IS_AC5_COMPILER 1
+  45:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  46:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* ARM Compiler 6 tool-chain */
+  47:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+  48:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _IS_AC6_COMPILER 1
+  49:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  50:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* GHS tool-chain */
+  51:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(__ghs__)
+  52:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _IS_GHS_COMPILER 1
+  53:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  54:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* HIGHTEC tool-chain */
+  55:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(__clang__)
+  56:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _IS_HTC_COMPILER 1
+  57:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  58:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* GCC tool-chain */
+  59:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(__GNUC__)
+  60:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _IS_GCC_COMPILER 1
+  61:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  62:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* IAR tool-chain */
+  63:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(__ICCARM__)
+  64:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _IS_IAR_COMPILER 1
+  65:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  66:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #else
+  67:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _IS_UNDEFINED_COMPILER 1
+  68:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif
+  69:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  70:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #undef _IS_ACx_COMPILER
+  71:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #if defined(_IS_AC5_COMPILER) && _IS_AC5_COMPILER || defined(_IS_AC6_COMPILER) && _IS_AC6_COMPILER
+  72:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _IS_ACx_COMPILER 1
+  73:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif
+  74:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  75:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STRINGIFY_(x) #x
+  76:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STRINGIFY(x)  STRINGIFY_(x)
+  77:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+  78:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #if defined(_IS_AC6_COMPILER) && _IS_AC6_COMPILER
+  79:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_DESC "MDK-ARM Keil (Arm Compiler 6) " STRINGIFY(__ARMCC_VERSION)
+  80:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_ID   STAI_COMPILER_ID_KEIL
+  81:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(_IS_GHS_COMPILER) && _IS_GHS_COMPILER
+  82:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_DESC "GHS-ARM Compiler " STRINGIFY(__GHS_VERSION_NUMBER)
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 3
+
+
+  83:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_ID   STAI_COMPILER_ID_GHS
+  84:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(_IS_HTC_COMPILER) && _IS_HTC_COMPILER
+  85:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_DESC                                                                        
+  86:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   "HIGHTEC Clang " STRINGIFY(__clang_major__) "." STRINGIFY(__clang_minor__) "." STRINGIFY(__clang_
+  87:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_ID STAI_COMPILER_ID_HIGHTECH
+  88:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(_IS_GCC_COMPILER) && _IS_GCC_COMPILER
+  89:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_DESC "GCC " STRINGIFY(__GNUC__) "." STRINGIFY(__GNUC_MINOR__) "." STRINGIFY(
+  90:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_ID   STAI_COMPILER_ID_GCC
+  91:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(_IS_IAR_COMPILER) && _IS_IAR_COMPILER
+  92:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_DESC "IAR " STRINGIFY(__IAR_SYSTEMS_ICC__) " (build " STRINGIFY(__BUILD_NUMB
+  93:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_ID   STAI_COMPILER_ID_IAR
+  94:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #elif defined(_IS_AC5_COMPILER) && _IS_AC5_COMPILER
+  95:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_DESC "MDK-ARM Keil " STRINGIFY(__ARMCC_VERSION)
+  96:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_ID   STAI_COMPILER_ID_KEIL
+  97:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #else
+  98:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_DESC "Undefined"
+  99:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define _STAI_COMPILER_ID   STAI_COMPILER_ID_NONE
+ 100:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif
+ 101:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 102:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* macro defining name of (platform specific) function called before ATON & RT initialization */
+ 103:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #ifndef LL_ATON_STAI_PRE_ATON_INIT_NAME
+ 104:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** static inline int __ll_empty_stai_pre_aton_init(void)
+ 105:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 106:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return 0;
+ 107:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 108:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define __LL_ATON_STAI_PRE_ATON_INIT() __ll_empty_stai_pre_aton_init()
+ 109:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #else // LL_ATON_STAI_PRE_ATON_INIT_NAME
+ 110:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** extern int LL_ATON_STAI_PRE_ATON_INIT_NAME(void);
+ 111:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define __LL_ATON_STAI_PRE_ATON_INIT() LL_ATON_STAI_PRE_ATON_INIT_NAME()
+ 112:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif // LL_ATON_STAI_PRE_ATON_INIT_NAME
+ 113:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 114:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* macro defining name of (platform specific) function called after ATON & RT de-initialization */
+ 115:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #ifndef LL_ATON_STAI_POST_ATON_DEINIT_NAME
+ 116:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** static inline int __ll_empty_stai_post_aton_deinit(void)
+ 117:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 118:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return 0;
+ 119:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 120:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define __LL_ATON_STAI_POST_ATON_DEINIT() __ll_empty_stai_post_aton_deinit()
+ 121:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #else // LL_ATON_STAI_POST_ATON_DEINIT_NAME
+ 122:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** extern int LL_ATON_STAI_POST_ATON_DEINIT_NAME(void);
+ 123:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define __LL_ATON_STAI_POST_ATON_DEINIT() LL_ATON_STAI_POST_ATON_DEINIT_NAME()
+ 124:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif // LL_ATON_STAI_POST_ATON_DEINIT_NAME
+ 125:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 126:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /*****************************************************************************/
+ 127:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /** Runtime callback variables                                              **/
+ 128:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /*****************************************************************************/
+ 129:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** static stai_event_cb _g_stai_aton_rt_callback = NULL;
+ 130:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** static void *_g_stai_aton_rt_cb_cookie = NULL;
+ 131:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 132:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /*****************************************************************************/
+ 133:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /**  Helper function (for callbacks)                                        **/
+ 134:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /*****************************************************************************/
+ 135:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** static void _stai_aton_internal_rt_callback(LL_ATON_RT_Callbacktype_t ctype)
+ 136:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+  34              		.loc 1 136 1 view -0
+  35              		.cfi_startproc
+  36              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 4
+
+
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+  38              		@ link register save eliminated.
+ 137:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (_g_stai_aton_rt_callback != NULL)
+  39              		.loc 1 137 3 view .LVU1
+  40              		.loc 1 137 32 is_stmt 0 view .LVU2
+  41 0000 044B     		ldr	r3, .L3
+ 136:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (_g_stai_aton_rt_callback != NULL)
+  42              		.loc 1 136 1 view .LVU3
+  43 0002 0146     		mov	r1, r0
+  44              		.loc 1 137 32 view .LVU4
+  45 0004 1B68     		ldr	r3, [r3]
+  46              		.loc 1 137 6 view .LVU5
+  47 0006 1BB1     		cbz	r3, .L1
+ 138:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 139:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     _g_stai_aton_rt_callback(_g_stai_aton_rt_cb_cookie, ctype, NULL);
+  48              		.loc 1 139 5 is_stmt 1 view .LVU6
+  49 0008 0348     		ldr	r0, .L3+4
+  50              	.LVL1:
+  51              		.loc 1 139 5 is_stmt 0 view .LVU7
+  52 000a 0022     		movs	r2, #0
+  53 000c 0068     		ldr	r0, [r0]
+  54 000e 1847     		bx	r3	@ indirect register sibling call
+  55              	.LVL2:
+  56              	.L1:
+ 140:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 141:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+  57              		.loc 1 141 1 view .LVU8
+  58 0010 7047     		bx	lr
+  59              	.L4:
+  60 0012 00BF     		.align	2
+  61              	.L3:
+  62 0014 00000000 		.word	_g_stai_aton_rt_callback
+  63 0018 00000000 		.word	_g_stai_aton_rt_cb_cookie
+  64              		.cfi_endproc
+  65              	.LFE314:
+  67              		.section	.text._stai_aton_internal_epoch_block_callback,"ax",%progbits
+  68              		.align	1
+  69              		.global	_stai_aton_internal_epoch_block_callback
+  70              		.syntax unified
+  71              		.thumb
+  72              		.thumb_func
+  74              	_stai_aton_internal_epoch_block_callback:
+  75              	.LVL3:
+  76              	.LFB315:
+ 142:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 143:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_INTERNAL_ENTRY
+ 144:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** void _stai_aton_internal_epoch_block_callback(LL_ATON_RT_Callbacktype_t ctype, const NN_Instance_Ty
+ 145:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                                               const EpochBlock_ItemTypeDef *epoch_block)
+ 146:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+  77              		.loc 1 146 1 is_stmt 1 view -0
+  78              		.cfi_startproc
+  79              		@ args = 0, pretend = 0, frame = 0
+  80              		@ frame_needed = 0, uses_anonymous_args = 0
+  81              		@ link register save eliminated.
+ 147:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT(nn_instance != NULL);
+  82              		.loc 1 147 3 view .LVU10
+  83              		.loc 1 147 3 view .LVU11
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 5
+
+
+  84              		.loc 1 147 3 view .LVU12
+  85              		.loc 1 147 35 view .LVU13
+ 148:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _stai_aton_context *stai_nn_ctx =
+  86              		.loc 1 148 3 view .LVU14
+ 149:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       (_stai_aton_context *)((void *)nn_instance) - offsetof(_stai_aton_context, network_instance);
+ 150:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 151:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (stai_nn_ctx->callback != NULL)
+  87              		.loc 1 151 3 view .LVU15
+ 146:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT(nn_instance != NULL);
+  88              		.loc 1 146 1 is_stmt 0 view .LVU16
+  89 0000 10B4     		push	{r4}
+  90              		.cfi_def_cfa_offset 4
+  91              		.cfi_offset 4, -4
+  92              		.loc 1 151 18 view .LVU17
+  93 0002 0C6B     		ldr	r4, [r1, #48]
+ 146:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT(nn_instance != NULL);
+  94              		.loc 1 146 1 view .LVU18
+  95 0004 0B46     		mov	r3, r1
+  96              		.loc 1 151 6 view .LVU19
+  97 0006 2CB1     		cbz	r4, .L5
+ 152:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 153:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     stai_nn_ctx->callback(stai_nn_ctx->callback_cookie, ctype, (const void *)epoch_block);
+  98              		.loc 1 153 5 is_stmt 1 view .LVU20
+  99 0008 0146     		mov	r1, r0
+ 100              	.LVL4:
+ 101              		.loc 1 153 5 is_stmt 0 view .LVU21
+ 102 000a 586B     		ldr	r0, [r3, #52]
+ 103              	.LVL5:
+ 104              		.loc 1 153 5 view .LVU22
+ 105 000c 2346     		mov	r3, r4
+ 106              	.LVL6:
+ 154:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 155:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 107              		.loc 1 155 1 view .LVU23
+ 108 000e 5DF8044B 		ldr	r4, [sp], #4
+ 109              		.cfi_remember_state
+ 110              		.cfi_restore 4
+ 111              		.cfi_def_cfa_offset 0
+ 153:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 112              		.loc 1 153 5 view .LVU24
+ 113 0012 1847     		bx	r3	@ indirect register sibling call
+ 114              	.LVL7:
+ 115              	.L5:
+ 116              		.cfi_restore_state
+ 117              		.loc 1 155 1 view .LVU25
+ 118 0014 5DF8044B 		ldr	r4, [sp], #4
+ 119              		.cfi_restore 4
+ 120              		.cfi_def_cfa_offset 0
+ 121 0018 7047     		bx	lr
+ 122              		.cfi_endproc
+ 123              	.LFE315:
+ 125              		.section	.text.stai_runtime_set_callback,"ax",%progbits
+ 126              		.align	1
+ 127              		.global	stai_runtime_set_callback
+ 128              		.syntax unified
+ 129              		.thumb
+ 130              		.thumb_func
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 6
+
+
+ 132              	stai_runtime_set_callback:
+ 133              	.LVL8:
+ 134              	.LFB316:
+ 156:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 157:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /*****************************************************************************/
+ 158:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /**  Public ST.AI APIs                                                       **/
+ 159:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /*****************************************************************************/
+ 160:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 161:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_runtime_set_callback(const stai_event_cb cb, void *cb_cookie)
+ 162:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 135              		.loc 1 162 1 is_stmt 1 view -0
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 0
+ 138              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_callback = cb;
+ 139              		.loc 1 163 3 view .LVU27
+ 162:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_callback = cb;
+ 140              		.loc 1 162 1 is_stmt 0 view .LVU28
+ 141 0000 08B5     		push	{r3, lr}
+ 142              		.cfi_def_cfa_offset 8
+ 143              		.cfi_offset 3, -8
+ 144              		.cfi_offset 14, -4
+ 145              		.loc 1 163 28 view .LVU29
+ 146 0002 064B     		ldr	r3, .L11
+ 164:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_cb_cookie = cb_cookie;
+ 165:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 166:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_SetRuntimeCallback((_g_stai_aton_rt_callback != NULL) ? _stai_aton_internal_rt_callbac
+ 147              		.loc 1 166 3 discriminator 1 view .LVU30
+ 148 0004 0028     		cmp	r0, #0
+ 163:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_cb_cookie = cb_cookie;
+ 149              		.loc 1 163 28 view .LVU31
+ 150 0006 1860     		str	r0, [r3]
+ 164:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_cb_cookie = cb_cookie;
+ 151              		.loc 1 164 3 is_stmt 1 view .LVU32
+ 164:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_cb_cookie = cb_cookie;
+ 152              		.loc 1 164 29 is_stmt 0 view .LVU33
+ 153 0008 054B     		ldr	r3, .L11+4
+ 154 000a 1960     		str	r1, [r3]
+ 155              		.loc 1 166 3 is_stmt 1 view .LVU34
+ 156              		.loc 1 166 3 is_stmt 0 discriminator 4 view .LVU35
+ 157 000c 054B     		ldr	r3, .L11+8
+ 158 000e 18BF     		it	ne
+ 159 0010 1846     		movne	r0, r3
+ 160              	.LVL9:
+ 161              		.loc 1 166 3 discriminator 4 view .LVU36
+ 162 0012 FFF7FEFF 		bl	LL_ATON_RT_SetRuntimeCallback
+ 163              	.LVL10:
+ 167:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 168:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_SUCCESS;
+ 164              		.loc 1 168 3 is_stmt 1 view .LVU37
+ 169:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 165              		.loc 1 169 1 is_stmt 0 view .LVU38
+ 166 0016 0020     		movs	r0, #0
+ 167 0018 08BD     		pop	{r3, pc}
+ 168              	.L12:
+ 169 001a 00BF     		.align	2
+ 170              	.L11:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 7
+
+
+ 171 001c 00000000 		.word	_g_stai_aton_rt_callback
+ 172 0020 00000000 		.word	_g_stai_aton_rt_cb_cookie
+ 173 0024 00000000 		.word	_stai_aton_internal_rt_callback
+ 174              		.cfi_endproc
+ 175              	.LFE316:
+ 177              		.section	.text.stai_runtime_init,"ax",%progbits
+ 178              		.align	1
+ 179              		.global	stai_runtime_init
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 184              	stai_runtime_init:
+ 185              	.LFB317:
+ 170:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 171:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 172:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_runtime_init(void)
+ 173:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 186              		.loc 1 173 1 is_stmt 1 view -0
+ 187              		.cfi_startproc
+ 188              		@ args = 0, pretend = 0, frame = 0
+ 189              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* Execute (eventual) pre init code */
+ 175:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (__LL_ATON_STAI_PRE_ATON_INIT() != 0)
+ 190              		.loc 1 175 3 view .LVU40
+ 176:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 177:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     return STAI_ERROR_STAI_INIT_FAILED;
+ 178:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 179:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 180:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* Initialize ATON/N6 runtime */
+ 181:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_RuntimeInit();
+ 191              		.loc 1 181 3 view .LVU41
+ 173:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* Execute (eventual) pre init code */
+ 192              		.loc 1 173 1 is_stmt 0 view .LVU42
+ 193 0000 08B5     		push	{r3, lr}
+ 194              		.cfi_def_cfa_offset 8
+ 195              		.cfi_offset 3, -8
+ 196              		.cfi_offset 14, -4
+ 197              		.loc 1 181 3 view .LVU43
+ 198 0002 FFF7FEFF 		bl	LL_ATON_RT_RuntimeInit
+ 199              	.LVL11:
+ 182:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_SUCCESS;
+ 200              		.loc 1 182 3 is_stmt 1 view .LVU44
+ 183:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 201              		.loc 1 183 1 is_stmt 0 view .LVU45
+ 202 0006 0020     		movs	r0, #0
+ 203 0008 08BD     		pop	{r3, pc}
+ 204              		.cfi_endproc
+ 205              	.LFE317:
+ 207              		.section	.text.stai_runtime_deinit,"ax",%progbits
+ 208              		.align	1
+ 209              		.global	stai_runtime_deinit
+ 210              		.syntax unified
+ 211              		.thumb
+ 212              		.thumb_func
+ 214              	stai_runtime_deinit:
+ 215              	.LFB318:
+ 184:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 8
+
+
+ 185:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 186:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_runtime_deinit(void)
+ 187:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 216              		.loc 1 187 1 is_stmt 1 view -0
+ 217              		.cfi_startproc
+ 218              		@ args = 0, pretend = 0, frame = 0
+ 219              		@ frame_needed = 0, uses_anonymous_args = 0
+ 188:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* De-init ATON/N6 runtime */
+ 189:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_RuntimeDeInit();
+ 220              		.loc 1 189 3 view .LVU47
+ 187:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* De-init ATON/N6 runtime */
+ 221              		.loc 1 187 1 is_stmt 0 view .LVU48
+ 222 0000 10B5     		push	{r4, lr}
+ 223              		.cfi_def_cfa_offset 8
+ 224              		.cfi_offset 4, -8
+ 225              		.cfi_offset 14, -4
+ 190:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 191:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* Execute (eventual) post de-init code */
+ 192:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   int err = __LL_ATON_STAI_POST_ATON_DEINIT();
+ 193:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 194:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* Reset callbacks */
+ 195:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_callback = NULL;
+ 226              		.loc 1 195 28 view .LVU49
+ 227 0002 0024     		movs	r4, #0
+ 189:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 228              		.loc 1 189 3 view .LVU50
+ 229 0004 FFF7FEFF 		bl	LL_ATON_RT_RuntimeDeInit
+ 230              	.LVL12:
+ 192:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 231              		.loc 1 192 3 is_stmt 1 view .LVU51
+ 232              		.loc 1 195 3 view .LVU52
+ 233              		.loc 1 195 28 is_stmt 0 view .LVU53
+ 234 0008 044B     		ldr	r3, .L15
+ 196:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_cb_cookie = NULL;
+ 197:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_SetRuntimeCallback(NULL);
+ 235              		.loc 1 197 3 view .LVU54
+ 236 000a 2046     		mov	r0, r4
+ 195:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_cb_cookie = NULL;
+ 237              		.loc 1 195 28 view .LVU55
+ 238 000c 1C60     		str	r4, [r3]
+ 196:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_cb_cookie = NULL;
+ 239              		.loc 1 196 3 is_stmt 1 view .LVU56
+ 196:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _g_stai_aton_rt_cb_cookie = NULL;
+ 240              		.loc 1 196 29 is_stmt 0 view .LVU57
+ 241 000e 044B     		ldr	r3, .L15+4
+ 242 0010 1C60     		str	r4, [r3]
+ 243              		.loc 1 197 3 is_stmt 1 view .LVU58
+ 244 0012 FFF7FEFF 		bl	LL_ATON_RT_SetRuntimeCallback
+ 245              	.LVL13:
+ 198:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 199:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #ifdef STAI_ATON_ZYNQ
+ 200:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   // assuming zynq-based platform test harness & `stai_app_*.cpp` based application
+ 201:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   exit(err); // force exit status to test results check return value
+ 202:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif       // STAI_ATON_ZYNQ
+ 203:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 204:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (err != 0)
+ 246              		.loc 1 204 3 view .LVU59
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 9
+
+
+ 205:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 206:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     return STAI_ERROR_STAI_DEINIT_FAILED;
+ 207:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 208:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   else
+ 209:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 210:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     return STAI_SUCCESS;
+ 247              		.loc 1 210 5 view .LVU60
+ 211:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 212:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 248              		.loc 1 212 1 is_stmt 0 view .LVU61
+ 249 0016 2046     		mov	r0, r4
+ 250 0018 10BD     		pop	{r4, pc}
+ 251              	.L16:
+ 252 001a 00BF     		.align	2
+ 253              	.L15:
+ 254 001c 00000000 		.word	_g_stai_aton_rt_callback
+ 255 0020 00000000 		.word	_g_stai_aton_rt_cb_cookie
+ 256              		.cfi_endproc
+ 257              	.LFE318:
+ 259              		.section	.text.stai_runtime_get_info,"ax",%progbits
+ 260              		.align	1
+ 261              		.global	stai_runtime_get_info
+ 262              		.syntax unified
+ 263              		.thumb
+ 264              		.thumb_func
+ 266              	stai_runtime_get_info:
+ 267              	.LVL14:
+ 268              	.LFB319:
+ 213:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 214:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* runtime build info bit shifts */
+ 215:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_PLAT_BSHIFT  0
+ 216:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_OSAL_BSHIFT  (STAI_RT_PLAT_BSHIFT + LL_ATON_CONFIG_PLAT_BSIZE)
+ 217:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_MODE_BSHIFT  (STAI_RT_OSAL_BSHIFT + LL_ATON_CONFIG_OSAL_BSIZE)
+ 218:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_BINFO_BSHIFT (STAI_RT_MODE_BSHIFT + LL_ATON_CONFIG_RT_MODE_BSIZE)
+ 219:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_CLKG_BSHIFT  (STAI_RT_BINFO_BSHIFT + LL_ATON_CONFIG_BINFO_BSIZE)
+ 220:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_SWF_BSHIFT   (STAI_RT_CLKG_BSHIFT + LL_ATON_CONFIG_CLKG_BSIZE)
+ 221:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_DD_BSHIFT    (STAI_RT_SWF_BSHIFT + LL_ATON_CONFIG_SWF_BSIZE)
+ 222:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_EBDBG_BSHIFT (STAI_RT_DD_BSHIFT + LL_ATON_CONFIG_DD_BSIZE)
+ 223:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 224:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /* runtime build info size masks */
+ 225:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_PLAT_MASK  ((1 << LL_ATON_CONFIG_PLAT_BSIZE) - 1)
+ 226:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_OSAL_MASK  ((1 << LL_ATON_CONFIG_OSAL_BSIZE) - 1)
+ 227:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_MODE_MASK  ((1 << LL_ATON_CONFIG_RT_MODE_BSIZE) - 1)
+ 228:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_BINFO_MASK ((1 << LL_ATON_CONFIG_BINFO_BSIZE) - 1)
+ 229:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_CLKG_MASK  ((1 << LL_ATON_CONFIG_CLKG_BSIZE) - 1)
+ 230:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_SWF_MASK   ((1 << LL_ATON_CONFIG_SWF_BSIZE) - 1)
+ 231:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_DD_MASK    ((1 << LL_ATON_CONFIG_DD_BSIZE) - 1)
+ 232:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #define STAI_RT_EBDBG_MASK ((1 << LL_ATON_CONFIG_EBDBG_BSIZE) - 1)
+ 233:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 234:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 235:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_runtime_get_info(stai_runtime_info *info)
+ 236:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 269              		.loc 1 236 1 is_stmt 1 view -0
+ 270              		.cfi_startproc
+ 271              		@ args = 0, pretend = 0, frame = 0
+ 272              		@ frame_needed = 0, uses_anonymous_args = 0
+ 237:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (info)
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 10
+
+
+ 273              		.loc 1 237 3 view .LVU63
+ 236:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (info)
+ 274              		.loc 1 236 1 is_stmt 0 view .LVU64
+ 275 0000 30B5     		push	{r4, r5, lr}
+ 276              		.cfi_def_cfa_offset 12
+ 277              		.cfi_offset 4, -12
+ 278              		.cfi_offset 5, -8
+ 279              		.cfi_offset 14, -4
+ 280              		.loc 1 237 6 view .LVU65
+ 281 0002 0446     		mov	r4, r0
+ 282 0004 40B1     		cbz	r0, .L19
+ 283              	.LBB10:
+ 238:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 239:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     static const stai_runtime_info _info = {
+ 284              		.loc 1 239 5 is_stmt 1 view .LVU66
+ 240:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       .runtime_version = STAI_INIT_VERSION(LL_ATON_VERSION_MAJOR, LL_ATON_VERSION_MINOR, LL_ATON_VE
+ 241:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       .tools_version = STAI_INIT_VERSION(STAI_TOOLS_VERSION_MAJOR, STAI_TOOLS_VERSION_MINOR, STAI_T
+ 242:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       .api_version = STAI_INIT_VERSION(STAI_API_VERSION_MAJOR, STAI_API_VERSION_MINOR, STAI_API_VER
+ 243:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 244:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       .runtime_build = (((LL_ATON_PLATFORM & STAI_RT_PLAT_MASK) << STAI_RT_PLAT_BSHIFT) |
+ 245:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                         ((LL_ATON_OSAL & STAI_RT_OSAL_MASK) << STAI_RT_OSAL_BSHIFT) |
+ 246:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                         ((LL_ATON_RT_MODE & STAI_RT_MODE_MASK) << STAI_RT_MODE_BSHIFT) |
+ 247:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                         ((LL_ATON_DBG_BUFFER_INFO_EXCLUDED & STAI_RT_BINFO_MASK) << STAI_RT_BINFO_B
+ 248:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                         ((LL_ATON_ENABLE_CLOCK_GATING & STAI_RT_CLKG_MASK) << STAI_RT_CLKG_BSHIFT)
+ 249:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #if LL_ATON_SW_FALLBACK == 1
+ 250:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                         | (1 << STAI_RT_SWF_BSHIFT)
+ 251:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif // LL_ATON_SW_FALLBACK == 1
+ 252:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #ifdef LL_ATON_DUMP_DEBUG_API
+ 253:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                         | (1 << STAI_RT_DD_BSHIFT)
+ 254:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif // LL_ATON_DUMP_DEBUG_API
+ 255:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #ifdef LL_ATON_EB_DBG_INFO
+ 256:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                         | (1 << STAI_RT_EBDBG_BSHIFT)
+ 257:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** #endif // LL_ATON_EB_DBG_INFO
+ 258:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****                             ),
+ 259:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 260:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       .compiler_id = _STAI_COMPILER_ID,
+ 261:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       .compiler_desc = _STAI_COMPILER_DESC,
+ 262:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     };
+ 263:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 264:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     *info = _info;
+ 285              		.loc 1 264 5 view .LVU67
+ 286              		.loc 1 264 11 is_stmt 0 view .LVU68
+ 287 0006 054D     		ldr	r5, .L20
+ 288 0008 0FCD     		ldmia	r5!, {r0, r1, r2, r3}
+ 289              	.LVL15:
+ 290              		.loc 1 264 11 view .LVU69
+ 291 000a 0FC4     		stmia	r4!, {r0, r1, r2, r3}
+ 292              	.LVL16:
+ 293              		.loc 1 264 11 view .LVU70
+ 294 000c 95E80300 		ldm	r5, {r0, r1}
+ 295 0010 84E80300 		stm	r4, {r0, r1}
+ 265:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     return STAI_SUCCESS;
+ 296              		.loc 1 265 5 is_stmt 1 view .LVU71
+ 297              		.loc 1 265 12 is_stmt 0 view .LVU72
+ 298 0014 0020     		movs	r0, #0
+ 299              	.LVL17:
+ 300              	.L17:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 11
+
+
+ 301              		.loc 1 265 12 view .LVU73
+ 302              	.LBE10:
+ 266:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 267:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 268:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_ERROR_NETWORK_INVALID_API_ARGUMENTS;
+ 269:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 303              		.loc 1 269 1 view .LVU74
+ 304 0016 30BD     		pop	{r4, r5, pc}
+ 305              	.LVL18:
+ 306              	.L19:
+ 268:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 307              		.loc 1 268 10 view .LVU75
+ 308 0018 0148     		ldr	r0, .L20+4
+ 309              	.LVL19:
+ 268:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 310              		.loc 1 268 10 view .LVU76
+ 311 001a FCE7     		b	.L17
+ 312              	.L21:
+ 313              		.align	2
+ 314              	.L20:
+ 315 001c 00000000 		.word	_info.1
+ 316 0020 01000200 		.word	131073
+ 317              		.cfi_endproc
+ 318              	.LFE319:
+ 320              		.section	.text.stai_cache_mcu_clean_range,"ax",%progbits
+ 321              		.align	1
+ 322              		.global	stai_cache_mcu_clean_range
+ 323              		.syntax unified
+ 324              		.thumb
+ 325              		.thumb_func
+ 327              	stai_cache_mcu_clean_range:
+ 328              	.LVL20:
+ 329              	.LFB320:
+ 270:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 271:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 272:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_cache_mcu_clean_range(uintptr_t virtual_addr, stai_size size)
+ 273:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 330              		.loc 1 273 1 is_stmt 1 view -0
+ 331              		.cfi_startproc
+ 332              		@ args = 0, pretend = 0, frame = 0
+ 333              		@ frame_needed = 0, uses_anonymous_args = 0
+ 274:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_MCU_Clean_Range(virtual_addr, size);
+ 334              		.loc 1 274 3 view .LVU78
+ 335              	.LBB13:
+ 336              	.LBI13:
+ 337              		.file 2 "Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h"
+   1:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** /**
+   2:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  ******************************************************************************
+   3:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * @file    ll_aton_caches_interface.h
+   4:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * @author  SRA Artificial Intelligence & Embedded Architectures
+   5:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * @brief   Header file for defining an implementing generic cache handling
+   6:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  *          functions for the application writer
+   7:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  ******************************************************************************
+   8:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * @attention
+   9:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  *
+  10:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * Copyright (c) 2024 STMicroelectronics.
+  11:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * All rights reserved.
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 12
+
+
+  12:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  *
+  13:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * This software is licensed under terms that can be found in the LICENSE file
+  14:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * in the root directory of this software component.
+  15:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  *
+  17:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  ******************************************************************************
+  18:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****  */
+  19:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  20:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #ifndef __LL_ATON_CACHES_H
+  21:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #define __LL_ATON_CACHES_H
+  22:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  23:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #include <stdint.h>
+  24:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  25:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #ifdef __cplusplus
+  26:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** extern "C"
+  27:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** {
+  28:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #endif
+  29:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  30:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #include "ll_aton_osal.h"
+  31:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #include "ll_aton_platform.h"
+  32:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  33:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #if !defined(BUILD_AI_NETWORK_RELOC)
+  34:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  35:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** #if (LL_ATON_PLATFORM == LL_ATON_PLAT_STM32N6)
+  36:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  37:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   /*** MCU cache maintenance functions ***/
+  38:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  39:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   /**
+  40:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @brief perform MCU cache clean maintenance operation on an address range
+  41:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @details whenever the content of a buffer is changed by the application (which is especially t
+  42:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *          buffers) cache maintenance MUST be taken into account before being able to run the ne
+  43:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] virtual_addr start address (host-side/virtual) of address range
+  44:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] size size of address range
+  45:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *
+  46:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note the address range should fulfill alignment constraints with respect to the MCU cache lin
+  47:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       for both its `address` & `size` (to better correspond to what this operation will actual
+  48:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note this function is intended to handle the case where a buffer has been filled by the MCU/p
+  49:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       passing thru the MCU cache) and should be called AFTER that the buffer has been filled
+  50:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    */
+  51:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   static inline void LL_ATON_Cache_MCU_Clean_Range(uintptr_t virtual_addr, uint32_t size)
+ 338              		.loc 2 51 22 view .LVU79
+ 339              	.LBB14:
+  52:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   {
+  53:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_LOCK_MCU_CACHE();
+ 340              		.loc 2 53 34 view .LVU80
+  54:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     mcu_cache_clean_range(virtual_addr, virtual_addr + size);
+ 341              		.loc 2 54 5 view .LVU81
+ 342              	.LBE14:
+ 343              	.LBE13:
+ 273:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_MCU_Clean_Range(virtual_addr, size);
+ 344              		.loc 1 273 1 is_stmt 0 view .LVU82
+ 345 0000 08B5     		push	{r3, lr}
+ 346              		.cfi_def_cfa_offset 8
+ 347              		.cfi_offset 3, -8
+ 348              		.cfi_offset 14, -4
+ 349              	.LBB16:
+ 350              	.LBB15:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 13
+
+
+ 351              		.loc 2 54 5 view .LVU83
+ 352 0002 0144     		add	r1, r1, r0
+ 353              	.LVL21:
+ 354              		.loc 2 54 5 view .LVU84
+ 355 0004 FFF7FEFF 		bl	mcu_cache_clean_range
+ 356              	.LVL22:
+  55:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_UNLOCK_MCU_CACHE();
+ 357              		.loc 2 55 36 is_stmt 1 view .LVU85
+ 358              		.loc 2 55 36 is_stmt 0 view .LVU86
+ 359              	.LBE15:
+ 360              	.LBE16:
+ 275:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_SUCCESS;
+ 361              		.loc 1 275 3 is_stmt 1 view .LVU87
+ 276:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 362              		.loc 1 276 1 is_stmt 0 view .LVU88
+ 363 0008 0020     		movs	r0, #0
+ 364 000a 08BD     		pop	{r3, pc}
+ 365              		.cfi_endproc
+ 366              	.LFE320:
+ 368              		.section	.text.stai_cache_mcu_invalidate_range,"ax",%progbits
+ 369              		.align	1
+ 370              		.global	stai_cache_mcu_invalidate_range
+ 371              		.syntax unified
+ 372              		.thumb
+ 373              		.thumb_func
+ 375              	stai_cache_mcu_invalidate_range:
+ 376              	.LVL23:
+ 377              	.LFB321:
+ 277:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 278:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 279:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_cache_mcu_invalidate_range(uintptr_t virtual_addr, stai_size size)
+ 280:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 378              		.loc 1 280 1 is_stmt 1 view -0
+ 379              		.cfi_startproc
+ 380              		@ args = 0, pretend = 0, frame = 0
+ 381              		@ frame_needed = 0, uses_anonymous_args = 0
+ 281:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_MCU_Invalidate_Range(virtual_addr, size);
+ 382              		.loc 1 281 3 view .LVU90
+ 383              	.LBB19:
+ 384              	.LBI19:
+  56:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   }
+  57:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  58:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   /**
+  59:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @brief perform MCU cache invalidate maintenance operation on an address range
+  60:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @details whenever the content of a buffer is changed by the application (which is especially t
+  61:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *          buffers) cache maintenance MUST be taken into account before being able to run the ne
+  62:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] virtual_addr start address (host-side/virtual) of address range
+  63:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] size size of address range
+  64:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *
+  65:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note the address range should fulfill alignment constraints with respect to the MCU cache lin
+  66:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       for both its `address` & `size` (to better correspond to what this operation will actual
+  67:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note this function is intended to handle the case where a buffer has been filled by-passing t
+  68:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       cache (e.g. using a DMA) and should be called BEFORE the buffer gets filled
+  69:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    */
+  70:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   static inline void LL_ATON_Cache_MCU_Invalidate_Range(uintptr_t virtual_addr, uint32_t size)
+ 385              		.loc 2 70 22 view .LVU91
+ 386              	.LBB20:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 14
+
+
+  71:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   {
+  72:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_LOCK_MCU_CACHE();
+ 387              		.loc 2 72 34 view .LVU92
+  73:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     mcu_cache_invalidate_range(virtual_addr, virtual_addr + size);
+ 388              		.loc 2 73 5 view .LVU93
+ 389              	.LBE20:
+ 390              	.LBE19:
+ 280:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_MCU_Invalidate_Range(virtual_addr, size);
+ 391              		.loc 1 280 1 is_stmt 0 view .LVU94
+ 392 0000 08B5     		push	{r3, lr}
+ 393              		.cfi_def_cfa_offset 8
+ 394              		.cfi_offset 3, -8
+ 395              		.cfi_offset 14, -4
+ 396              	.LBB22:
+ 397              	.LBB21:
+ 398              		.loc 2 73 5 view .LVU95
+ 399 0002 0144     		add	r1, r1, r0
+ 400              	.LVL24:
+ 401              		.loc 2 73 5 view .LVU96
+ 402 0004 FFF7FEFF 		bl	mcu_cache_invalidate_range
+ 403              	.LVL25:
+  74:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_UNLOCK_MCU_CACHE();
+ 404              		.loc 2 74 36 is_stmt 1 view .LVU97
+ 405              		.loc 2 74 36 is_stmt 0 view .LVU98
+ 406              	.LBE21:
+ 407              	.LBE22:
+ 282:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_SUCCESS;
+ 408              		.loc 1 282 3 is_stmt 1 view .LVU99
+ 283:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 409              		.loc 1 283 1 is_stmt 0 view .LVU100
+ 410 0008 0020     		movs	r0, #0
+ 411 000a 08BD     		pop	{r3, pc}
+ 412              		.cfi_endproc
+ 413              	.LFE321:
+ 415              		.section	.text.stai_ext_cache_npu_clean_range,"ax",%progbits
+ 416              		.align	1
+ 417              		.global	stai_ext_cache_npu_clean_range
+ 418              		.syntax unified
+ 419              		.thumb
+ 420              		.thumb_func
+ 422              	stai_ext_cache_npu_clean_range:
+ 423              	.LVL26:
+ 424              	.LFB322:
+ 284:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 285:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 286:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_ext_cache_npu_clean_range(uintptr_t virtual_addr, stai_size size)
+ 287:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 425              		.loc 1 287 1 is_stmt 1 view -0
+ 426              		.cfi_startproc
+ 427              		@ args = 0, pretend = 0, frame = 0
+ 428              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_NPU_Clean_Range(virtual_addr, size);
+ 429              		.loc 1 288 3 view .LVU102
+ 287:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_NPU_Clean_Range(virtual_addr, size);
+ 430              		.loc 1 287 1 is_stmt 0 view .LVU103
+ 431 0000 38B5     		push	{r3, r4, r5, lr}
+ 432              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 15
+
+
+ 433              		.cfi_offset 3, -16
+ 434              		.cfi_offset 4, -12
+ 435              		.cfi_offset 5, -8
+ 436              		.cfi_offset 14, -4
+ 287:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_NPU_Clean_Range(virtual_addr, size);
+ 437              		.loc 1 287 1 view .LVU104
+ 438 0002 0446     		mov	r4, r0
+ 439              	.LVL27:
+ 287:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_NPU_Clean_Range(virtual_addr, size);
+ 440              		.loc 1 287 1 view .LVU105
+ 441 0004 0D46     		mov	r5, r1
+ 442              	.LVL28:
+ 443              	.LBB25:
+ 444              	.LBI25:
+  75:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   }
+  76:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  77:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   /**
+  78:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @brief perform MCU cache clean & invalidate maintenance operation on an address range
+  79:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @details whenever the content of a buffer is changed by the application (which is especially t
+  80:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *          buffers) cache maintenance MUST be taken into account before being able to run the ne
+  81:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] virtual_addr start address (host-side/virtual) of address range
+  82:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] size size of address range
+  83:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *
+  84:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note the address range should fulfill alignment constraints with respect to the MCU cache lin
+  85:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       for both its `address` & `size` (to better correspond to what this operation will actual
+  86:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note this function is intended to handle the case where a buffer has been filled by the MCU/p
+  87:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       (such passing thru the MCU cache) and is gonna to be modified immediately afterwards by-
+  88:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       the MCU/processor cache (e.g. using a DMA). It should be called AFTER that the buffer ha
+  89:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       filled
+  90:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    */
+  91:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   static inline void LL_ATON_Cache_MCU_Clean_Invalidate_Range(uintptr_t virtual_addr, uint32_t size
+  92:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   {
+  93:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_LOCK_MCU_CACHE();
+  94:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     mcu_cache_clean_invalidate_range(virtual_addr, virtual_addr + size);
+  95:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_UNLOCK_MCU_CACHE();
+  96:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   }
+  97:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+  98:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   /*** NPU cache maintenance functions ***/
+  99:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+ 100:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   /**
+ 101:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @brief perform NPU cache clean maintenance operation on an address range
+ 102:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @details whenever the content of a buffer is changed by the application (which is especially t
+ 103:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *          buffers) cache maintenance MUST be taken into account before being able to run the ne
+ 104:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] address start address (host-side/virtual) of address range
+ 105:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] size size of address range
+ 106:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *
+ 107:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note this cache maintenance function needs only be called for buffers which are NPU cacheable
+ 108:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note the address range should fulfill alignment constraints with respect to the NPU cache lin
+ 109:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       for both its `address` & `size` (to better correspond to what this operation will actual
+ 110:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note this function is intended to handle the case where a buffer has been filled passing thru
+ 111:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       and should be called AFTER that the buffer has been filled
+ 112:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    */
+ 113:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   static inline void LL_ATON_Cache_NPU_Clean_Range(uintptr_t virtual_addr, uint32_t size)
+ 445              		.loc 2 113 22 is_stmt 1 view .LVU106
+ 446              	.LBB26:
+ 114:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   {
+ 115:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_LOCK_NPU_CACHE();
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 16
+
+
+ 447              		.loc 2 115 5 view .LVU107
+ 448 0006 FFF7FEFF 		bl	aton_osal_freertos_lock
+ 449              	.LVL29:
+ 116:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     npu_cache_clean_range(ATON_LIB_VIRTUAL_TO_PHYSICAL_ADDR(virtual_addr),
+ 450              		.loc 2 116 5 view .LVU108
+ 451 000a 2046     		mov	r0, r4
+ 452 000c 6119     		adds	r1, r4, r5
+ 453 000e FFF7FEFF 		bl	npu_cache_clean_range
+ 454              	.LVL30:
+ 117:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****                           ATON_LIB_VIRTUAL_TO_PHYSICAL_ADDR(virtual_addr + size));
+ 118:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_UNLOCK_NPU_CACHE();
+ 455              		.loc 2 118 5 view .LVU109
+ 456 0012 FFF7FEFF 		bl	aton_osal_freertos_unlock
+ 457              	.LVL31:
+ 458              		.loc 2 118 5 is_stmt 0 view .LVU110
+ 459              	.LBE26:
+ 460              	.LBE25:
+ 289:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_SUCCESS;
+ 461              		.loc 1 289 3 is_stmt 1 view .LVU111
+ 290:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 462              		.loc 1 290 1 is_stmt 0 view .LVU112
+ 463 0016 0020     		movs	r0, #0
+ 464 0018 38BD     		pop	{r3, r4, r5, pc}
+ 465              		.loc 1 290 1 view .LVU113
+ 466              		.cfi_endproc
+ 467              	.LFE322:
+ 469              		.section	.text.stai_ext_cache_npu_clean_invalidate_range,"ax",%progbits
+ 470              		.align	1
+ 471              		.global	stai_ext_cache_npu_clean_invalidate_range
+ 472              		.syntax unified
+ 473              		.thumb
+ 474              		.thumb_func
+ 476              	stai_ext_cache_npu_clean_invalidate_range:
+ 477              	.LVL32:
+ 478              	.LFB323:
+ 291:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 292:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 293:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_ext_cache_npu_clean_invalidate_range(uintptr_t virtual_addr, stai_size size)
+ 294:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 479              		.loc 1 294 1 is_stmt 1 view -0
+ 480              		.cfi_startproc
+ 481              		@ args = 0, pretend = 0, frame = 0
+ 482              		@ frame_needed = 0, uses_anonymous_args = 0
+ 295:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* NOTE: The ATON NPU cache does not provide a pure invalidate-range function, but only a clean-i
+ 296:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****      function! One has to take this into account when using `stai_ext_cache_npu_clean_invalidate_ra
+ 297:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_Cache_NPU_Clean_Invalidate_Range(virtual_addr, size);
+ 483              		.loc 1 297 3 view .LVU115
+ 294:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* NOTE: The ATON NPU cache does not provide a pure invalidate-range function, but only a clean-i
+ 484              		.loc 1 294 1 is_stmt 0 view .LVU116
+ 485 0000 38B5     		push	{r3, r4, r5, lr}
+ 486              		.cfi_def_cfa_offset 16
+ 487              		.cfi_offset 3, -16
+ 488              		.cfi_offset 4, -12
+ 489              		.cfi_offset 5, -8
+ 490              		.cfi_offset 14, -4
+ 294:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* NOTE: The ATON NPU cache does not provide a pure invalidate-range function, but only a clean-i
+ 491              		.loc 1 294 1 view .LVU117
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 17
+
+
+ 492 0002 0446     		mov	r4, r0
+ 493              	.LVL33:
+ 294:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* NOTE: The ATON NPU cache does not provide a pure invalidate-range function, but only a clean-i
+ 494              		.loc 1 294 1 view .LVU118
+ 495 0004 0D46     		mov	r5, r1
+ 496              	.LVL34:
+ 497              	.LBB29:
+ 498              	.LBI29:
+ 119:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   }
+ 120:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h **** 
+ 121:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   /**
+ 122:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @brief perform NPU cache clean & invalidate maintenance operation on an address range
+ 123:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @details whenever the content of a buffer is changed by the application (which is especially t
+ 124:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *          buffers) cache maintenance MUST be taken into account before being able to run the ne
+ 125:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] address start address (host-side/virtual) of address range
+ 126:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @param[in] size size of address range
+ 127:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *
+ 128:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note this cache maintenance function needs only be called for buffers which are NPU cacheable
+ 129:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note the address range should fulfill alignment constraints with respect to the NPU cache lin
+ 130:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       for both its `address` & `size` (to better correspond to what this operation will actual
+ 131:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note this function is intended to handle the case where a buffer is NPU cacheable and has bee
+ 132:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       the NPU cache and should be called BEFORE the buffer gets filled
+ 133:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    * @note the NPU cache provides only a "clean & invalidate range" (and not a - pure - "invalidate
+ 134:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       maintenance function which will be called by "stai_ext_cache_npu_clean_invalidate_range(
+ 135:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    *       even more important to call it BEFORE the buffer gets filled
+ 136:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****    */
+ 137:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   static inline void LL_ATON_Cache_NPU_Clean_Invalidate_Range(uintptr_t virtual_addr, uint32_t size
+ 499              		.loc 2 137 22 is_stmt 1 view .LVU119
+ 500              	.LBB30:
+ 138:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****   {
+ 139:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     /* NOTE: The ATON NPU cache does not provide a pure invalidate-range function, but only a clean
+ 140:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****        function! One has to take this into account when using `stai_ext_cache_npu_clean_invalidate_
+ 141:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_LOCK_NPU_CACHE();
+ 501              		.loc 2 141 5 view .LVU120
+ 502 0006 FFF7FEFF 		bl	aton_osal_freertos_lock
+ 503              	.LVL35:
+ 142:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     npu_cache_clean_invalidate_range(ATON_LIB_VIRTUAL_TO_PHYSICAL_ADDR(virtual_addr),
+ 504              		.loc 2 142 5 view .LVU121
+ 505 000a 2046     		mov	r0, r4
+ 506 000c 6119     		adds	r1, r4, r5
+ 507 000e FFF7FEFF 		bl	npu_cache_clean_invalidate_range
+ 508              	.LVL36:
+ 143:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****                                      ATON_LIB_VIRTUAL_TO_PHYSICAL_ADDR(virtual_addr + size));
+ 144:Lib/AI_Runtime/Npu/ll_aton/ll_aton_caches_interface.h ****     LL_ATON_OSAL_UNLOCK_NPU_CACHE();
+ 509              		.loc 2 144 5 view .LVU122
+ 510 0012 FFF7FEFF 		bl	aton_osal_freertos_unlock
+ 511              	.LVL37:
+ 512              		.loc 2 144 5 is_stmt 0 view .LVU123
+ 513              	.LBE30:
+ 514              	.LBE29:
+ 298:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_SUCCESS;
+ 515              		.loc 1 298 3 is_stmt 1 view .LVU124
+ 299:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 516              		.loc 1 299 1 is_stmt 0 view .LVU125
+ 517 0016 0020     		movs	r0, #0
+ 518 0018 38BD     		pop	{r3, r4, r5, pc}
+ 519              		.loc 1 299 1 view .LVU126
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 18
+
+
+ 520              		.cfi_endproc
+ 521              	.LFE323:
+ 523              		.section	.text.stai_ext_wfe,"ax",%progbits
+ 524              		.align	1
+ 525              		.global	stai_ext_wfe
+ 526              		.syntax unified
+ 527              		.thumb
+ 528              		.thumb_func
+ 530              	stai_ext_wfe:
+ 531              	.LFB324:
+ 300:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 301:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_API_ENTRY
+ 302:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code stai_ext_wfe(void)
+ 303:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 532              		.loc 1 303 1 is_stmt 1 view -0
+ 533              		.cfi_startproc
+ 534              		@ args = 0, pretend = 0, frame = 0
+ 535              		@ frame_needed = 0, uses_anonymous_args = 0
+ 304:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_OSAL_WFE();
+ 536              		.loc 1 304 3 view .LVU128
+ 303:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_OSAL_WFE();
+ 537              		.loc 1 303 1 is_stmt 0 view .LVU129
+ 538 0000 08B5     		push	{r3, lr}
+ 539              		.cfi_def_cfa_offset 8
+ 540              		.cfi_offset 3, -8
+ 541              		.cfi_offset 14, -4
+ 542              		.loc 1 304 3 view .LVU130
+ 543 0002 FFF7FEFF 		bl	aton_osal_freertos_wfe
+ 544              	.LVL38:
+ 305:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_SUCCESS;
+ 545              		.loc 1 305 3 is_stmt 1 view .LVU131
+ 306:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 546              		.loc 1 306 1 is_stmt 0 view .LVU132
+ 547 0006 0020     		movs	r0, #0
+ 548 0008 08BD     		pop	{r3, pc}
+ 549              		.cfi_endproc
+ 550              	.LFE324:
+ 552              		.section	.text.__ll_aton_stai_init_network_instance,"ax",%progbits
+ 553              		.align	1
+ 554              		.global	__ll_aton_stai_init_network_instance
+ 555              		.syntax unified
+ 556              		.thumb
+ 557              		.thumb_func
+ 559              	__ll_aton_stai_init_network_instance:
+ 560              	.LVL39:
+ 561              	.LFB325:
+ 307:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 308:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /*****************************************************************************/
+ 309:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /**  Internal stai APIs                                                     **/
+ 310:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** /*****************************************************************************/
+ 311:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_INTERNAL_ENTRY
+ 312:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** void __ll_aton_stai_init_network_instance(_stai_aton_context *nn_context)
+ 313:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 562              		.loc 1 313 1 is_stmt 1 view -0
+ 563              		.cfi_startproc
+ 564              		@ args = 0, pretend = 0, frame = 0
+ 565              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 19
+
+
+ 566              		@ link register save eliminated.
+ 314:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT((nn_context != NULL) && (nn_context->network_instance.network != NULL)); // may never
+ 567              		.loc 1 314 3 view .LVU134
+ 568              		.loc 1 314 3 view .LVU135
+ 569              		.loc 1 314 3 view .LVU136
+ 570              		.loc 1 314 86 view .LVU137
+ 315:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 316:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   NN_Instance_TypeDef *nn_instance_ptr = &nn_context->network_instance;
+ 571              		.loc 1 316 3 view .LVU138
+ 317:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_Init_Network(nn_instance_ptr);
+ 572              		.loc 1 317 3 view .LVU139
+ 573 0000 FFF7FEBF 		b	LL_ATON_RT_Init_Network
+ 574              	.LVL40:
+ 575              		.loc 1 317 3 is_stmt 0 view .LVU140
+ 576              		.cfi_endproc
+ 577              	.LFE325:
+ 579              		.section	.text.__ll_aton_stai_deinit_network_instance,"ax",%progbits
+ 580              		.align	1
+ 581              		.global	__ll_aton_stai_deinit_network_instance
+ 582              		.syntax unified
+ 583              		.thumb
+ 584              		.thumb_func
+ 586              	__ll_aton_stai_deinit_network_instance:
+ 587              	.LVL41:
+ 588              	.LFB326:
+ 318:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 319:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 320:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_INTERNAL_ENTRY
+ 321:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** void __ll_aton_stai_deinit_network_instance(_stai_aton_context *nn_context)
+ 322:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 589              		.loc 1 322 1 is_stmt 1 view -0
+ 590              		.cfi_startproc
+ 591              		@ args = 0, pretend = 0, frame = 0
+ 592              		@ frame_needed = 0, uses_anonymous_args = 0
+ 593              		@ link register save eliminated.
+ 323:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT((nn_context != NULL) && (nn_context->network_instance.network != NULL)); // may never
+ 594              		.loc 1 323 3 view .LVU142
+ 595              		.loc 1 323 3 view .LVU143
+ 596              		.loc 1 323 3 view .LVU144
+ 597              		.loc 1 323 86 view .LVU145
+ 324:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 325:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   NN_Instance_TypeDef *nn_instance_ptr = &nn_context->network_instance;
+ 598              		.loc 1 325 3 view .LVU146
+ 326:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_DeInit_Network(nn_instance_ptr);
+ 599              		.loc 1 326 3 view .LVU147
+ 600 0000 FFF7FEBF 		b	LL_ATON_RT_DeInit_Network
+ 601              	.LVL42:
+ 602              		.loc 1 326 3 is_stmt 0 view .LVU148
+ 603              		.cfi_endproc
+ 604              	.LFE326:
+ 606              		.section	.text.__ll_aton_stai_set_execution_status,"ax",%progbits
+ 607              		.align	1
+ 608              		.global	__ll_aton_stai_set_execution_status
+ 609              		.syntax unified
+ 610              		.thumb
+ 611              		.thumb_func
+ 613              	__ll_aton_stai_set_execution_status:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 20
+
+
+ 614              	.LVL43:
+ 615              	.LFB327:
+ 327:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 328:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 329:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_INTERNAL_ENTRY
+ 330:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** void __ll_aton_stai_set_execution_status(LL_ATON_RT_RetValues_t status, _stai_aton_context *nn_cont
+ 331:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 616              		.loc 1 331 1 is_stmt 1 view -0
+ 617              		.cfi_startproc
+ 618              		@ args = 0, pretend = 0, frame = 0
+ 619              		@ frame_needed = 0, uses_anonymous_args = 0
+ 620              		@ link register save eliminated.
+ 332:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT(nn_context != NULL);
+ 621              		.loc 1 332 3 view .LVU150
+ 622              		.loc 1 332 3 view .LVU151
+ 623              		.loc 1 332 3 view .LVU152
+ 624              		.loc 1 332 34 view .LVU153
+ 333:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 334:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   switch (status)
+ 625              		.loc 1 334 3 view .LVU154
+ 626 0000 0128     		cmp	r0, #1
+ 627 0002 05D0     		beq	.L30
+ 628 0004 0228     		cmp	r0, #2
+ 629 0006 05D0     		beq	.L31
+ 630 0008 08B9     		cbnz	r0, .L29
+ 335:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 336:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   case LL_ATON_RT_NO_WFE:
+ 337:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     nn_context->exec_status = STAI_RUNNING_NO_WFE;
+ 631              		.loc 1 337 5 view .LVU155
+ 632              		.loc 1 337 29 is_stmt 0 view .LVU156
+ 633 000a 1023     		movs	r3, #16
+ 634              	.L33:
+ 338:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 339:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   case LL_ATON_RT_WFE:
+ 340:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     nn_context->exec_status = STAI_RUNNING_WFE;
+ 341:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 342:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   case LL_ATON_RT_DONE:
+ 343:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     nn_context->exec_status = STAI_DONE;
+ 635              		.loc 1 343 29 view .LVU157
+ 636 000c 8B63     		str	r3, [r1, #56]
+ 344:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 637              		.loc 1 344 5 is_stmt 1 view .LVU158
+ 638              	.L29:
+ 345:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   default:
+ 346:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     STAI_ASSERT(false);
+ 347:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 348:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 349:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 639              		.loc 1 349 1 is_stmt 0 view .LVU159
+ 640 000e 7047     		bx	lr
+ 641              	.L30:
+ 340:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 642              		.loc 1 340 5 is_stmt 1 view .LVU160
+ 340:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 643              		.loc 1 340 29 is_stmt 0 view .LVU161
+ 644 0010 1123     		movs	r3, #17
+ 645 0012 FBE7     		b	.L33
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 21
+
+
+ 646              	.L31:
+ 343:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 647              		.loc 1 343 5 is_stmt 1 view .LVU162
+ 343:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 648              		.loc 1 343 29 is_stmt 0 view .LVU163
+ 649 0014 1223     		movs	r3, #18
+ 650 0016 F9E7     		b	.L33
+ 651              		.cfi_endproc
+ 652              	.LFE327:
+ 654              		.section	.text.__ll_aton_stai_get_execution_status,"ax",%progbits
+ 655              		.align	1
+ 656              		.global	__ll_aton_stai_get_execution_status
+ 657              		.syntax unified
+ 658              		.thumb
+ 659              		.thumb_func
+ 661              	__ll_aton_stai_get_execution_status:
+ 662              	.LVL44:
+ 663              	.LFB328:
+ 350:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 351:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_INTERNAL_ENTRY
+ 352:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code __ll_aton_stai_get_execution_status(_stai_aton_context *nn_context)
+ 353:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 664              		.loc 1 353 1 is_stmt 1 view -0
+ 665              		.cfi_startproc
+ 666              		@ args = 0, pretend = 0, frame = 0
+ 667              		@ frame_needed = 0, uses_anonymous_args = 0
+ 668              		@ link register save eliminated.
+ 354:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT(nn_context != NULL);
+ 669              		.loc 1 354 3 view .LVU165
+ 670              		.loc 1 354 3 view .LVU166
+ 671              		.loc 1 354 3 view .LVU167
+ 672              		.loc 1 354 34 view .LVU168
+ 355:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return nn_context->exec_status;
+ 673              		.loc 1 355 3 view .LVU169
+ 356:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 674              		.loc 1 356 1 is_stmt 0 view .LVU170
+ 675 0000 806B     		ldr	r0, [r0, #56]
+ 676              	.LVL45:
+ 677              		.loc 1 356 1 view .LVU171
+ 678 0002 7047     		bx	lr
+ 679              		.cfi_endproc
+ 680              	.LFE328:
+ 682              		.section	.text.__ll_aton_stai_reset,"ax",%progbits
+ 683              		.align	1
+ 684              		.global	__ll_aton_stai_reset
+ 685              		.syntax unified
+ 686              		.thumb
+ 687              		.thumb_func
+ 689              	__ll_aton_stai_reset:
+ 690              	.LVL46:
+ 691              	.LFB330:
+ 357:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 358:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_INTERNAL_ENTRY
+ 359:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** static void __ll_aton_stai_run_synchonously(NN_Instance_TypeDef *nn_instance)
+ 360:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 361:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT(nn_instance != NULL);
+ 362:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT(nn_instance->exec_state.current_epoch_block != NULL);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 22
+
+
+ 363:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _stai_aton_context *stai_nn_ctx =
+ 364:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       (_stai_aton_context *)((void *)nn_instance) - offsetof(_stai_aton_context, network_instance);
+ 365:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 366:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_RetValues_t ll_aton_rt_ret;
+ 367:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 368:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   do
+ 369:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 370:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     /* Execute first/next step of ATON runtime */
+ 371:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     ll_aton_rt_ret = LL_ATON_RT_RunEpochBlock(nn_instance);
+ 372:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     __ll_aton_stai_set_execution_status(ll_aton_rt_ret, stai_nn_ctx);
+ 373:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 374:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     /* Wait for next event */
+ 375:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     if (ll_aton_rt_ret == LL_ATON_RT_WFE)
+ 376:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     {
+ 377:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       LL_ATON_OSAL_WFE();
+ 378:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     }
+ 379:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   } while (ll_aton_rt_ret != LL_ATON_RT_DONE);
+ 380:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 381:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 382:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_INTERNAL_ENTRY
+ 383:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code __ll_aton_stai_reset(stai_network *network)
+ 384:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 692              		.loc 1 384 1 is_stmt 1 view -0
+ 693              		.cfi_startproc
+ 694              		@ args = 0, pretend = 0, frame = 0
+ 695              		@ frame_needed = 0, uses_anonymous_args = 0
+ 385:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* de-init network */
+ 386:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   __LL_ATON_STAI_ACQUIRE_INTERFACE(nn_i_ptr, network);
+ 696              		.loc 1 386 3 view .LVU173
+ 697              		.loc 1 386 3 view .LVU174
+ 698              	.LBB35:
+ 699              	.LBI35:
+ 700              		.file 3 "Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h"
+   1:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /**
+   2:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  ******************************************************************************
+   3:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * @file    ll_aton_stai_internal.h
+   4:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * @author  SRA Artificial Intelligence & Embedded Architectures
+   5:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * @brief   Implementation of ST.AI public & internal APIs for ATON
+   6:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  ******************************************************************************
+   7:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * @attention
+   8:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  *
+   9:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * Copyright (c) 2024 STMicroelectronics.
+  10:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * All rights reserved.
+  11:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  *
+  12:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * This software is licensed under terms that can be found in the LICENSE file
+  13:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * in the root directory of this software component.
+  14:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  *
+  16:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  ******************************************************************************
+  17:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****  */
+  18:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  19:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #ifndef __LL_ATON_STAI_INTERNAL_H
+  20:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define __LL_ATON_STAI_INTERNAL_H
+  21:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  22:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** // ATON headers
+  23:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #include "ll_aton_rt_user_api.h"
+  24:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #include "ll_aton_util.h"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 23
+
+
+  25:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  26:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** // ST.AI headers
+  27:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #include "stai_aton_common.h"
+  28:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  29:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #ifdef __cplusplus
+  30:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** extern "C"
+  31:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** {
+  32:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #endif
+  33:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  34:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /*****************************************************************************/
+  35:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_INTERNAL_ENTRY /* STAI_INTERNAL_ENTRY */
+  36:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_SIZE(_size)    ((stai_size)(_size))
+  37:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  38:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /*****************************************************************************/
+  39:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_INIT_BUFFER(_flags, _size, _address)                                                  
+  40:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+  41:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     .size = (_size), .address = (uintptr_t)(_address), .flags = (_flags),                          
+  42:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   }
+  43:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  44:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_INIT_TENSOR(_name, _flags, _fmt, _size_bytes, _shape, _scale, _zeropoint)             
+  45:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+  46:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     .size_bytes = (_size_bytes), .flags = (_flags), .format = (stai_format)(_fmt), .shape = STAI_PA
+  47:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     .scale = STAI_PACK(_scale), .zeropoint = STAI_PACK(_zeropoint), .name = (_name)                
+  48:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   }
+  49:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  50:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_INIT_ARRAY(_size, _ptr)                                                               
+  51:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+  52:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     .size = STAI_SIZE(_size), .data = STAI_PACK(_ptr)                                              
+  53:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   }
+  54:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  55:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_CAST_ARRAY(_type, _size, _ptr)                                                        
+  56:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+  57:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     .size = STAI_SIZE(_size), .data = (_type)STAI_PACK(_ptr)                                       
+  58:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   }
+  59:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  60:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_DECLARE_ARRAY(_type, _size, _array_initializer)                                       
+  61:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+  62:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     .size = STAI_SIZE(_size), .data = (_type[_size])STAI_PACK(_array_initializer)                  
+  63:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   }
+  64:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  65:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_EMPTY_ARRAY()                                                                         
+  66:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+  67:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     .size = 0, .data = NULL                                                                        
+  68:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   }
+  69:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  70:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define STAI_INIT_VERSION(_major, _minor, _micro)                                                  
+  71:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+  72:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     .major = (_major), .minor = (_minor), .micro = (_micro), .reserved = 0x0                       
+  73:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   }
+  74:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  75:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /*****************************************************************************/
+  76:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /**  Internal ATON ST.AI APIs                                               **/
+  77:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /*****************************************************************************/
+  78:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  79:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /*****************************************************************************/
+  80:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /**Macros **/
+  81:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /* Set context error */
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 24
+
+
+  82:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define __LL_ATON_STAI_SET_1ST_CTX_ERROR_AND_RETURN(ctx, err)                                      
+  83:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   do                                                                                               
+  84:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+  85:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     /* check context handle */                                                                     
+  86:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     if (!(ctx))                                                                                    
+  87:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****       return STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;                                            
+  88:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****                                                                                                    
+  89:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     if (((ctx)->first_error) < STAI_ERROR_GENERIC)                                                 
+  90:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****       (ctx)->first_error = (err);                                                                  
+  91:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     return (err);                                                                                  
+  92:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   } while (0)
+  93:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+  94:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** /* check context & network interface handle */
+  95:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define __LL_ATON_STAI_ACQUIRE_INTERFACE(_net_interface, _network)                                 
+  96:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   const NN_Interface_TypeDef *_net_interface = NULL;                                               
+  97:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   stai_return_code _ret = __ll_aton_stai_check_context_network_handle(_network, &_net_interface);  
+  98:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   if (_ret >= STAI_ERROR_GENERIC)                                                                  
+  99:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     return _ret;
+ 100:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+ 101:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** #define __LL_ATON_START_CONT_EXEC(_nn_instance)                                                    
+ 102:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   do                                                                                               
+ 103:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {                                                                                                
+ 104:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     STAI_ASSERT((_nn_instance) != NULL);                                                           
+ 105:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     _stai_aton_context *_stai_nn_ctx =                                                             
+ 106:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****         (_stai_aton_context *)((void *)(_nn_instance)) - offsetof(_stai_aton_context, network_insta
+ 107:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****                                                                                                    
+ 108:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     /* start/continue execution */                                                                 
+ 109:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     __ll_aton_stai_set_execution_status(LL_ATON_RT_RunEpochBlock((_nn_instance)), _stai_nn_ctx);   
+ 110:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****                                                                                                    
+ 111:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     /* get current execution status */                                                             
+ 112:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     stai_return_code current_exec_status = __ll_aton_stai_get_execution_status(_stai_nn_ctx);      
+ 113:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     return current_exec_status;                                                                    
+ 114:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   } while (0)
+ 115:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+ 116:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   /** Functions **/
+ 117:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   STAI_API_DECLARE_BEGIN
+ 118:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+ 119:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   STAI_INTERNAL_ENTRY
+ 120:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   static inline stai_return_code __ll_aton_stai_check_context_network_handle(stai_network *network,
+ 701              		.loc 3 120 34 view .LVU175
+ 702              	.LBB36:
+ 121:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****                                                                              const NN_Interface_Typ
+ 122:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****   {
+ 123:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     /* check context handle */
+ 124:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     if (!network)
+ 703              		.loc 3 124 5 view .LVU176
+ 704              	.LBE36:
+ 705              	.LBE35:
+ 384:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* de-init network */
+ 706              		.loc 1 384 1 is_stmt 0 view .LVU177
+ 707 0000 10B5     		push	{r4, lr}
+ 708              		.cfi_def_cfa_offset 8
+ 709              		.cfi_offset 4, -8
+ 710              		.cfi_offset 14, -4
+ 711              	.LBB39:
+ 712              	.LBB37:
+ 713              		.loc 3 124 8 view .LVU178
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 25
+
+
+ 714 0002 28B1     		cbz	r0, .L36
+ 125:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****       return STAI_ERROR_NETWORK_INVALID_CONTEXT_HANDLE;
+ 126:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h **** 
+ 127:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     /* check network handle */
+ 128:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     _stai_aton_context *context_ptr = (_stai_aton_context *)network;
+ 715              		.loc 3 128 5 is_stmt 1 view .LVU179
+ 716              	.LVL47:
+ 129:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     const NN_Interface_TypeDef *nn_i_ptr = context_ptr->network_instance.network;
+ 717              		.loc 3 129 5 view .LVU180
+ 130:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     if (!nn_i_ptr)
+ 718              		.loc 3 130 5 view .LVU181
+ 719              		.loc 3 130 8 is_stmt 0 view .LVU182
+ 720 0004 0268     		ldr	r2, [r0]
+ 721 0006 52B9     		cbnz	r2, .L37
+ 131:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****     {
+ 132:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.h ****       __LL_ATON_STAI_SET_1ST_CTX_ERROR_AND_RETURN(context_ptr, STAI_ERROR_NETWORK_INVALID_CONTEXT_H
+ 722              		.loc 3 132 7 is_stmt 1 view .LVU183
+ 723              		.loc 3 132 7 view .LVU184
+ 724              		.loc 3 132 7 discriminator 2 view .LVU185
+ 725 0008 C26B     		ldr	r2, [r0, #60]
+ 726 000a B2F5003F 		cmp	r2, #131072
+ 727 000e 02D3     		bcc	.L38
+ 728              	.LVL48:
+ 729              	.L36:
+ 730              		.loc 3 132 7 is_stmt 0 discriminator 2 view .LVU186
+ 731              	.LBE37:
+ 732              	.LBE39:
+ 733              		.loc 1 386 3 discriminator 1 view .LVU187
+ 734 0010 4FF44030 		mov	r0, #196608
+ 735              	.LVL49:
+ 736              	.L35:
+ 387:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_LIB_UNUSED(nn_i_ptr);
+ 388:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _stai_aton_context *ctx = (_stai_aton_context *)network;
+ 389:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 390:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if ((ctx->exec_status != STAI_DONE) && (ctx->exec_status != STAI_RUNNING_NO_WFE))
+ 391:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 392:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     __LL_ATON_STAI_SET_1ST_CTX_ERROR_AND_RETURN(ctx, STAI_ERROR_NETWORK_STILL_RUNNING);
+ 393:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 394:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 395:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* reset network */
+ 396:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   ctx->exec_status = STAI_SUCCESS;
+ 397:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_Reset_Network(&ctx->network_instance);
+ 398:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 399:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return STAI_SUCCESS;
+ 400:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 737              		.loc 1 400 1 view .LVU188
+ 738 0014 10BD     		pop	{r4, pc}
+ 739              	.LVL50:
+ 740              	.L38:
+ 741              	.LBB40:
+ 742              	.LBB38:
+ 743              		.loc 3 132 7 is_stmt 1 discriminator 3 view .LVU189
+ 744 0016 4FF44032 		mov	r2, #196608
+ 745 001a C263     		str	r2, [r0, #60]
+ 746              	.LVL51:
+ 747              		.loc 3 132 7 is_stmt 0 discriminator 3 view .LVU190
+ 748              	.LBE38:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 26
+
+
+ 749              	.LBE40:
+ 386:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_LIB_UNUSED(nn_i_ptr);
+ 750              		.loc 1 386 3 is_stmt 1 discriminator 1 view .LVU191
+ 751 001c F8E7     		b	.L36
+ 752              	.LVL52:
+ 753              	.L37:
+ 386:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_LIB_UNUSED(nn_i_ptr);
+ 754              		.loc 1 386 3 discriminator 1 view .LVU192
+ 386:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_LIB_UNUSED(nn_i_ptr);
+ 755              		.loc 1 386 54 discriminator 2 view .LVU193
+ 387:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_LIB_UNUSED(nn_i_ptr);
+ 756              		.loc 1 387 3 view .LVU194
+ 388:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 757              		.loc 1 388 3 view .LVU195
+ 390:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 758              		.loc 1 390 3 view .LVU196
+ 390:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 759              		.loc 1 390 6 is_stmt 0 view .LVU197
+ 760 001e 826B     		ldr	r2, [r0, #56]
+ 761 0020 22F00202 		bic	r2, r2, #2
+ 762 0024 102A     		cmp	r2, #16
+ 763 0026 09D0     		beq	.L40
+ 764              	.LVL53:
+ 765              	.LBB41:
+ 766              	.LBI41:
+ 383:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 767              		.loc 1 383 18 is_stmt 1 view .LVU198
+ 768              	.LBB42:
+ 392:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 769              		.loc 1 392 5 view .LVU199
+ 392:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 770              		.loc 1 392 5 view .LVU200
+ 392:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 771              		.loc 1 392 5 discriminator 2 view .LVU201
+ 772 0028 C26B     		ldr	r2, [r0, #60]
+ 773 002a B2F5003F 		cmp	r2, #131072
+ 392:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 774              		.loc 1 392 5 discriminator 3 view .LVU202
+ 775 002e 3CBF     		itt	cc
+ 776 0030 4FF4A022 		movcc	r2, #327680
+ 777 0034 C263     		strcc	r2, [r0, #60]
+ 778              	.LBE42:
+ 779              	.LBE41:
+ 399:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 780              		.loc 1 399 10 is_stmt 0 view .LVU203
+ 781 0036 4FF4A020 		mov	r0, #327680
+ 782              	.LVL54:
+ 399:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 783              		.loc 1 399 10 view .LVU204
+ 784 003a EBE7     		b	.L35
+ 785              	.LVL55:
+ 786              	.L40:
+ 392:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 787              		.loc 1 392 5 is_stmt 1 view .LVU205
+ 396:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_Reset_Network(&ctx->network_instance);
+ 788              		.loc 1 396 3 view .LVU206
+ 396:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   LL_ATON_RT_Reset_Network(&ctx->network_instance);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 27
+
+
+ 789              		.loc 1 396 20 is_stmt 0 view .LVU207
+ 790 003c 0024     		movs	r4, #0
+ 791 003e 8463     		str	r4, [r0, #56]
+ 397:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 792              		.loc 1 397 3 is_stmt 1 view .LVU208
+ 793 0040 FFF7FEFF 		bl	LL_ATON_RT_Reset_Network
+ 794              	.LVL56:
+ 399:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 795              		.loc 1 399 3 view .LVU209
+ 399:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 796              		.loc 1 399 10 is_stmt 0 view .LVU210
+ 797 0044 2046     		mov	r0, r4
+ 798              	.LVL57:
+ 399:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 799              		.loc 1 399 10 view .LVU211
+ 800 0046 E5E7     		b	.L35
+ 801              		.cfi_endproc
+ 802              	.LFE330:
+ 804              		.section	.rodata.__ll_aton_stai_run.str1.1,"aMS",%progbits,1
+ 805              	.LC0:
+ 806 0000 6E6E5F63 		.ascii	"nn_context->exec_status == STAI_DONE\000"
+ 806      6F6E7465 
+ 806      78742D3E 
+ 806      65786563 
+ 806      5F737461 
+ 807              	.LC1:
+ 808 0025 4C69622F 		.ascii	"Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c\000"
+ 808      41495F52 
+ 808      756E7469 
+ 808      6D652F4E 
+ 808      70752F6C 
+ 809              	.LC2:
+ 810 0058 72657420 		.ascii	"ret == STAI_SUCCESS\000"
+ 810      3D3D2053 
+ 810      5441495F 
+ 810      53554343 
+ 810      45535300 
+ 811              		.section	.text.__ll_aton_stai_run,"ax",%progbits
+ 812              		.align	1
+ 813              		.global	__ll_aton_stai_run
+ 814              		.syntax unified
+ 815              		.thumb
+ 816              		.thumb_func
+ 818              	__ll_aton_stai_run:
+ 819              	.LVL58:
+ 820              	.LFB331:
+ 401:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 402:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** STAI_INTERNAL_ENTRY
+ 403:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** stai_return_code __ll_aton_stai_run(stai_network *network, const stai_run_mode mode)
+ 404:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 821              		.loc 1 404 1 is_stmt 1 view -0
+ 822              		.cfi_startproc
+ 823              		@ args = 0, pretend = 0, frame = 0
+ 824              		@ frame_needed = 0, uses_anonymous_args = 0
+ 405:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* check current network */
+ 406:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   STAI_ASSERT(network != NULL);
+ 825              		.loc 1 406 3 view .LVU213
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 28
+
+
+ 826              		.loc 1 406 3 view .LVU214
+ 827              		.loc 1 406 3 view .LVU215
+ 828              		.loc 1 406 31 view .LVU216
+ 407:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   _stai_aton_context *nn_context = (_stai_aton_context *)network;
+ 829              		.loc 1 407 3 view .LVU217
+ 408:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 409:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (nn_context->network_instance.exec_state.current_epoch_block == NULL)
+ 830              		.loc 1 409 3 view .LVU218
+ 404:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* check current network */
+ 831              		.loc 1 404 1 is_stmt 0 view .LVU219
+ 832 0000 38B5     		push	{r3, r4, r5, lr}
+ 833              		.cfi_def_cfa_offset 16
+ 834              		.cfi_offset 3, -16
+ 835              		.cfi_offset 4, -12
+ 836              		.cfi_offset 5, -8
+ 837              		.cfi_offset 14, -4
+ 838              		.loc 1 409 46 view .LVU220
+ 839 0002 4368     		ldr	r3, [r0, #4]
+ 404:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* check current network */
+ 840              		.loc 1 404 1 view .LVU221
+ 841 0004 0446     		mov	r4, r0
+ 842 0006 0D46     		mov	r5, r1
+ 843              		.loc 1 409 6 view .LVU222
+ 844 0008 3BB9     		cbnz	r3, .L46
+ 845              	.LVL59:
+ 846              	.L66:
+ 410:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 411:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     __LL_ATON_STAI_SET_1ST_CTX_ERROR_AND_RETURN(nn_context, STAI_ERROR_NETWORK_INVALID_API_ARGUMENT
+ 847              		.loc 1 411 5 is_stmt 1 view .LVU223
+ 848              		.loc 1 411 5 view .LVU224
+ 849              		.loc 1 411 5 discriminator 2 view .LVU225
+ 850 000a E36B     		ldr	r3, [r4, #60]
+ 851 000c B3F5003F 		cmp	r3, #131072
+ 852 0010 01D2     		bcs	.L48
+ 853              		.loc 1 411 5 discriminator 3 view .LVU226
+ 854 0012 1C4B     		ldr	r3, .L68
+ 855 0014 E363     		str	r3, [r4, #60]
+ 856              	.L48:
+ 412:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 413:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 414:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* reset first error */
+ 415:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   nn_context->first_error = STAI_SUCCESS;
+ 416:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 417:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* enable/disable tracing */
+ 418:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   if (nn_context->callback != NULL)
+ 419:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 420:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     LL_ATON_RT_SetNetworkCallback(&nn_context->network_instance, _stai_aton_internal_epoch_block_ca
+ 421:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 422:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   else
+ 423:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 424:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     LL_ATON_RT_SetNetworkCallback(&nn_context->network_instance, NULL);
+ 425:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 426:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 427:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   /* run/start network execution */
+ 428:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   switch (mode)
+ 429:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 430:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   case STAI_MODE_SYNC:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 29
+
+
+ 431:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     __ll_aton_stai_run_synchonously(&nn_context->network_instance); // run current network
+ 432:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 433:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     /* reset network for new inference */
+ 434:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     {
+ 435:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       LL_ATON_ASSERT(nn_context->exec_status == STAI_DONE);
+ 436:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       stai_return_code ret = __ll_aton_stai_reset(network);
+ 437:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       LL_ATON_ASSERT(ret == STAI_SUCCESS);
+ 438:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       return ret;
+ 439:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     }
+ 440:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 441:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   case STAI_MODE_ASYNC:
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     __LL_ATON_START_CONT_EXEC(&nn_context->network_instance); // kick-off execution
+ 443:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 444:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   default:
+ 445:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     __LL_ATON_STAI_SET_1ST_CTX_ERROR_AND_RETURN(nn_context, STAI_ERROR_NETWORK_INVALID_API_ARGUMENT
+ 857              		.loc 1 445 5 is_stmt 0 discriminator 5 view .LVU227
+ 858 0016 1B48     		ldr	r0, .L68
+ 859 0018 11E0     		b	.L45
+ 860              	.LVL60:
+ 861              	.L46:
+ 411:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 862              		.loc 1 411 5 is_stmt 1 view .LVU228
+ 415:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 863              		.loc 1 415 3 view .LVU229
+ 415:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 864              		.loc 1 415 27 is_stmt 0 view .LVU230
+ 865 001a 0023     		movs	r3, #0
+ 418:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 866              		.loc 1 418 6 view .LVU231
+ 867 001c 016B     		ldr	r1, [r0, #48]
+ 868              	.LVL61:
+ 415:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 869              		.loc 1 415 27 view .LVU232
+ 870 001e C363     		str	r3, [r0, #60]
+ 418:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 871              		.loc 1 418 3 is_stmt 1 view .LVU233
+ 418:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 872              		.loc 1 418 6 is_stmt 0 view .LVU234
+ 873 0020 01B1     		cbz	r1, .L49
+ 420:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 874              		.loc 1 420 5 is_stmt 1 view .LVU235
+ 875 0022 1949     		ldr	r1, .L68+4
+ 876              	.L49:
+ 424:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 877              		.loc 1 424 5 view .LVU236
+ 878 0024 FFF7FEFF 		bl	LL_ATON_RT_SetNetworkCallback
+ 879              	.LVL62:
+ 428:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 880              		.loc 1 428 3 view .LVU237
+ 881 0028 012D     		cmp	r5, #1
+ 882 002a 09D0     		beq	.L57
+ 883 002c 022D     		cmp	r5, #2
+ 884 002e ECD1     		bne	.L66
+ 440:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   case STAI_MODE_ASYNC:
+ 885              		.loc 1 440 5 view .LVU238
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 886              		.loc 1 442 5 view .LVU239
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 30
+
+
+ 887              	.LBB49:
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 888              		.loc 1 442 5 view .LVU240
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 889              		.loc 1 442 5 view .LVU241
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 890              		.loc 1 442 5 view .LVU242
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 891              		.loc 1 442 5 view .LVU243
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 892              		.loc 1 442 5 view .LVU244
+ 893              	.LVL63:
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 894              		.loc 1 442 5 view .LVU245
+ 895 0030 2046     		mov	r0, r4
+ 896 0032 FFF7FEFF 		bl	LL_ATON_RT_RunEpochBlock
+ 897              	.LVL64:
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 898              		.loc 1 442 5 is_stmt 0 discriminator 1 view .LVU246
+ 899 0036 2146     		mov	r1, r4
+ 900 0038 FFF7FEFF 		bl	__ll_aton_stai_set_execution_status
+ 901              	.LVL65:
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 902              		.loc 1 442 5 is_stmt 1 discriminator 2 view .LVU247
+ 903              	.LBB50:
+ 904              	.LBI50:
+ 352:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** {
+ 905              		.loc 1 352 18 view .LVU248
+ 906              	.LBB51:
+ 354:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return nn_context->exec_status;
+ 907              		.loc 1 354 3 view .LVU249
+ 354:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return nn_context->exec_status;
+ 908              		.loc 1 354 3 view .LVU250
+ 354:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return nn_context->exec_status;
+ 909              		.loc 1 354 3 view .LVU251
+ 354:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   return nn_context->exec_status;
+ 910              		.loc 1 354 34 view .LVU252
+ 355:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 911              		.loc 1 355 3 view .LVU253
+ 355:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 912              		.loc 1 355 20 is_stmt 0 view .LVU254
+ 913 003c A06B     		ldr	r0, [r4, #56]
+ 914              	.LVL66:
+ 355:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 915              		.loc 1 355 20 view .LVU255
+ 916              	.LBE51:
+ 917              	.LBE50:
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 918              		.loc 1 442 5 is_stmt 1 discriminator 3 view .LVU256
+ 919              	.L45:
+ 442:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     break;
+ 920              		.loc 1 442 5 is_stmt 0 discriminator 3 view .LVU257
+ 921              	.LBE49:
+ 446:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   }
+ 447:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 922              		.loc 1 447 1 view .LVU258
+ 923 003e 38BD     		pop	{r3, r4, r5, pc}
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 31
+
+
+ 924              	.LVL67:
+ 925              	.L57:
+ 926              	.LBB52:
+ 927              	.LBB53:
+ 366:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 928              		.loc 1 366 3 is_stmt 1 view .LVU259
+ 368:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****   {
+ 929              		.loc 1 368 3 view .LVU260
+ 371:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     __ll_aton_stai_set_execution_status(ll_aton_rt_ret, stai_nn_ctx);
+ 930              		.loc 1 371 5 view .LVU261
+ 371:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     __ll_aton_stai_set_execution_status(ll_aton_rt_ret, stai_nn_ctx);
+ 931              		.loc 1 371 22 is_stmt 0 view .LVU262
+ 932 0040 2046     		mov	r0, r4
+ 933 0042 FFF7FEFF 		bl	LL_ATON_RT_RunEpochBlock
+ 934              	.LVL68:
+ 372:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** 
+ 935              		.loc 1 372 5 is_stmt 1 view .LVU263
+ 936 0046 2146     		mov	r1, r4
+ 937 0048 FFF7FEFF 		bl	__ll_aton_stai_set_execution_status
+ 938              	.LVL69:
+ 375:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     {
+ 939              		.loc 1 375 5 view .LVU264
+ 375:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     {
+ 940              		.loc 1 375 8 is_stmt 0 view .LVU265
+ 941 004c 0128     		cmp	r0, #1
+ 942 004e 02D1     		bne	.L54
+ 943              	.LVL70:
+ 377:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****     }
+ 944              		.loc 1 377 7 is_stmt 1 view .LVU266
+ 945 0050 FFF7FEFF 		bl	aton_osal_freertos_wfe
+ 946              	.LVL71:
+ 379:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 947              		.loc 1 379 27 view .LVU267
+ 948 0054 F4E7     		b	.L57
+ 949              	.LVL72:
+ 950              	.L54:
+ 379:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 951              		.loc 1 379 27 view .LVU268
+ 952 0056 0228     		cmp	r0, #2
+ 953 0058 F2D1     		bne	.L57
+ 954              	.LVL73:
+ 379:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c **** }
+ 955              		.loc 1 379 27 is_stmt 0 view .LVU269
+ 956              	.LBE53:
+ 957              	.LBE52:
+ 958              	.LBB54:
+ 435:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       stai_return_code ret = __ll_aton_stai_reset(network);
+ 959              		.loc 1 435 7 is_stmt 1 view .LVU270
+ 960 005a A36B     		ldr	r3, [r4, #56]
+ 961 005c 122B     		cmp	r3, #18
+ 962 005e 06D0     		beq	.L58
+ 435:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       stai_return_code ret = __ll_aton_stai_reset(network);
+ 963              		.loc 1 435 7 is_stmt 0 discriminator 1 view .LVU271
+ 964 0060 40F2B311 		movw	r1, #435
+ 965              	.LVL74:
+ 435:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       stai_return_code ret = __ll_aton_stai_reset(network);
+ 966              		.loc 1 435 7 discriminator 1 view .LVU272
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 32
+
+
+ 967 0064 094B     		ldr	r3, .L68+8
+ 968 0066 0A4A     		ldr	r2, .L68+12
+ 969              	.L67:
+ 437:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       return ret;
+ 970              		.loc 1 437 7 discriminator 1 view .LVU273
+ 971 0068 0A48     		ldr	r0, .L68+16
+ 972 006a FFF7FEFF 		bl	__assert_func
+ 973              	.LVL75:
+ 974              	.L58:
+ 436:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       LL_ATON_ASSERT(ret == STAI_SUCCESS);
+ 975              		.loc 1 436 7 is_stmt 1 view .LVU274
+ 436:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       LL_ATON_ASSERT(ret == STAI_SUCCESS);
+ 976              		.loc 1 436 30 is_stmt 0 view .LVU275
+ 977 006e 2046     		mov	r0, r4
+ 978 0070 FFF7FEFF 		bl	__ll_aton_stai_reset
+ 979              	.LVL76:
+ 437:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       return ret;
+ 980              		.loc 1 437 7 is_stmt 1 view .LVU276
+ 981 0074 0028     		cmp	r0, #0
+ 982 0076 E2D0     		beq	.L45
+ 437:Lib/AI_Runtime/Npu/ll_aton/ll_aton_stai_internal.c ****       return ret;
+ 983              		.loc 1 437 7 is_stmt 0 discriminator 1 view .LVU277
+ 984 0078 40F2B511 		movw	r1, #437
+ 985 007c 064B     		ldr	r3, .L68+20
+ 986 007e 044A     		ldr	r2, .L68+12
+ 987 0080 F2E7     		b	.L67
+ 988              	.L69:
+ 989 0082 00BF     		.align	2
+ 990              	.L68:
+ 991 0084 01000200 		.word	131073
+ 992 0088 00000000 		.word	_stai_aton_internal_epoch_block_callback
+ 993 008c 00000000 		.word	.LC0
+ 994 0090 00000000 		.word	__func__.0
+ 995 0094 25000000 		.word	.LC1
+ 996 0098 58000000 		.word	.LC2
+ 997              	.LBE54:
+ 998              		.cfi_endproc
+ 999              	.LFE331:
+ 1001              		.section	.rodata.__func__.0,"a"
+ 1004              	__func__.0:
+ 1005 0000 5F5F6C6C 		.ascii	"__ll_aton_stai_run\000"
+ 1005      5F61746F 
+ 1005      6E5F7374 
+ 1005      61695F72 
+ 1005      756E00
+ 1006              		.section	.rodata.str1.1,"aMS",%progbits,1
+ 1007              	.LC3:
+ 1008 0000 47434320 		.ascii	"GCC 13.3.1\000"
+ 1008      31332E33 
+ 1008      2E3100
+ 1009              		.section	.rodata._info.1,"a"
+ 1010              		.align	2
+ 1013              	_info.1:
+ 1014 0000 01       		.byte	1
+ 1015 0001 00       		.byte	0
+ 1016 0002 00       		.byte	0
+ 1017 0003 00       		.byte	0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 33
+
+
+ 1018 0004 01       		.byte	1
+ 1019 0005 01       		.byte	1
+ 1020 0006 03       		.byte	3
+ 1021 0007 00       		.byte	0
+ 1022 0008 03       		.byte	3
+ 1023 0009 00       		.byte	0
+ 1024 000a 00       		.byte	0
+ 1025 000b 00       		.byte	0
+ 1026 000c 09051211 		.word	286393609
+ 1027 0010 01       		.byte	1
+ 1028 0011 000000   		.space	3
+ 1029 0014 00000000 		.word	.LC3
+ 1030              		.section	.bss._g_stai_aton_rt_cb_cookie,"aw",%nobits
+ 1031              		.align	2
+ 1034              	_g_stai_aton_rt_cb_cookie:
+ 1035 0000 00000000 		.space	4
+ 1036              		.section	.bss._g_stai_aton_rt_callback,"aw",%nobits
+ 1037              		.align	2
+ 1040              	_g_stai_aton_rt_callback:
+ 1041 0000 00000000 		.space	4
+ 1042              		.text
+ 1043              	.Letext0:
+ 1044              		.file 4 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1045              		.file 5 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1046              		.file 6 "Lib/AI_Runtime/Inc/stai.h"
+ 1047              		.file 7 "Lib/AI_Runtime/Npu/ll_aton/ll_aton_cipher.h"
+ 1048              		.file 8 "Lib/AI_Runtime/Npu/ll_aton/ll_aton_NN_interface.h"
+ 1049              		.file 9 "Lib/AI_Runtime/Npu/ll_aton/ll_aton_rt_user_api.h"
+ 1050              		.file 10 "Lib/AI_Runtime/Npu/ll_aton/stai_aton_common.h"
+ 1051              		.file 11 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltoo
+ 1052              		.file 12 "Lib/AI_Runtime/Npu/Devices/STM32N6xx/npu_cache.h"
+ 1053              		.file 13 "Lib/AI_Runtime/Npu/ll_aton/ll_aton_osal_freertos.h"
+ 1054              		.file 14 "Lib/AI_Runtime/Npu/Devices/STM32N6xx/mcu_cache.h"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 34
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ll_aton_stai_internal.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:26     .text._stai_aton_internal_rt_callback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:31     .text._stai_aton_internal_rt_callback:00000000 _stai_aton_internal_rt_callback
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:62     .text._stai_aton_internal_rt_callback:00000014 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:1040   .bss._g_stai_aton_rt_callback:00000000 _g_stai_aton_rt_callback
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:1034   .bss._g_stai_aton_rt_cb_cookie:00000000 _g_stai_aton_rt_cb_cookie
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:68     .text._stai_aton_internal_epoch_block_callback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:74     .text._stai_aton_internal_epoch_block_callback:00000000 _stai_aton_internal_epoch_block_callback
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:126    .text.stai_runtime_set_callback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:132    .text.stai_runtime_set_callback:00000000 stai_runtime_set_callback
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:171    .text.stai_runtime_set_callback:0000001c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:178    .text.stai_runtime_init:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:184    .text.stai_runtime_init:00000000 stai_runtime_init
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:208    .text.stai_runtime_deinit:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:214    .text.stai_runtime_deinit:00000000 stai_runtime_deinit
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:254    .text.stai_runtime_deinit:0000001c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:260    .text.stai_runtime_get_info:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:266    .text.stai_runtime_get_info:00000000 stai_runtime_get_info
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:315    .text.stai_runtime_get_info:0000001c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:1013   .rodata._info.1:00000000 _info.1
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:321    .text.stai_cache_mcu_clean_range:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:327    .text.stai_cache_mcu_clean_range:00000000 stai_cache_mcu_clean_range
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:369    .text.stai_cache_mcu_invalidate_range:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:375    .text.stai_cache_mcu_invalidate_range:00000000 stai_cache_mcu_invalidate_range
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:416    .text.stai_ext_cache_npu_clean_range:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:422    .text.stai_ext_cache_npu_clean_range:00000000 stai_ext_cache_npu_clean_range
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:470    .text.stai_ext_cache_npu_clean_invalidate_range:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:476    .text.stai_ext_cache_npu_clean_invalidate_range:00000000 stai_ext_cache_npu_clean_invalidate_range
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:524    .text.stai_ext_wfe:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:530    .text.stai_ext_wfe:00000000 stai_ext_wfe
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:553    .text.__ll_aton_stai_init_network_instance:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:559    .text.__ll_aton_stai_init_network_instance:00000000 __ll_aton_stai_init_network_instance
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:580    .text.__ll_aton_stai_deinit_network_instance:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:586    .text.__ll_aton_stai_deinit_network_instance:00000000 __ll_aton_stai_deinit_network_instance
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:607    .text.__ll_aton_stai_set_execution_status:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:613    .text.__ll_aton_stai_set_execution_status:00000000 __ll_aton_stai_set_execution_status
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:655    .text.__ll_aton_stai_get_execution_status:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:661    .text.__ll_aton_stai_get_execution_status:00000000 __ll_aton_stai_get_execution_status
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:683    .text.__ll_aton_stai_reset:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:689    .text.__ll_aton_stai_reset:00000000 __ll_aton_stai_reset
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:812    .text.__ll_aton_stai_run:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:818    .text.__ll_aton_stai_run:00000000 __ll_aton_stai_run
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:991    .text.__ll_aton_stai_run:00000084 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:1004   .rodata.__func__.0:00000000 __func__.0
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:1010   .rodata._info.1:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:1031   .bss._g_stai_aton_rt_cb_cookie:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s:1037   .bss._g_stai_aton_rt_callback:00000000 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.e0c9f337c65cb9f22ed5f23d082bc78b
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.stai.h.24.ddd618ce0ba6fb7aa0eecae2c221570b
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 35
+
+
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.stai.h.38.8b7b3b20574e05eb8d4bb79c3a135768
+                           .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
+                           .group:00000000 wm4.ll_aton_config.h.20.27cfa9f6f5afc4105991355367358a39
+                           .group:00000000 wm4.newlib.h.7.a37ffbe9e5aff74303f4e60b1cc1c01b
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.assert.h.11.db24e541f16414db224bf986d21017e2
+                           .group:00000000 wm4.errno.h.2.ba016d646105af6cad23be83630b6a3f
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.errno.h.18.87873c1c5b242e8a4fdc43daa9aad824
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4.stdio.h.47.dc31ec4674d7bcb103c9f08809549f45
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.ll_aton_util.h.34.9098eaa90d3d72b819973556e3e5fe44
+                           .group:00000000 wm4.FreeRTOS.h.59.647b1b0da38e4e98108aae13c8abe9ee
+                           .group:00000000 wm4.assert.h.11.d99a111e320bc5106fc4046225782672
+                           .group:00000000 wm4.FreeRTOSConfig.h.59.2629c72cff9e6dbe880a2dc225eae516
+                           .group:00000000 wm4.FreeRTOS.h.80.7742fabaf5accf3762dc12f7f259a8a0
+                           .group:00000000 wm4.projdefs.h.30.55a824156f299c075c33148a9fdadb99
+                           .group:00000000 wm4.portmacro.h.30.cbb4b2da41f551c2a9904f0d03a1ce3e
+                           .group:00000000 wm4.portmacrocommon.h.30.d5cb67896ab50a95311be7e023da5c4f
+                           .group:00000000 wm4.portmacro.h.68.4051ecf710d074fb55b16d91dfebeeaa
+                           .group:00000000 wm4.portable.h.61.d557c57974d490f056246a26cdcddd6c
+                           .group:00000000 wm4.mpu_wrappers.h.30.ccc5f1a6903f941a88c268f5f62af3fe
+                           .group:00000000 wm4.portable.h.189.522b8bd52a171d3fd1432ef06d0caa63
+                           .group:00000000 wm4.FreeRTOS.h.102.fb871f3e464d99c5a57b3115545a02ad
+                           .group:00000000 wm4.list.h.59.bce6419520cd4f5f98779a1530bf2118
+                           .group:00000000 wm4.task.h.56.84290139c73b47f5b9aac361361a2a31
+                           .group:00000000 wm4.queue.h.68.219f47fba8b59640449b84d04c5bd6d8
+                           .group:00000000 wm4.semphr.h.40.c1a9c6f5bf0feb4da0b6a45d234a79d0
+                           .group:00000000 wm4.ll_aton_attributes.h.20.26d469460cb32db5740effdc8cc403f3
+                           .group:00000000 wm4.ll_aton_platform.h.20.8f1d4e7781c282794886ffdd00ccd30b
+                           .group:00000000 wm4.stm32n6xx.h.34.c523a1ffdf274a69e8802892c6776332
+                           .group:00000000 wm4.stm32n657xx.h.26.acd272cb67318cc1a4791ce2f0720ca6
+                           .group:00000000 wm4.cmsis_version.h.30.d128735bf87720f7436b74fefeb5043c
+                           .group:00000000 wm4.core_cm55.h.67.25006a3ce7048d64bcddd2996d5fac93
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.core_cm55.h.213.0528f46a674315ef8d35c4477e230358
+                           .group:00000000 wm4.armv8m_mpu.h.24.bf28cc25bee30a7ff9d2f7a44a5e2230
+                           .group:00000000 wm4.armv8m_pmu.h.24.6ded195d2625055391fd378c0e1d2519
+                           .group:00000000 wm4.core_cm55.h.4477.396e822ef855bcfb932819ad48de1c4c
+                           .group:00000000 wm4.armv7m_cachel1.h.24.936dd92d6e204a8d0b17d5e4ea4a356e
+                           .group:00000000 wm4.stm32n657xx.h.575.78d331c417ec710388ced647138f735f
+                           .group:00000000 wm4.stm32n6xx.h.116.b4247d9785590e7c5ec9234ffb2153bf
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccAV4vQS.s 			page 36
+
+
+                           .group:00000000 wm4.ll_aton_platform.h.205.098bebcb126012e5dfc0544db0a7d4c8
+                           .group:00000000 wm4.inttypes.h.14.b28deb26920e51e0da310220ef0f9003
+                           .group:00000000 wm4.inttypes.h.28.684aa7736e7ecc9a6ffc44acc61c7a90
+                           .group:00000000 wm4.syslimits.h.34.de5cbd310098bc5895998b6bde577ed2
+                           .group:00000000 wm4.limits.h.9.70fb0ada6f71b16202a66baaa6d8ea70
+                           .group:00000000 wm4.limits.h.60.56a1ae353e2028a24298ec6463b8b593
+                           .group:00000000 wm4.string.h.8.c4b8571ce60dff2817f43fec8b86aecd
+                           .group:00000000 wm4.string.h.177.59a005921fa78485abc80a0267de5752
+                           .group:00000000 wm4.ATONidxs.h.16.969ebf3fd32e13543179e6907b3869c9
+                           .group:00000000 wm4.ATON.h.19.0bce86f27eb7ac354272c44c1804cd24
+                           .group:00000000 wm4.ll_aton_rcompat.h.22.4788366561a5f8dfb37661f794bdd403
+                           .group:00000000 wm4.ll_aton_platform.h.279.2fa1ab569e6816db5b603cc3ef09d875
+                           .group:00000000 wm4.ll_aton_osal_freertos.h.63.1e66f105894f6ee9e5e9ee361a3df896
+                           .group:00000000 wm4.ll_aton_osal.h.117.70ff644e90427fadc04622c387869938
+                           .group:00000000 wm4.ll_aton_cipher.h.20.e98fdae11c912f4036a83cedb835e14e
+                           .group:00000000 wm4.ll_aton_rt_user_api.h.71.52957347efa02883c6e8b1a7f756d297
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.ll_aton_stai_internal.h.35.4ede4d59178f196dca4b635c5600498b
+                           .group:00000000 wm4.ll_aton_version.h.20.4fe5a5919aaeaa0d3ac9d2820d4f14d4
+
+UNDEFINED SYMBOLS
+LL_ATON_RT_SetRuntimeCallback
+LL_ATON_RT_RuntimeInit
+LL_ATON_RT_RuntimeDeInit
+mcu_cache_clean_range
+mcu_cache_invalidate_range
+aton_osal_freertos_lock
+npu_cache_clean_range
+aton_osal_freertos_unlock
+npu_cache_clean_invalidate_range
+aton_osal_freertos_wfe
+LL_ATON_RT_Init_Network
+LL_ATON_RT_DeInit_Network
+LL_ATON_RT_Reset_Network
+LL_ATON_RT_SetNetworkCallback
+LL_ATON_RT_RunEpochBlock
+__assert_func

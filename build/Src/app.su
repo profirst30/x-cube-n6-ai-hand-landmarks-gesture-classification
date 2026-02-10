@@ -1,0 +1,16 @@
+Src/app.c:365:13:copy_pd_box	12	static
+Src/app.c:575:12:clamp_point	8	static
+Src/app.c:767:13:decode_ld_landmark	72	static
+Src/app.c:1486:13:isp_thread_fct	8	static
+Src/app.c:1434:13:on_pd_toggle_button_click	8	static
+Src/app.c:1422:13:on_ld_toggle_button_click	8	static
+Src/app.c:391:13:button_process	16	static
+Src/app.c:378:13:button_init.part.0	8	static
+Src/app.c:777:13:display_ld_hand	304	static
+Src/app.c:326:13:roi_shift_and_scale.constprop	56	static
+Src/app.c:1306:13:nn_thread_fct	592	static,ignoring_inline_asm
+Src/app.c:809:6:display_hand	128	static
+Src/app.c:1446:13:dp_thread_fct	368	static,ignoring_inline_asm
+Src/app.c:1539:6:app_run	104	static,ignoring_inline_asm
+Src/app.c:1590:5:CMW_CAMERA_PIPE_FrameEventCallback	40	static
+Src/app.c:1600:5:CMW_CAMERA_PIPE_VsyncEventCallback	16	static

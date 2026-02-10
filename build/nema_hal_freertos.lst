@@ -1,0 +1,2700 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"nema_hal_freertos.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Src/nema_hal_freertos.c"
+  25              		.section	.rodata.HAL_GPU2D_CommandListCpltCallback.str1.1,"aMS",%progbits,1
+  26              	.LC0:
+  27 0000 72657420 		.ascii	"ret == pdTRUE\000"
+  27      3D3D2070 
+  27      64545255 
+  27      4500
+  28              	.LC1:
+  29 000e 5372632F 		.ascii	"Src/nema_hal_freertos.c\000"
+  29      6E656D61 
+  29      5F68616C 
+  29      5F667265 
+  29      6572746F 
+  30              		.section	.text.HAL_GPU2D_CommandListCpltCallback,"ax",%progbits
+  31              		.align	1
+  32              		.global	HAL_GPU2D_CommandListCpltCallback
+  33              		.syntax unified
+  34              		.thumb
+  35              		.thumb_func
+  37              	HAL_GPU2D_CommandListCpltCallback:
+  38              	.LVL0:
+  39              	.LFB870:
+   1:Src/nema_hal_freertos.c **** 
+   2:Src/nema_hal_freertos.c **** /**
+   3:Src/nema_hal_freertos.c ****   ******************************************************************************
+   4:Src/nema_hal_freertos.c ****   * @file    nema_hal.c
+   5:Src/nema_hal_freertos.c ****   * @author  GPM Application Team
+   6:Src/nema_hal_freertos.c ****   * @brief   NemaGFX Interfaces and Platform Specific APIs with Freertos support.
+   7:Src/nema_hal_freertos.c ****   *          This interface support also Bar Metal (no RTOS) configuration.
+   8:Src/nema_hal_freertos.c ****   *          This file provides NemaGFX functions to manage the following
+   9:Src/nema_hal_freertos.c ****   *          functionalities of the NemaGFX library:
+  10:Src/nema_hal_freertos.c ****   *           + Initialization and de-initialization functions
+  11:Src/nema_hal_freertos.c ****   *           + GPU2D Registers access operation functions
+  12:Src/nema_hal_freertos.c ****   *           + Buffer Creation, Destruction, MMAP and Flusing functions
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 2
+
+
+  13:Src/nema_hal_freertos.c ****   *           + Interrupt management functions
+  14:Src/nema_hal_freertos.c ****   *           + Memory management functions
+  15:Src/nema_hal_freertos.c ****   *           + Locking/Unlocking resources functions
+  16:Src/nema_hal_freertos.c ****   ******************************************************************************
+  17:Src/nema_hal_freertos.c ****   * @attention
+  18:Src/nema_hal_freertos.c ****   *
+  19:Src/nema_hal_freertos.c ****   * <h2><center>&copy; Copyright (c) 2020-2023 STMicroelectronics.
+  20:Src/nema_hal_freertos.c ****   * All rights reserved.</center></h2>
+  21:Src/nema_hal_freertos.c ****   *
+  22:Src/nema_hal_freertos.c ****   * This software component is licensed by ST under BSD 3-Clause license,
+  23:Src/nema_hal_freertos.c ****   * the "License"; You may not use this file except in compliance with the
+  24:Src/nema_hal_freertos.c ****   * License. You may obtain a copy of the License at:
+  25:Src/nema_hal_freertos.c ****   *                        opensource.org/licenses/BSD-3-Clause
+  26:Src/nema_hal_freertos.c ****   *
+  27:Src/nema_hal_freertos.c ****   ******************************************************************************
+  28:Src/nema_hal_freertos.c ****   */
+  29:Src/nema_hal_freertos.c **** 
+  30:Src/nema_hal_freertos.c **** #include <stdint.h>
+  31:Src/nema_hal_freertos.c **** #include <stdbool.h>
+  32:Src/nema_hal_freertos.c **** #include <stdlib.h>
+  33:Src/nema_hal_freertos.c **** 
+  34:Src/nema_hal_freertos.c **** #include <nema_sys_defs.h>
+  35:Src/nema_hal_freertos.c **** #include <nema_core.h>
+  36:Src/nema_hal_freertos.c **** 
+  37:Src/nema_hal_freertos.c **** #include <assert.h>
+  38:Src/nema_hal_freertos.c **** #include <string.h>
+  39:Src/nema_hal_freertos.c **** 
+  40:Src/nema_hal_freertos.c **** #include <platform_pool_config.h>
+  41:Src/nema_hal_freertos.c **** 
+  42:Src/nema_hal_freertos.c **** /* ----------------------------------------------------------------------------- */
+  43:Src/nema_hal_freertos.c **** /* Configuration Flags                                                           */
+  44:Src/nema_hal_freertos.c **** /* ----------------------------------------------------------------------------- */
+  45:Src/nema_hal_freertos.c **** #define NEMA_WAIT_IRQ_BINARY_SEMAPHORE  /* Use Binary Semaphores for GPU2D IRQ notification        
+  46:Src/nema_hal_freertos.c **** #define NEMA_MULTI_THREAD               /* Multiple thread (concurrent call to NemaGFX APIs) suppor
+  47:Src/nema_hal_freertos.c **** #define NEMA_CACHED_MEMORY
+  48:Src/nema_hal_freertos.c **** 
+  49:Src/nema_hal_freertos.c **** /**** PLATFORM SPECIFIC HEADER FILES ****/
+  50:Src/nema_hal_freertos.c **** #include <stm32n6xx_hal.h>
+  51:Src/nema_hal_freertos.c **** /****************************************/
+  52:Src/nema_hal_freertos.c **** 
+  53:Src/nema_hal_freertos.c **** #if defined(NEMA_USE_TSI_MALLOC) && defined(NEMA_MULTI_MEM_POOLS)
+  54:Src/nema_hal_freertos.c **** #include "tsi_malloc.h"
+  55:Src/nema_hal_freertos.c **** #endif /* NEMA_USE_TSI_MALLOC */
+  56:Src/nema_hal_freertos.c **** 
+  57:Src/nema_hal_freertos.c **** #include "FreeRTOS.h"
+  58:Src/nema_hal_freertos.c **** #include "semphr.h"
+  59:Src/nema_hal_freertos.c **** 
+  60:Src/nema_hal_freertos.c **** #if (configSUPPORT_STATIC_ALLOCATION == 0)
+  61:Src/nema_hal_freertos.c **** #error Dynamic Memory allocation not supported by HAL NEMA!!!
+  62:Src/nema_hal_freertos.c **** #endif
+  63:Src/nema_hal_freertos.c **** 
+  64:Src/nema_hal_freertos.c **** #define RING_SIZE 1024
+  65:Src/nema_hal_freertos.c **** 
+  66:Src/nema_hal_freertos.c **** static nema_ringbuffer_t ring_buffer_str;
+  67:Src/nema_hal_freertos.c **** volatile static int last_cl_id = -1;
+  68:Src/nema_hal_freertos.c **** extern GPU2D_HandleTypeDef hgpu2d;
+  69:Src/nema_hal_freertos.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 3
+
+
+  70:Src/nema_hal_freertos.c **** #if (defined(NEMA_MULTI_PROCESS) || defined(NEMA_MULTI_THREAD))
+  71:Src/nema_hal_freertos.c **** static StaticSemaphore_t nema_mutexes_buffers[MUTEX_MAX+1];
+  72:Src/nema_hal_freertos.c **** static SemaphoreHandle_t nema_mutexes_ids[MUTEX_MAX+1];
+  73:Src/nema_hal_freertos.c **** #endif /* NEMA_MULTI_PROCESS | NEMA_MULTI_THREAD */
+  74:Src/nema_hal_freertos.c **** 
+  75:Src/nema_hal_freertos.c **** #if defined(NEMA_WAIT_IRQ_BINARY_SEMAPHORE)
+  76:Src/nema_hal_freertos.c **** static StaticSemaphore_t nema_irq_sem_buffer;
+  77:Src/nema_hal_freertos.c **** static SemaphoreHandle_t nema_irq_sem;  // Semaphore struct
+  78:Src/nema_hal_freertos.c **** #endif /* NEMA_WAIT_IRQ_BINARY_SEMAPHORE */
+  79:Src/nema_hal_freertos.c **** 
+  80:Src/nema_hal_freertos.c **** #if (USE_HAL_GPU2D_REGISTER_CALLBACKS == 1)
+  81:Src/nema_hal_freertos.c **** static void GPU2D_CommandListCpltCallback(GPU2D_HandleTypeDef *hgpu2d, uint32_t CmdListID)
+  82:Src/nema_hal_freertos.c **** #else /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 0 */
+  83:Src/nema_hal_freertos.c **** void HAL_GPU2D_CommandListCpltCallback(GPU2D_HandleTypeDef *hgpu2d, uint32_t CmdListID)
+  84:Src/nema_hal_freertos.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+  85:Src/nema_hal_freertos.c **** {
+  40              		.loc 1 85 1 view -0
+  41              		.cfi_startproc
+  42              		@ args = 0, pretend = 0, frame = 8
+  43              		@ frame_needed = 0, uses_anonymous_args = 0
+  86:Src/nema_hal_freertos.c ****     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  44              		.loc 1 86 5 view .LVU1
+  45              		.loc 1 86 16 is_stmt 0 view .LVU2
+  46 0000 0023     		movs	r3, #0
+  85:Src/nema_hal_freertos.c ****     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  47              		.loc 1 85 1 view .LVU3
+  48 0002 07B5     		push	{r0, r1, r2, lr}
+  49              		.cfi_def_cfa_offset 16
+  50              		.cfi_offset 14, -4
+  51              		.loc 1 86 16 view .LVU4
+  52 0004 0193     		str	r3, [sp, #4]
+  87:Src/nema_hal_freertos.c ****     int ret;
+  53              		.loc 1 87 5 is_stmt 1 view .LVU5
+  88:Src/nema_hal_freertos.c **** 
+  89:Src/nema_hal_freertos.c ****     /* Prevent unused argument(s) compilation warning */
+  90:Src/nema_hal_freertos.c ****     UNUSED(hgpu2d);
+  54              		.loc 1 90 5 view .LVU6
+  91:Src/nema_hal_freertos.c **** 
+  92:Src/nema_hal_freertos.c ****     last_cl_id = CmdListID;
+  55              		.loc 1 92 5 view .LVU7
+  56              		.loc 1 92 16 is_stmt 0 view .LVU8
+  57 0006 0D4B     		ldr	r3, .L7
+  58 0008 1960     		str	r1, [r3]
+  93:Src/nema_hal_freertos.c **** #if defined(NEMA_WAIT_IRQ_BINARY_SEMAPHORE)
+  94:Src/nema_hal_freertos.c ****     ret = xSemaphoreGiveFromISR(nema_irq_sem, &xHigherPriorityTaskWoken);
+  59              		.loc 1 94 5 is_stmt 1 view .LVU9
+  60              		.loc 1 94 11 is_stmt 0 view .LVU10
+  61 000a 0D4B     		ldr	r3, .L7+4
+  62 000c 01A9     		add	r1, sp, #4
+  63              	.LVL1:
+  64              		.loc 1 94 11 view .LVU11
+  65 000e 1868     		ldr	r0, [r3]
+  66              	.LVL2:
+  67              		.loc 1 94 11 view .LVU12
+  68 0010 FFF7FEFF 		bl	xQueueGiveFromISR
+  69              	.LVL3:
+  95:Src/nema_hal_freertos.c ****     assert(ret == pdTRUE);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 4
+
+
+  70              		.loc 1 95 5 is_stmt 1 view .LVU13
+  71 0014 0128     		cmp	r0, #1
+  72 0016 05D0     		beq	.L2
+  73              		.loc 1 95 5 is_stmt 0 discriminator 1 view .LVU14
+  74 0018 5F21     		movs	r1, #95
+  75 001a 0A4B     		ldr	r3, .L7+8
+  76 001c 0A4A     		ldr	r2, .L7+12
+  77 001e 0B48     		ldr	r0, .L7+16
+  78              	.LVL4:
+  79              		.loc 1 95 5 discriminator 1 view .LVU15
+  80 0020 FFF7FEFF 		bl	__assert_func
+  81              	.LVL5:
+  82              	.L2:
+  96:Src/nema_hal_freertos.c ****     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+  83              		.loc 1 96 5 is_stmt 1 view .LVU16
+  84              		.loc 1 96 5 view .LVU17
+  85 0024 019B     		ldr	r3, [sp, #4]
+  86 0026 2BB1     		cbz	r3, .L1
+  87              		.loc 1 96 5 discriminator 1 view .LVU18
+  88 0028 4FF0E023 		mov	r3, #-536813568
+  89 002c 4FF08052 		mov	r2, #268435456
+  90 0030 C3F8042D 		str	r2, [r3, #3332]
+  91              		.loc 1 96 5 discriminator 3 view .LVU19
+  92              	.L1:
+  97:Src/nema_hal_freertos.c **** #endif /* NEMA_WAIT_IRQ_BINARY_SEMAPHORE */
+  98:Src/nema_hal_freertos.c **** }
+  93              		.loc 1 98 1 is_stmt 0 view .LVU20
+  94 0034 03B0     		add	sp, sp, #12
+  95              		.cfi_def_cfa_offset 4
+  96              		@ sp needed
+  97 0036 5DF804FB 		ldr	pc, [sp], #4
+  98              	.L8:
+  99 003a 00BF     		.align	2
+ 100              	.L7:
+ 101 003c 00000000 		.word	last_cl_id
+ 102 0040 00000000 		.word	nema_irq_sem
+ 103 0044 00000000 		.word	.LC0
+ 104 0048 00000000 		.word	__func__.4
+ 105 004c 0E000000 		.word	.LC1
+ 106              		.cfi_endproc
+ 107              	.LFE870:
+ 109              		.section	.text.nema_wait_irq,"ax",%progbits
+ 110              		.align	1
+ 111              		.global	nema_wait_irq
+ 112              		.syntax unified
+ 113              		.thumb
+ 114              		.thumb_func
+ 116              	nema_wait_irq:
+ 117              	.LFB872:
+  99:Src/nema_hal_freertos.c **** 
+ 100:Src/nema_hal_freertos.c **** int32_t nema_sys_init(void)
+ 101:Src/nema_hal_freertos.c **** {
+ 102:Src/nema_hal_freertos.c ****     int ret;
+ 103:Src/nema_hal_freertos.c ****     /* Setup GPU2D Callback */
+ 104:Src/nema_hal_freertos.c **** #if (USE_HAL_GPU2D_REGISTER_CALLBACKS == 1)
+ 105:Src/nema_hal_freertos.c ****     /* Register Command List Comlete Callback */
+ 106:Src/nema_hal_freertos.c ****     HAL_GPU2D_RegisterCommandListCpltCallback(&hgpu2d, GPU2D_CommandListCpltCallback);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 5
+
+
+ 107:Src/nema_hal_freertos.c **** #endif /* USE_HAL_GPU2D_REGISTER_CALLBACKS = 1 */
+ 108:Src/nema_hal_freertos.c **** 
+ 109:Src/nema_hal_freertos.c **** #if (defined(NEMA_MULTI_PROCESS) || defined(NEMA_MULTI_THREAD))
+ 110:Src/nema_hal_freertos.c ****     /* Create Lock ressource */
+ 111:Src/nema_hal_freertos.c ****     nema_mutexes_ids[MUTEX_RB] = xSemaphoreCreateMutexStatic(&nema_mutexes_buffers[MUTEX_RB]);
+ 112:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_RB]);
+ 113:Src/nema_hal_freertos.c ****     nema_mutexes_ids[MUTEX_MALLOC] = xSemaphoreCreateMutexStatic(&nema_mutexes_buffers[MUTEX_MALLOC
+ 114:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_MALLOC]);
+ 115:Src/nema_hal_freertos.c ****     nema_mutexes_ids[MUTEX_FLUSH] = xSemaphoreCreateMutexStatic(&nema_mutexes_buffers[MUTEX_FLUSH])
+ 116:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_FLUSH]);
+ 117:Src/nema_hal_freertos.c **** #endif /* NEMA_MULTI_PROCESS | NEMA_MULTI_THREAD */
+ 118:Src/nema_hal_freertos.c **** 
+ 119:Src/nema_hal_freertos.c **** #if defined(NEMA_WAIT_IRQ_BINARY_SEMAPHORE)
+ 120:Src/nema_hal_freertos.c ****     /* Create IRQ semaphore */
+ 121:Src/nema_hal_freertos.c ****     nema_irq_sem = xSemaphoreCreateCountingStatic(1, 0, &nema_irq_sem_buffer);
+ 122:Src/nema_hal_freertos.c ****     assert(nema_irq_sem);
+ 123:Src/nema_hal_freertos.c **** #endif /* NEMA_WAIT_IRQ_BINARY_SEMAPHORE */
+ 124:Src/nema_hal_freertos.c **** 
+ 125:Src/nema_hal_freertos.c **** #if defined(NEMA_USE_TSI_MALLOC) && defined(NEMA_MULTI_MEM_POOLS)
+ 126:Src/nema_hal_freertos.c ****     for (int pool_id=0; pool_id < NEMA_MULTI_MEM_POOLS_CNT; pool_id++)
+ 127:Src/nema_hal_freertos.c ****     {
+ 128:Src/nema_hal_freertos.c ****         tsi_malloc_init_pool(pool_id, (void*)memPools[pool_id].base_addr, memPools[pool_id].base_ad
+ 129:Src/nema_hal_freertos.c ****     }
+ 130:Src/nema_hal_freertos.c **** #endif /* NEMA_USE_TSI_MALLOC & NEMA_MULTI_MEM_POOLS */
+ 131:Src/nema_hal_freertos.c **** 
+ 132:Src/nema_hal_freertos.c ****     // Allocate ring_buffer memory
+ 133:Src/nema_hal_freertos.c ****     ring_buffer_str.bo = nema_buffer_create(RING_SIZE);
+ 134:Src/nema_hal_freertos.c ****     assert(ring_buffer_str.bo.base_virt);
+ 135:Src/nema_hal_freertos.c **** 
+ 136:Src/nema_hal_freertos.c ****     (void)nema_buffer_map(&ring_buffer_str.bo);
+ 137:Src/nema_hal_freertos.c **** 
+ 138:Src/nema_hal_freertos.c ****     // Initialize Ring Buffer
+ 139:Src/nema_hal_freertos.c ****     ret = nema_rb_init(&ring_buffer_str, 1);
+ 140:Src/nema_hal_freertos.c ****     if (ret < 0)
+ 141:Src/nema_hal_freertos.c ****     {
+ 142:Src/nema_hal_freertos.c ****         return ret;
+ 143:Src/nema_hal_freertos.c ****     }
+ 144:Src/nema_hal_freertos.c **** 
+ 145:Src/nema_hal_freertos.c ****     /* Reset last_cl_id counter */
+ 146:Src/nema_hal_freertos.c ****     last_cl_id = 0;
+ 147:Src/nema_hal_freertos.c **** 
+ 148:Src/nema_hal_freertos.c ****     return 0;
+ 149:Src/nema_hal_freertos.c **** }
+ 150:Src/nema_hal_freertos.c **** 
+ 151:Src/nema_hal_freertos.c **** int nema_wait_irq(void)
+ 152:Src/nema_hal_freertos.c **** {
+ 118              		.loc 1 152 1 is_stmt 1 view -0
+ 119              		.cfi_startproc
+ 120              		@ args = 0, pretend = 0, frame = 0
+ 121              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153:Src/nema_hal_freertos.c **** #if defined(NEMA_WAIT_IRQ_BINARY_SEMAPHORE)
+ 154:Src/nema_hal_freertos.c ****     int ret;
+ 122              		.loc 1 154 5 view .LVU22
+ 155:Src/nema_hal_freertos.c **** 
+ 156:Src/nema_hal_freertos.c ****     ret = xSemaphoreTake(nema_irq_sem, portMAX_DELAY);
+ 123              		.loc 1 156 5 view .LVU23
+ 152:Src/nema_hal_freertos.c **** #if defined(NEMA_WAIT_IRQ_BINARY_SEMAPHORE)
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 6
+
+
+ 124              		.loc 1 152 1 is_stmt 0 view .LVU24
+ 125 0000 08B5     		push	{r3, lr}
+ 126              		.cfi_def_cfa_offset 8
+ 127              		.cfi_offset 3, -8
+ 128              		.cfi_offset 14, -4
+ 129              		.loc 1 156 11 view .LVU25
+ 130 0002 044B     		ldr	r3, .L10
+ 131 0004 4FF0FF31 		mov	r1, #-1
+ 132 0008 1868     		ldr	r0, [r3]
+ 133 000a FFF7FEFF 		bl	xQueueSemaphoreTake
+ 134              	.LVL6:
+ 157:Src/nema_hal_freertos.c ****     ret = ret == pdTRUE ? 0 : -1;
+ 135              		.loc 1 157 5 is_stmt 1 view .LVU26
+ 158:Src/nema_hal_freertos.c **** #endif
+ 159:Src/nema_hal_freertos.c **** 
+ 160:Src/nema_hal_freertos.c ****     return 0;
+ 136              		.loc 1 160 5 view .LVU27
+ 161:Src/nema_hal_freertos.c **** }
+ 137              		.loc 1 161 1 is_stmt 0 view .LVU28
+ 138 000e 0020     		movs	r0, #0
+ 139 0010 08BD     		pop	{r3, pc}
+ 140              	.L11:
+ 141 0012 00BF     		.align	2
+ 142              	.L10:
+ 143 0014 00000000 		.word	nema_irq_sem
+ 144              		.cfi_endproc
+ 145              	.LFE872:
+ 147              		.section	.text.nema_wait_irq_cl,"ax",%progbits
+ 148              		.align	1
+ 149              		.global	nema_wait_irq_cl
+ 150              		.syntax unified
+ 151              		.thumb
+ 152              		.thumb_func
+ 154              	nema_wait_irq_cl:
+ 155              	.LVL7:
+ 156              	.LFB873:
+ 162:Src/nema_hal_freertos.c **** 
+ 163:Src/nema_hal_freertos.c **** int nema_wait_irq_cl(int cl_id)
+ 164:Src/nema_hal_freertos.c **** {
+ 157              		.loc 1 164 1 is_stmt 1 view -0
+ 158              		.cfi_startproc
+ 159              		@ args = 0, pretend = 0, frame = 0
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 165:Src/nema_hal_freertos.c ****     while (last_cl_id < cl_id)
+ 161              		.loc 1 165 5 view .LVU30
+ 164:Src/nema_hal_freertos.c ****     while (last_cl_id < cl_id)
+ 162              		.loc 1 164 1 is_stmt 0 view .LVU31
+ 163 0000 38B5     		push	{r3, r4, r5, lr}
+ 164              		.cfi_def_cfa_offset 16
+ 165              		.cfi_offset 3, -16
+ 166              		.cfi_offset 4, -12
+ 167              		.cfi_offset 5, -8
+ 168              		.cfi_offset 14, -4
+ 164:Src/nema_hal_freertos.c ****     while (last_cl_id < cl_id)
+ 169              		.loc 1 164 1 view .LVU32
+ 170 0002 0446     		mov	r4, r0
+ 171              		.loc 1 165 23 view .LVU33
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 7
+
+
+ 172 0004 044D     		ldr	r5, .L15
+ 173              	.LVL8:
+ 174              	.L13:
+ 175              		.loc 1 165 23 is_stmt 1 view .LVU34
+ 176 0006 2B68     		ldr	r3, [r5]
+ 177 0008 A342     		cmp	r3, r4
+ 178 000a 01DB     		blt	.L14
+ 166:Src/nema_hal_freertos.c ****     {
+ 167:Src/nema_hal_freertos.c ****         (void)nema_wait_irq();
+ 168:Src/nema_hal_freertos.c ****     }
+ 169:Src/nema_hal_freertos.c **** 
+ 170:Src/nema_hal_freertos.c ****     return 0;
+ 179              		.loc 1 170 5 view .LVU35
+ 171:Src/nema_hal_freertos.c **** }
+ 180              		.loc 1 171 1 is_stmt 0 view .LVU36
+ 181 000c 0020     		movs	r0, #0
+ 182 000e 38BD     		pop	{r3, r4, r5, pc}
+ 183              	.LVL9:
+ 184              	.L14:
+ 167:Src/nema_hal_freertos.c ****     }
+ 185              		.loc 1 167 9 is_stmt 1 view .LVU37
+ 167:Src/nema_hal_freertos.c ****     }
+ 186              		.loc 1 167 15 is_stmt 0 view .LVU38
+ 187 0010 FFF7FEFF 		bl	nema_wait_irq
+ 188              	.LVL10:
+ 189 0014 F7E7     		b	.L13
+ 190              	.L16:
+ 191 0016 00BF     		.align	2
+ 192              	.L15:
+ 193 0018 00000000 		.word	last_cl_id
+ 194              		.cfi_endproc
+ 195              	.LFE873:
+ 197              		.section	.text.nema_reg_read,"ax",%progbits
+ 198              		.align	1
+ 199              		.global	nema_reg_read
+ 200              		.syntax unified
+ 201              		.thumb
+ 202              		.thumb_func
+ 204              	nema_reg_read:
+ 205              	.LVL11:
+ 206              	.LFB875:
+ 172:Src/nema_hal_freertos.c **** 
+ 173:Src/nema_hal_freertos.c **** int nema_wait_irq_brk(int brk_id)
+ 174:Src/nema_hal_freertos.c **** {
+ 175:Src/nema_hal_freertos.c ****     while (nema_reg_read(GPU2D_BREAKPOINT) == 0U)
+ 176:Src/nema_hal_freertos.c ****     {
+ 177:Src/nema_hal_freertos.c ****         (void)nema_wait_irq();
+ 178:Src/nema_hal_freertos.c ****     }
+ 179:Src/nema_hal_freertos.c **** 
+ 180:Src/nema_hal_freertos.c ****     return 0;
+ 181:Src/nema_hal_freertos.c **** }
+ 182:Src/nema_hal_freertos.c **** 
+ 183:Src/nema_hal_freertos.c **** uint32_t nema_reg_read(uint32_t reg)
+ 184:Src/nema_hal_freertos.c **** {
+ 207              		.loc 1 184 1 is_stmt 1 view -0
+ 208              		.cfi_startproc
+ 209              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 8
+
+
+ 210              		@ frame_needed = 0, uses_anonymous_args = 0
+ 211              		@ link register save eliminated.
+ 185:Src/nema_hal_freertos.c ****     return HAL_GPU2D_ReadRegister(&hgpu2d, reg);
+ 212              		.loc 1 185 5 view .LVU40
+ 184:Src/nema_hal_freertos.c ****     return HAL_GPU2D_ReadRegister(&hgpu2d, reg);
+ 213              		.loc 1 184 1 is_stmt 0 view .LVU41
+ 214 0000 0146     		mov	r1, r0
+ 215              		.loc 1 185 12 view .LVU42
+ 216 0002 0148     		ldr	r0, .L18
+ 217              	.LVL12:
+ 218              		.loc 1 185 12 view .LVU43
+ 219 0004 FFF7FEBF 		b	HAL_GPU2D_ReadRegister
+ 220              	.LVL13:
+ 221              	.L19:
+ 222              		.loc 1 185 12 view .LVU44
+ 223              		.align	2
+ 224              	.L18:
+ 225 0008 00000000 		.word	hgpu2d
+ 226              		.cfi_endproc
+ 227              	.LFE875:
+ 229              		.section	.text.nema_wait_irq_brk,"ax",%progbits
+ 230              		.align	1
+ 231              		.global	nema_wait_irq_brk
+ 232              		.syntax unified
+ 233              		.thumb
+ 234              		.thumb_func
+ 236              	nema_wait_irq_brk:
+ 237              	.LVL14:
+ 238              	.LFB874:
+ 174:Src/nema_hal_freertos.c ****     while (nema_reg_read(GPU2D_BREAKPOINT) == 0U)
+ 239              		.loc 1 174 1 is_stmt 1 view -0
+ 240              		.cfi_startproc
+ 241              		@ args = 0, pretend = 0, frame = 0
+ 242              		@ frame_needed = 0, uses_anonymous_args = 0
+ 174:Src/nema_hal_freertos.c ****     while (nema_reg_read(GPU2D_BREAKPOINT) == 0U)
+ 243              		.loc 1 174 1 is_stmt 0 view .LVU46
+ 244 0000 08B5     		push	{r3, lr}
+ 245              		.cfi_def_cfa_offset 8
+ 246              		.cfi_offset 3, -8
+ 247              		.cfi_offset 14, -4
+ 175:Src/nema_hal_freertos.c ****     {
+ 248              		.loc 1 175 5 is_stmt 1 view .LVU47
+ 249              	.LVL15:
+ 250              	.L21:
+ 175:Src/nema_hal_freertos.c ****     {
+ 251              		.loc 1 175 44 view .LVU48
+ 175:Src/nema_hal_freertos.c ****     {
+ 252              		.loc 1 175 12 is_stmt 0 view .LVU49
+ 253 0002 8020     		movs	r0, #128
+ 254 0004 FFF7FEFF 		bl	nema_reg_read
+ 255              	.LVL16:
+ 175:Src/nema_hal_freertos.c ****     {
+ 256              		.loc 1 175 44 discriminator 1 view .LVU50
+ 257 0008 08B1     		cbz	r0, .L22
+ 180:Src/nema_hal_freertos.c **** }
+ 258              		.loc 1 180 5 is_stmt 1 view .LVU51
+ 181:Src/nema_hal_freertos.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 9
+
+
+ 259              		.loc 1 181 1 is_stmt 0 view .LVU52
+ 260 000a 0020     		movs	r0, #0
+ 261 000c 08BD     		pop	{r3, pc}
+ 262              	.L22:
+ 177:Src/nema_hal_freertos.c ****     }
+ 263              		.loc 1 177 9 is_stmt 1 view .LVU53
+ 177:Src/nema_hal_freertos.c ****     }
+ 264              		.loc 1 177 15 is_stmt 0 view .LVU54
+ 265 000e FFF7FEFF 		bl	nema_wait_irq
+ 266              	.LVL17:
+ 267 0012 F6E7     		b	.L21
+ 268              		.cfi_endproc
+ 269              	.LFE874:
+ 271              		.section	.text.nema_reg_write,"ax",%progbits
+ 272              		.align	1
+ 273              		.global	nema_reg_write
+ 274              		.syntax unified
+ 275              		.thumb
+ 276              		.thumb_func
+ 278              	nema_reg_write:
+ 279              	.LVL18:
+ 280              	.LFB876:
+ 186:Src/nema_hal_freertos.c **** }
+ 187:Src/nema_hal_freertos.c **** 
+ 188:Src/nema_hal_freertos.c **** void nema_reg_write(uint32_t reg, uint32_t value)
+ 189:Src/nema_hal_freertos.c **** {
+ 281              		.loc 1 189 1 is_stmt 1 view -0
+ 282              		.cfi_startproc
+ 283              		@ args = 0, pretend = 0, frame = 0
+ 284              		@ frame_needed = 0, uses_anonymous_args = 0
+ 285              		@ link register save eliminated.
+ 190:Src/nema_hal_freertos.c ****     HAL_GPU2D_WriteRegister(&hgpu2d, reg, value);
+ 286              		.loc 1 190 5 view .LVU56
+ 189:Src/nema_hal_freertos.c ****     HAL_GPU2D_WriteRegister(&hgpu2d, reg, value);
+ 287              		.loc 1 189 1 is_stmt 0 view .LVU57
+ 288 0000 0A46     		mov	r2, r1
+ 289              		.loc 1 190 5 view .LVU58
+ 290 0002 0146     		mov	r1, r0
+ 291              	.LVL19:
+ 292              		.loc 1 190 5 view .LVU59
+ 293 0004 0148     		ldr	r0, .L24
+ 294              	.LVL20:
+ 295              		.loc 1 190 5 view .LVU60
+ 296 0006 FFF7FEBF 		b	HAL_GPU2D_WriteRegister
+ 297              	.LVL21:
+ 298              	.L25:
+ 299              		.loc 1 190 5 view .LVU61
+ 300 000a 00BF     		.align	2
+ 301              	.L24:
+ 302 000c 00000000 		.word	hgpu2d
+ 303              		.cfi_endproc
+ 304              	.LFE876:
+ 306              		.section	.text.nema_buffer_map,"ax",%progbits
+ 307              		.align	1
+ 308              		.global	nema_buffer_map
+ 309              		.syntax unified
+ 310              		.thumb
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 10
+
+
+ 311              		.thumb_func
+ 313              	nema_buffer_map:
+ 314              	.LVL22:
+ 315              	.LFB879:
+ 191:Src/nema_hal_freertos.c **** }
+ 192:Src/nema_hal_freertos.c **** 
+ 193:Src/nema_hal_freertos.c **** nema_buffer_t nema_buffer_create(int size)
+ 194:Src/nema_hal_freertos.c **** {
+ 195:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 196:Src/nema_hal_freertos.c **** 
+ 197:Src/nema_hal_freertos.c ****     memset(&bo, 0, sizeof(bo));
+ 198:Src/nema_hal_freertos.c **** 
+ 199:Src/nema_hal_freertos.c ****     nema_mutex_lock(MUTEX_MALLOC);
+ 200:Src/nema_hal_freertos.c **** 
+ 201:Src/nema_hal_freertos.c ****     bo.base_virt = tsi_malloc(size);
+ 202:Src/nema_hal_freertos.c ****     assert(bo.base_virt);
+ 203:Src/nema_hal_freertos.c **** 
+ 204:Src/nema_hal_freertos.c ****     bo.base_phys = (uint32_t)bo.base_virt;
+ 205:Src/nema_hal_freertos.c ****     bo.size      = size;
+ 206:Src/nema_hal_freertos.c **** 
+ 207:Src/nema_hal_freertos.c ****     nema_mutex_unlock(MUTEX_MALLOC);
+ 208:Src/nema_hal_freertos.c **** 
+ 209:Src/nema_hal_freertos.c ****     return bo;
+ 210:Src/nema_hal_freertos.c **** }
+ 211:Src/nema_hal_freertos.c **** 
+ 212:Src/nema_hal_freertos.c **** nema_buffer_t nema_buffer_create_pool(int pool, int size)
+ 213:Src/nema_hal_freertos.c **** {
+ 214:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 215:Src/nema_hal_freertos.c **** 
+ 216:Src/nema_hal_freertos.c ****     memset(&bo, 0, sizeof(bo));
+ 217:Src/nema_hal_freertos.c **** 
+ 218:Src/nema_hal_freertos.c ****     nema_mutex_lock(MUTEX_MALLOC); /* tsi_malloc isn't thread-safe */
+ 219:Src/nema_hal_freertos.c **** 
+ 220:Src/nema_hal_freertos.c ****     bo.base_virt = tsi_malloc_pool(pool, size);
+ 221:Src/nema_hal_freertos.c ****     assert(bo.base_virt);
+ 222:Src/nema_hal_freertos.c **** 
+ 223:Src/nema_hal_freertos.c ****     bo.base_phys = (uintptr_t)bo.base_virt;
+ 224:Src/nema_hal_freertos.c ****     bo.size      = size;
+ 225:Src/nema_hal_freertos.c ****     bo.fd        = pool; /* use fd during the memory free */
+ 226:Src/nema_hal_freertos.c **** 
+ 227:Src/nema_hal_freertos.c ****     nema_mutex_unlock(MUTEX_MALLOC);
+ 228:Src/nema_hal_freertos.c **** 
+ 229:Src/nema_hal_freertos.c ****     return bo;
+ 230:Src/nema_hal_freertos.c **** }
+ 231:Src/nema_hal_freertos.c **** 
+ 232:Src/nema_hal_freertos.c **** void *nema_buffer_map(nema_buffer_t *bo)
+ 233:Src/nema_hal_freertos.c **** {
+ 316              		.loc 1 233 1 is_stmt 1 view -0
+ 317              		.cfi_startproc
+ 318              		@ args = 0, pretend = 0, frame = 0
+ 319              		@ frame_needed = 0, uses_anonymous_args = 0
+ 320              		@ link register save eliminated.
+ 234:Src/nema_hal_freertos.c ****     return bo->base_virt;
+ 321              		.loc 1 234 5 view .LVU63
+ 235:Src/nema_hal_freertos.c **** }
+ 322              		.loc 1 235 1 is_stmt 0 view .LVU64
+ 323 0000 8068     		ldr	r0, [r0, #8]
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 11
+
+
+ 324              	.LVL23:
+ 325              		.loc 1 235 1 view .LVU65
+ 326 0002 7047     		bx	lr
+ 327              		.cfi_endproc
+ 328              	.LFE879:
+ 330              		.section	.text.nema_buffer_unmap,"ax",%progbits
+ 331              		.align	1
+ 332              		.global	nema_buffer_unmap
+ 333              		.syntax unified
+ 334              		.thumb
+ 335              		.thumb_func
+ 337              	nema_buffer_unmap:
+ 338              	.LVL24:
+ 339              	.LFB880:
+ 236:Src/nema_hal_freertos.c **** 
+ 237:Src/nema_hal_freertos.c **** void nema_buffer_unmap(nema_buffer_t *bo)
+ 238:Src/nema_hal_freertos.c **** {
+ 340              		.loc 1 238 1 is_stmt 1 view -0
+ 341              		.cfi_startproc
+ 342              		@ args = 0, pretend = 0, frame = 0
+ 343              		@ frame_needed = 0, uses_anonymous_args = 0
+ 344              		@ link register save eliminated.
+ 239:Src/nema_hal_freertos.c ****     /* Prevent unused argument(s) compilation warning */
+ 240:Src/nema_hal_freertos.c ****     UNUSED(bo);
+ 345              		.loc 1 240 5 view .LVU67
+ 241:Src/nema_hal_freertos.c **** }
+ 346              		.loc 1 241 1 is_stmt 0 view .LVU68
+ 347 0000 7047     		bx	lr
+ 348              		.cfi_endproc
+ 349              	.LFE880:
+ 351              		.section	.text.nema_buffer_phys,"ax",%progbits
+ 352              		.align	1
+ 353              		.global	nema_buffer_phys
+ 354              		.syntax unified
+ 355              		.thumb
+ 356              		.thumb_func
+ 358              	nema_buffer_phys:
+ 359              	.LVL25:
+ 360              	.LFB882:
+ 242:Src/nema_hal_freertos.c **** 
+ 243:Src/nema_hal_freertos.c **** void nema_buffer_destroy(nema_buffer_t *bo)
+ 244:Src/nema_hal_freertos.c **** {
+ 245:Src/nema_hal_freertos.c ****     nema_mutex_lock(MUTEX_MALLOC);
+ 246:Src/nema_hal_freertos.c **** 
+ 247:Src/nema_hal_freertos.c ****     tsi_free(bo->base_virt);
+ 248:Src/nema_hal_freertos.c **** 
+ 249:Src/nema_hal_freertos.c ****     nema_mutex_unlock(MUTEX_MALLOC);
+ 250:Src/nema_hal_freertos.c **** }
+ 251:Src/nema_hal_freertos.c **** 
+ 252:Src/nema_hal_freertos.c **** uintptr_t nema_buffer_phys(nema_buffer_t *bo)
+ 253:Src/nema_hal_freertos.c **** {
+ 361              		.loc 1 253 1 is_stmt 1 view -0
+ 362              		.cfi_startproc
+ 363              		@ args = 0, pretend = 0, frame = 0
+ 364              		@ frame_needed = 0, uses_anonymous_args = 0
+ 365              		@ link register save eliminated.
+ 254:Src/nema_hal_freertos.c ****     return bo->base_phys;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 12
+
+
+ 366              		.loc 1 254 5 view .LVU70
+ 255:Src/nema_hal_freertos.c **** }
+ 367              		.loc 1 255 1 is_stmt 0 view .LVU71
+ 368 0000 C068     		ldr	r0, [r0, #12]
+ 369              	.LVL26:
+ 370              		.loc 1 255 1 view .LVU72
+ 371 0002 7047     		bx	lr
+ 372              		.cfi_endproc
+ 373              	.LFE882:
+ 375              		.section	.text.nema_host_free,"ax",%progbits
+ 376              		.align	1
+ 377              		.global	nema_host_free
+ 378              		.syntax unified
+ 379              		.thumb
+ 380              		.thumb_func
+ 382              	nema_host_free:
+ 383              	.LVL27:
+ 384              	.LFB884:
+ 256:Src/nema_hal_freertos.c **** 
+ 257:Src/nema_hal_freertos.c **** void nema_buffer_flush(nema_buffer_t * bo)
+ 258:Src/nema_hal_freertos.c **** {
+ 259:Src/nema_hal_freertos.c **** #if defined(NEMA_CACHED_MEMORY)
+ 260:Src/nema_hal_freertos.c ****     nema_mutex_lock(MUTEX_FLUSH);
+ 261:Src/nema_hal_freertos.c ****     SCB_CleanInvalidateDCache_by_Addr((uint32_t *)bo->base_virt, bo->size);
+ 262:Src/nema_hal_freertos.c ****     nema_mutex_unlock(MUTEX_FLUSH);
+ 263:Src/nema_hal_freertos.c **** #else /* !NEMA_CACHED_MEMORY */
+ 264:Src/nema_hal_freertos.c ****     UNUSED(bo);
+ 265:Src/nema_hal_freertos.c **** #endif /* NEMA_CACHED_MEMORY */
+ 266:Src/nema_hal_freertos.c **** }
+ 267:Src/nema_hal_freertos.c **** 
+ 268:Src/nema_hal_freertos.c **** void nema_host_free(void *ptr)
+ 269:Src/nema_hal_freertos.c **** {
+ 385              		.loc 1 269 1 is_stmt 1 view -0
+ 386              		.cfi_startproc
+ 387              		@ args = 0, pretend = 0, frame = 0
+ 388              		@ frame_needed = 0, uses_anonymous_args = 0
+ 389              		@ link register save eliminated.
+ 270:Src/nema_hal_freertos.c ****     if (ptr)
+ 390              		.loc 1 270 5 view .LVU74
+ 391              		.loc 1 270 8 is_stmt 0 view .LVU75
+ 392 0000 08B1     		cbz	r0, .L29
+ 271:Src/nema_hal_freertos.c ****     {
+ 272:Src/nema_hal_freertos.c ****         tsi_free(ptr);
+ 393              		.loc 1 272 9 is_stmt 1 view .LVU76
+ 394 0002 FFF7FEBF 		b	tsi_free
+ 395              	.LVL28:
+ 396              	.L29:
+ 273:Src/nema_hal_freertos.c ****     }
+ 274:Src/nema_hal_freertos.c **** }
+ 397              		.loc 1 274 1 is_stmt 0 view .LVU77
+ 398 0006 7047     		bx	lr
+ 399              		.cfi_endproc
+ 400              	.LFE884:
+ 402              		.section	.rodata.nema_host_malloc.str1.1,"aMS",%progbits,1
+ 403              	.LC2:
+ 404 0000 70747200 		.ascii	"ptr\000"
+ 405              		.section	.text.nema_host_malloc,"ax",%progbits
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 13
+
+
+ 406              		.align	1
+ 407              		.global	nema_host_malloc
+ 408              		.syntax unified
+ 409              		.thumb
+ 410              		.thumb_func
+ 412              	nema_host_malloc:
+ 413              	.LVL29:
+ 414              	.LFB885:
+ 275:Src/nema_hal_freertos.c **** 
+ 276:Src/nema_hal_freertos.c **** void *nema_host_malloc(unsigned size)
+ 277:Src/nema_hal_freertos.c **** {
+ 415              		.loc 1 277 1 is_stmt 1 view -0
+ 416              		.cfi_startproc
+ 417              		@ args = 0, pretend = 0, frame = 0
+ 418              		@ frame_needed = 0, uses_anonymous_args = 0
+ 278:Src/nema_hal_freertos.c ****     void *ptr = NULL;
+ 419              		.loc 1 278 5 view .LVU79
+ 279:Src/nema_hal_freertos.c **** 
+ 280:Src/nema_hal_freertos.c ****     ptr = tsi_malloc(size);
+ 420              		.loc 1 280 5 view .LVU80
+ 277:Src/nema_hal_freertos.c ****     void *ptr = NULL;
+ 421              		.loc 1 277 1 is_stmt 0 view .LVU81
+ 422 0000 0146     		mov	r1, r0
+ 423 0002 08B5     		push	{r3, lr}
+ 424              		.cfi_def_cfa_offset 8
+ 425              		.cfi_offset 3, -8
+ 426              		.cfi_offset 14, -4
+ 427              		.loc 1 280 11 view .LVU82
+ 428 0004 0020     		movs	r0, #0
+ 429              	.LVL30:
+ 430              		.loc 1 280 11 view .LVU83
+ 431 0006 FFF7FEFF 		bl	tsi_malloc_pool
+ 432              	.LVL31:
+ 281:Src/nema_hal_freertos.c ****     assert(ptr);
+ 433              		.loc 1 281 5 is_stmt 1 view .LVU84
+ 434 000a 30B9     		cbnz	r0, .L31
+ 435              		.loc 1 281 5 is_stmt 0 discriminator 1 view .LVU85
+ 436 000c 40F21911 		movw	r1, #281
+ 437 0010 024B     		ldr	r3, .L33
+ 438 0012 034A     		ldr	r2, .L33+4
+ 439 0014 0348     		ldr	r0, .L33+8
+ 440              	.LVL32:
+ 441              		.loc 1 281 5 discriminator 1 view .LVU86
+ 442 0016 FFF7FEFF 		bl	__assert_func
+ 443              	.LVL33:
+ 444              	.L31:
+ 282:Src/nema_hal_freertos.c **** 
+ 283:Src/nema_hal_freertos.c ****     return ptr;
+ 284:Src/nema_hal_freertos.c **** }
+ 445              		.loc 1 284 1 view .LVU87
+ 446 001a 08BD     		pop	{r3, pc}
+ 447              	.L34:
+ 448              		.align	2
+ 449              	.L33:
+ 450 001c 00000000 		.word	.LC2
+ 451 0020 00000000 		.word	__func__.0
+ 452 0024 0E000000 		.word	.LC1
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 14
+
+
+ 453              		.cfi_endproc
+ 454              	.LFE885:
+ 456              		.section	.text.nema_mutex_lock,"ax",%progbits
+ 457              		.align	1
+ 458              		.global	nema_mutex_lock
+ 459              		.syntax unified
+ 460              		.thumb
+ 461              		.thumb_func
+ 463              	nema_mutex_lock:
+ 464              	.LVL34:
+ 465              	.LFB886:
+ 285:Src/nema_hal_freertos.c **** 
+ 286:Src/nema_hal_freertos.c **** int nema_mutex_lock(int mutex_id)
+ 287:Src/nema_hal_freertos.c **** {
+ 466              		.loc 1 287 1 is_stmt 1 view -0
+ 467              		.cfi_startproc
+ 468              		@ args = 0, pretend = 0, frame = 0
+ 469              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288:Src/nema_hal_freertos.c ****     int ret = 0;
+ 470              		.loc 1 288 5 view .LVU89
+ 289:Src/nema_hal_freertos.c **** 
+ 290:Src/nema_hal_freertos.c **** #if (defined(NEMA_MULTI_PROCESS) || defined(NEMA_MULTI_THREAD))
+ 291:Src/nema_hal_freertos.c ****     if ((mutex_id >= 0) && (mutex_id <= MUTEX_MAX) && (NULL != nema_mutexes_ids[mutex_id]))
+ 471              		.loc 1 291 5 view .LVU90
+ 472              		.loc 1 291 8 is_stmt 0 view .LVU91
+ 473 0000 0228     		cmp	r0, #2
+ 287:Src/nema_hal_freertos.c ****     int ret = 0;
+ 474              		.loc 1 287 1 view .LVU92
+ 475 0002 08B5     		push	{r3, lr}
+ 476              		.cfi_def_cfa_offset 8
+ 477              		.cfi_offset 3, -8
+ 478              		.cfi_offset 14, -4
+ 479              		.loc 1 291 8 view .LVU93
+ 480 0004 0DD8     		bhi	.L37
+ 481              		.loc 1 291 80 discriminator 1 view .LVU94
+ 482 0006 084B     		ldr	r3, .L39
+ 483 0008 53F82030 		ldr	r3, [r3, r0, lsl #2]
+ 288:Src/nema_hal_freertos.c ****     int ret = 0;
+ 484              		.loc 1 288 9 view .LVU95
+ 485 000c 1846     		mov	r0, r3
+ 486              	.LVL35:
+ 487              		.loc 1 291 52 discriminator 1 view .LVU96
+ 488 000e 3BB1     		cbz	r3, .L35
+ 292:Src/nema_hal_freertos.c ****     {
+ 293:Src/nema_hal_freertos.c ****         ret = xSemaphoreTake(nema_mutexes_ids[mutex_id], portMAX_DELAY);
+ 489              		.loc 1 293 9 is_stmt 1 view .LVU97
+ 490              		.loc 1 293 15 is_stmt 0 view .LVU98
+ 491 0010 4FF0FF31 		mov	r1, #-1
+ 492 0014 FFF7FEFF 		bl	xQueueSemaphoreTake
+ 493              	.LVL36:
+ 294:Src/nema_hal_freertos.c ****         ret = ret == pdTRUE ? 0 : -1;
+ 494              		.loc 1 294 9 is_stmt 1 view .LVU99
+ 495              		.loc 1 294 33 is_stmt 0 view .LVU100
+ 496 0018 0138     		subs	r0, r0, #1
+ 497              	.LVL37:
+ 498              		.loc 1 294 33 view .LVU101
+ 499 001a 18BF     		it	ne
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 15
+
+
+ 500 001c 0120     		movne	r0, #1
+ 501              	.LVL38:
+ 502              		.loc 1 294 33 view .LVU102
+ 503 001e 4042     		rsbs	r0, r0, #0
+ 504              	.LVL39:
+ 505              	.L35:
+ 295:Src/nema_hal_freertos.c ****     }
+ 296:Src/nema_hal_freertos.c **** #else /* !NEMA_MULTI_PROCESS & !NEMA_MULTI_THREAD */
+ 297:Src/nema_hal_freertos.c ****     UNUSED(mutex_id);
+ 298:Src/nema_hal_freertos.c **** #endif /* NEMA_MULTI_PROCESS | NEMA_MULTI_THREAD */
+ 299:Src/nema_hal_freertos.c **** 
+ 300:Src/nema_hal_freertos.c ****     return ret;
+ 301:Src/nema_hal_freertos.c **** }
+ 506              		.loc 1 301 1 view .LVU103
+ 507 0020 08BD     		pop	{r3, pc}
+ 508              	.LVL40:
+ 509              	.L37:
+ 288:Src/nema_hal_freertos.c **** 
+ 510              		.loc 1 288 9 view .LVU104
+ 511 0022 0020     		movs	r0, #0
+ 512              	.LVL41:
+ 288:Src/nema_hal_freertos.c **** 
+ 513              		.loc 1 288 9 view .LVU105
+ 514 0024 FCE7     		b	.L35
+ 515              	.L40:
+ 516 0026 00BF     		.align	2
+ 517              	.L39:
+ 518 0028 00000000 		.word	nema_mutexes_ids
+ 519              		.cfi_endproc
+ 520              	.LFE886:
+ 522              		.section	.text.nema_mutex_unlock,"ax",%progbits
+ 523              		.align	1
+ 524              		.global	nema_mutex_unlock
+ 525              		.syntax unified
+ 526              		.thumb
+ 527              		.thumb_func
+ 529              	nema_mutex_unlock:
+ 530              	.LVL42:
+ 531              	.LFB887:
+ 302:Src/nema_hal_freertos.c **** 
+ 303:Src/nema_hal_freertos.c **** int nema_mutex_unlock(int mutex_id)
+ 304:Src/nema_hal_freertos.c **** {
+ 532              		.loc 1 304 1 is_stmt 1 view -0
+ 533              		.cfi_startproc
+ 534              		@ args = 0, pretend = 0, frame = 0
+ 535              		@ frame_needed = 0, uses_anonymous_args = 0
+ 305:Src/nema_hal_freertos.c ****     int ret = 0;
+ 536              		.loc 1 305 5 view .LVU107
+ 306:Src/nema_hal_freertos.c **** 
+ 307:Src/nema_hal_freertos.c **** #if (defined(NEMA_MULTI_PROCESS) || defined(NEMA_MULTI_THREAD))
+ 308:Src/nema_hal_freertos.c ****     if ((mutex_id >= 0) && (mutex_id <= MUTEX_MAX) && (NULL != nema_mutexes_ids[mutex_id]))
+ 537              		.loc 1 308 5 view .LVU108
+ 538              		.loc 1 308 8 is_stmt 0 view .LVU109
+ 539 0000 0228     		cmp	r0, #2
+ 304:Src/nema_hal_freertos.c ****     int ret = 0;
+ 540              		.loc 1 304 1 view .LVU110
+ 541 0002 10B5     		push	{r4, lr}
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 16
+
+
+ 542              		.cfi_def_cfa_offset 8
+ 543              		.cfi_offset 4, -8
+ 544              		.cfi_offset 14, -4
+ 545              		.loc 1 308 8 view .LVU111
+ 546 0004 0ED8     		bhi	.L43
+ 547              		.loc 1 308 80 discriminator 1 view .LVU112
+ 548 0006 084B     		ldr	r3, .L45
+ 549 0008 53F82040 		ldr	r4, [r3, r0, lsl #2]
+ 305:Src/nema_hal_freertos.c ****     int ret = 0;
+ 550              		.loc 1 305 9 view .LVU113
+ 551 000c 2046     		mov	r0, r4
+ 552              	.LVL43:
+ 553              		.loc 1 308 52 discriminator 1 view .LVU114
+ 554 000e 44B1     		cbz	r4, .L41
+ 309:Src/nema_hal_freertos.c ****     {
+ 310:Src/nema_hal_freertos.c ****         ret = xSemaphoreGive(nema_mutexes_ids[mutex_id]);
+ 555              		.loc 1 310 9 is_stmt 1 view .LVU115
+ 556              		.loc 1 310 15 is_stmt 0 view .LVU116
+ 557 0010 0023     		movs	r3, #0
+ 558 0012 1A46     		mov	r2, r3
+ 559 0014 1946     		mov	r1, r3
+ 560 0016 FFF7FEFF 		bl	xQueueGenericSend
+ 561              	.LVL44:
+ 311:Src/nema_hal_freertos.c ****         ret = ret == pdTRUE ? 0 : -1;
+ 562              		.loc 1 311 9 is_stmt 1 view .LVU117
+ 563              		.loc 1 311 33 is_stmt 0 view .LVU118
+ 564 001a 0138     		subs	r0, r0, #1
+ 565              	.LVL45:
+ 566              		.loc 1 311 33 view .LVU119
+ 567 001c 18BF     		it	ne
+ 568 001e 0120     		movne	r0, #1
+ 569              	.LVL46:
+ 570              		.loc 1 311 33 view .LVU120
+ 571 0020 4042     		rsbs	r0, r0, #0
+ 572              	.LVL47:
+ 573              	.L41:
+ 312:Src/nema_hal_freertos.c ****     }
+ 313:Src/nema_hal_freertos.c **** #else /* !NEMA_MULTI_PROCESS & !NEMA_MULTI_THREAD */
+ 314:Src/nema_hal_freertos.c ****     UNUSED(mutex_id);
+ 315:Src/nema_hal_freertos.c **** #endif /* NEMA_MULTI_PROCESS | NEMA_MULTI_THREAD */
+ 316:Src/nema_hal_freertos.c **** 
+ 317:Src/nema_hal_freertos.c ****     return ret;
+ 318:Src/nema_hal_freertos.c **** }
+ 574              		.loc 1 318 1 view .LVU121
+ 575 0022 10BD     		pop	{r4, pc}
+ 576              	.LVL48:
+ 577              	.L43:
+ 305:Src/nema_hal_freertos.c **** 
+ 578              		.loc 1 305 9 view .LVU122
+ 579 0024 0020     		movs	r0, #0
+ 580              	.LVL49:
+ 305:Src/nema_hal_freertos.c **** 
+ 581              		.loc 1 305 9 view .LVU123
+ 582 0026 FCE7     		b	.L41
+ 583              	.L46:
+ 584              		.align	2
+ 585              	.L45:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 17
+
+
+ 586 0028 00000000 		.word	nema_mutexes_ids
+ 587              		.cfi_endproc
+ 588              	.LFE887:
+ 590              		.section	.rodata.nema_buffer_create.str1.1,"aMS",%progbits,1
+ 591              	.LC3:
+ 592 0000 626F2E62 		.ascii	"bo.base_virt\000"
+ 592      6173655F 
+ 592      76697274 
+ 592      00
+ 593              		.section	.text.nema_buffer_create,"ax",%progbits
+ 594              		.align	1
+ 595              		.global	nema_buffer_create
+ 596              		.syntax unified
+ 597              		.thumb
+ 598              		.thumb_func
+ 600              	nema_buffer_create:
+ 601              	.LVL50:
+ 602              	.LFB877:
+ 194:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 603              		.loc 1 194 1 is_stmt 1 view -0
+ 604              		.cfi_startproc
+ 605              		@ args = 0, pretend = 0, frame = 16
+ 606              		@ frame_needed = 0, uses_anonymous_args = 0
+ 195:Src/nema_hal_freertos.c **** 
+ 607              		.loc 1 195 5 view .LVU125
+ 197:Src/nema_hal_freertos.c **** 
+ 608              		.loc 1 197 5 view .LVU126
+ 194:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 609              		.loc 1 194 1 is_stmt 0 view .LVU127
+ 610 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 611              		.cfi_def_cfa_offset 20
+ 612              		.cfi_offset 4, -20
+ 613              		.cfi_offset 5, -16
+ 614              		.cfi_offset 6, -12
+ 615              		.cfi_offset 7, -8
+ 616              		.cfi_offset 14, -4
+ 617 0002 0E46     		mov	r6, r1
+ 197:Src/nema_hal_freertos.c **** 
+ 618              		.loc 1 197 5 view .LVU128
+ 619 0004 0027     		movs	r7, #0
+ 194:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 620              		.loc 1 194 1 view .LVU129
+ 621 0006 85B0     		sub	sp, sp, #20
+ 622              		.cfi_def_cfa_offset 40
+ 194:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 623              		.loc 1 194 1 view .LVU130
+ 624 0008 0446     		mov	r4, r0
+ 199:Src/nema_hal_freertos.c **** 
+ 625              		.loc 1 199 5 view .LVU131
+ 626 000a 0120     		movs	r0, #1
+ 627              	.LVL51:
+ 197:Src/nema_hal_freertos.c **** 
+ 628              		.loc 1 197 5 view .LVU132
+ 629 000c 0197     		str	r7, [sp, #4]
+ 199:Src/nema_hal_freertos.c **** 
+ 630              		.loc 1 199 5 is_stmt 1 view .LVU133
+ 631 000e FFF7FEFF 		bl	nema_mutex_lock
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 18
+
+
+ 632              	.LVL52:
+ 201:Src/nema_hal_freertos.c ****     assert(bo.base_virt);
+ 633              		.loc 1 201 5 view .LVU134
+ 201:Src/nema_hal_freertos.c ****     assert(bo.base_virt);
+ 634              		.loc 1 201 20 is_stmt 0 view .LVU135
+ 635 0012 3146     		mov	r1, r6
+ 636 0014 3846     		mov	r0, r7
+ 637 0016 FFF7FEFF 		bl	tsi_malloc_pool
+ 638              	.LVL53:
+ 197:Src/nema_hal_freertos.c **** 
+ 639              		.loc 1 197 5 view .LVU136
+ 640 001a 6D46     		mov	r5, sp
+ 201:Src/nema_hal_freertos.c ****     assert(bo.base_virt);
+ 641              		.loc 1 201 18 discriminator 1 view .LVU137
+ 642 001c 0290     		str	r0, [sp, #8]
+ 202:Src/nema_hal_freertos.c **** 
+ 643              		.loc 1 202 5 is_stmt 1 view .LVU138
+ 644 001e 28B9     		cbnz	r0, .L48
+ 202:Src/nema_hal_freertos.c **** 
+ 645              		.loc 1 202 5 is_stmt 0 discriminator 1 view .LVU139
+ 646 0020 CA21     		movs	r1, #202
+ 647 0022 084B     		ldr	r3, .L49
+ 648 0024 084A     		ldr	r2, .L49+4
+ 649 0026 0948     		ldr	r0, .L49+8
+ 650 0028 FFF7FEFF 		bl	__assert_func
+ 651              	.LVL54:
+ 652              	.L48:
+ 204:Src/nema_hal_freertos.c ****     bo.size      = size;
+ 653              		.loc 1 204 5 is_stmt 1 view .LVU140
+ 204:Src/nema_hal_freertos.c ****     bo.size      = size;
+ 654              		.loc 1 204 18 is_stmt 0 view .LVU141
+ 655 002c 0390     		str	r0, [sp, #12]
+ 205:Src/nema_hal_freertos.c **** 
+ 656              		.loc 1 205 5 is_stmt 1 view .LVU142
+ 207:Src/nema_hal_freertos.c **** 
+ 657              		.loc 1 207 5 is_stmt 0 view .LVU143
+ 658 002e 0120     		movs	r0, #1
+ 205:Src/nema_hal_freertos.c **** 
+ 659              		.loc 1 205 18 view .LVU144
+ 660 0030 0096     		str	r6, [sp]
+ 207:Src/nema_hal_freertos.c **** 
+ 661              		.loc 1 207 5 is_stmt 1 view .LVU145
+ 662 0032 FFF7FEFF 		bl	nema_mutex_unlock
+ 663              	.LVL55:
+ 209:Src/nema_hal_freertos.c **** }
+ 664              		.loc 1 209 5 view .LVU146
+ 209:Src/nema_hal_freertos.c **** }
+ 665              		.loc 1 209 12 is_stmt 0 view .LVU147
+ 666 0036 95E80F00 		ldm	r5, {r0, r1, r2, r3}
+ 667 003a 84E80F00 		stm	r4, {r0, r1, r2, r3}
+ 210:Src/nema_hal_freertos.c **** 
+ 668              		.loc 1 210 1 view .LVU148
+ 669 003e 2046     		mov	r0, r4
+ 670 0040 05B0     		add	sp, sp, #20
+ 671              		.cfi_def_cfa_offset 20
+ 672              		@ sp needed
+ 673 0042 F0BD     		pop	{r4, r5, r6, r7, pc}
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 19
+
+
+ 674              	.LVL56:
+ 675              	.L50:
+ 210:Src/nema_hal_freertos.c **** 
+ 676              		.loc 1 210 1 view .LVU149
+ 677              		.align	2
+ 678              	.L49:
+ 679 0044 00000000 		.word	.LC3
+ 680 0048 00000000 		.word	__func__.2
+ 681 004c 0E000000 		.word	.LC1
+ 682              		.cfi_endproc
+ 683              	.LFE877:
+ 685              		.section	.rodata.nema_sys_init.str1.1,"aMS",%progbits,1
+ 686              	.LC4:
+ 687 0000 6E656D61 		.ascii	"nema_mutexes_ids[MUTEX_RB]\000"
+ 687      5F6D7574 
+ 687      65786573 
+ 687      5F696473 
+ 687      5B4D5554 
+ 688              	.LC5:
+ 689 001b 6E656D61 		.ascii	"nema_mutexes_ids[MUTEX_MALLOC]\000"
+ 689      5F6D7574 
+ 689      65786573 
+ 689      5F696473 
+ 689      5B4D5554 
+ 690              	.LC6:
+ 691 003a 6E656D61 		.ascii	"nema_mutexes_ids[MUTEX_FLUSH]\000"
+ 691      5F6D7574 
+ 691      65786573 
+ 691      5F696473 
+ 691      5B4D5554 
+ 692              	.LC7:
+ 693 0058 6E656D61 		.ascii	"nema_irq_sem\000"
+ 693      5F697271 
+ 693      5F73656D 
+ 693      00
+ 694              	.LC8:
+ 695 0065 72696E67 		.ascii	"ring_buffer_str.bo.base_virt\000"
+ 695      5F627566 
+ 695      6665725F 
+ 695      7374722E 
+ 695      626F2E62 
+ 696              		.section	.text.nema_sys_init,"ax",%progbits
+ 697              		.align	1
+ 698              		.global	nema_sys_init
+ 699              		.syntax unified
+ 700              		.thumb
+ 701              		.thumb_func
+ 703              	nema_sys_init:
+ 704              	.LFB871:
+ 101:Src/nema_hal_freertos.c ****     int ret;
+ 705              		.loc 1 101 1 is_stmt 1 view -0
+ 706              		.cfi_startproc
+ 707              		@ args = 0, pretend = 0, frame = 16
+ 708              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102:Src/nema_hal_freertos.c ****     /* Setup GPU2D Callback */
+ 709              		.loc 1 102 5 view .LVU151
+ 111:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_RB]);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 20
+
+
+ 710              		.loc 1 111 5 view .LVU152
+ 101:Src/nema_hal_freertos.c ****     int ret;
+ 711              		.loc 1 101 1 is_stmt 0 view .LVU153
+ 712 0000 70B5     		push	{r4, r5, r6, lr}
+ 713              		.cfi_def_cfa_offset 16
+ 714              		.cfi_offset 4, -16
+ 715              		.cfi_offset 5, -12
+ 716              		.cfi_offset 6, -8
+ 717              		.cfi_offset 14, -4
+ 111:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_RB]);
+ 718              		.loc 1 111 34 view .LVU154
+ 719 0002 0120     		movs	r0, #1
+ 720 0004 2F49     		ldr	r1, .L61
+ 101:Src/nema_hal_freertos.c ****     int ret;
+ 721              		.loc 1 101 1 view .LVU155
+ 722 0006 86B0     		sub	sp, sp, #24
+ 723              		.cfi_def_cfa_offset 40
+ 111:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_RB]);
+ 724              		.loc 1 111 34 view .LVU156
+ 725 0008 FFF7FEFF 		bl	xQueueCreateMutexStatic
+ 726              	.LVL57:
+ 111:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_RB]);
+ 727              		.loc 1 111 32 discriminator 1 view .LVU157
+ 728 000c 2E4C     		ldr	r4, .L61+4
+ 729 000e 2060     		str	r0, [r4]
+ 112:Src/nema_hal_freertos.c ****     nema_mutexes_ids[MUTEX_MALLOC] = xSemaphoreCreateMutexStatic(&nema_mutexes_buffers[MUTEX_MALLOC
+ 730              		.loc 1 112 5 is_stmt 1 view .LVU158
+ 731 0010 28B9     		cbnz	r0, .L52
+ 112:Src/nema_hal_freertos.c ****     nema_mutexes_ids[MUTEX_MALLOC] = xSemaphoreCreateMutexStatic(&nema_mutexes_buffers[MUTEX_MALLOC
+ 732              		.loc 1 112 5 is_stmt 0 discriminator 1 view .LVU159
+ 733 0012 7021     		movs	r1, #112
+ 734 0014 2D4B     		ldr	r3, .L61+8
+ 735 0016 2E4A     		ldr	r2, .L61+12
+ 736              	.L60:
+ 114:Src/nema_hal_freertos.c ****     nema_mutexes_ids[MUTEX_FLUSH] = xSemaphoreCreateMutexStatic(&nema_mutexes_buffers[MUTEX_FLUSH])
+ 737              		.loc 1 114 5 discriminator 1 view .LVU160
+ 738 0018 2E48     		ldr	r0, .L61+16
+ 739 001a FFF7FEFF 		bl	__assert_func
+ 740              	.LVL58:
+ 741              	.L52:
+ 113:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_MALLOC]);
+ 742              		.loc 1 113 5 is_stmt 1 view .LVU161
+ 113:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_MALLOC]);
+ 743              		.loc 1 113 38 is_stmt 0 view .LVU162
+ 744 001e 0120     		movs	r0, #1
+ 745 0020 2D49     		ldr	r1, .L61+20
+ 746 0022 FFF7FEFF 		bl	xQueueCreateMutexStatic
+ 747              	.LVL59:
+ 113:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_MALLOC]);
+ 748              		.loc 1 113 36 discriminator 1 view .LVU163
+ 749 0026 6060     		str	r0, [r4, #4]
+ 114:Src/nema_hal_freertos.c ****     nema_mutexes_ids[MUTEX_FLUSH] = xSemaphoreCreateMutexStatic(&nema_mutexes_buffers[MUTEX_FLUSH])
+ 750              		.loc 1 114 5 is_stmt 1 view .LVU164
+ 751 0028 18B9     		cbnz	r0, .L53
+ 114:Src/nema_hal_freertos.c ****     nema_mutexes_ids[MUTEX_FLUSH] = xSemaphoreCreateMutexStatic(&nema_mutexes_buffers[MUTEX_FLUSH])
+ 752              		.loc 1 114 5 is_stmt 0 discriminator 1 view .LVU165
+ 753 002a 7221     		movs	r1, #114
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 21
+
+
+ 754 002c 2B4B     		ldr	r3, .L61+24
+ 755 002e 284A     		ldr	r2, .L61+12
+ 756 0030 F2E7     		b	.L60
+ 757              	.L53:
+ 115:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_FLUSH]);
+ 758              		.loc 1 115 5 is_stmt 1 view .LVU166
+ 115:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_FLUSH]);
+ 759              		.loc 1 115 37 is_stmt 0 view .LVU167
+ 760 0032 0120     		movs	r0, #1
+ 761 0034 2A49     		ldr	r1, .L61+28
+ 762 0036 FFF7FEFF 		bl	xQueueCreateMutexStatic
+ 763              	.LVL60:
+ 115:Src/nema_hal_freertos.c ****     assert(nema_mutexes_ids[MUTEX_FLUSH]);
+ 764              		.loc 1 115 35 discriminator 1 view .LVU168
+ 765 003a A060     		str	r0, [r4, #8]
+ 116:Src/nema_hal_freertos.c **** #endif /* NEMA_MULTI_PROCESS | NEMA_MULTI_THREAD */
+ 766              		.loc 1 116 5 is_stmt 1 view .LVU169
+ 767 003c 18B9     		cbnz	r0, .L54
+ 116:Src/nema_hal_freertos.c **** #endif /* NEMA_MULTI_PROCESS | NEMA_MULTI_THREAD */
+ 768              		.loc 1 116 5 is_stmt 0 discriminator 1 view .LVU170
+ 769 003e 7421     		movs	r1, #116
+ 770 0040 284B     		ldr	r3, .L61+32
+ 771 0042 234A     		ldr	r2, .L61+12
+ 772 0044 E8E7     		b	.L60
+ 773              	.L54:
+ 121:Src/nema_hal_freertos.c ****     assert(nema_irq_sem);
+ 774              		.loc 1 121 5 is_stmt 1 view .LVU171
+ 121:Src/nema_hal_freertos.c ****     assert(nema_irq_sem);
+ 775              		.loc 1 121 20 is_stmt 0 view .LVU172
+ 776 0046 0021     		movs	r1, #0
+ 777 0048 0120     		movs	r0, #1
+ 778 004a 274A     		ldr	r2, .L61+36
+ 779 004c FFF7FEFF 		bl	xQueueCreateCountingSemaphoreStatic
+ 780              	.LVL61:
+ 121:Src/nema_hal_freertos.c ****     assert(nema_irq_sem);
+ 781              		.loc 1 121 18 discriminator 1 view .LVU173
+ 782 0050 264B     		ldr	r3, .L61+40
+ 783 0052 1860     		str	r0, [r3]
+ 122:Src/nema_hal_freertos.c **** #endif /* NEMA_WAIT_IRQ_BINARY_SEMAPHORE */
+ 784              		.loc 1 122 5 is_stmt 1 view .LVU174
+ 785 0054 38B3     		cbz	r0, .L55
+ 786              	.LVL62:
+ 787              	.LBB21:
+ 126:Src/nema_hal_freertos.c ****     {
+ 788              		.loc 1 126 33 discriminator 1 view .LVU175
+ 128:Src/nema_hal_freertos.c ****     }
+ 789              		.loc 1 128 9 view .LVU176
+ 790 0056 0125     		movs	r5, #1
+ 791 0058 254A     		ldr	r2, .L61+44
+ 792 005a 4FF40023 		mov	r3, #524288
+ 793 005e 1146     		mov	r1, r2
+ 794 0060 0020     		movs	r0, #0
+ 795 0062 0095     		str	r5, [sp]
+ 796 0064 FFF7FEFF 		bl	tsi_malloc_init_pool
+ 797              	.LVL63:
+ 126:Src/nema_hal_freertos.c ****     {
+ 798              		.loc 1 126 68 discriminator 3 view .LVU177
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 22
+
+
+ 126:Src/nema_hal_freertos.c ****     {
+ 799              		.loc 1 126 33 discriminator 1 view .LVU178
+ 128:Src/nema_hal_freertos.c ****     }
+ 800              		.loc 1 128 9 view .LVU179
+ 801 0068 4FF01042 		mov	r2, #-1879048192
+ 802 006c 214B     		ldr	r3, .L61+48
+ 803 006e 1146     		mov	r1, r2
+ 804 0070 2846     		mov	r0, r5
+ 805 0072 0095     		str	r5, [sp]
+ 806 0074 FFF7FEFF 		bl	tsi_malloc_init_pool
+ 807              	.LVL64:
+ 126:Src/nema_hal_freertos.c ****     {
+ 808              		.loc 1 126 68 discriminator 3 view .LVU180
+ 126:Src/nema_hal_freertos.c ****     {
+ 809              		.loc 1 126 33 discriminator 1 view .LVU181
+ 128:Src/nema_hal_freertos.c ****     }
+ 810              		.loc 1 128 9 view .LVU182
+ 811 0078 1F4A     		ldr	r2, .L61+52
+ 812 007a 204B     		ldr	r3, .L61+56
+ 813 007c 1146     		mov	r1, r2
+ 814              	.LBE21:
+ 133:Src/nema_hal_freertos.c ****     assert(ring_buffer_str.bo.base_virt);
+ 815              		.loc 1 133 26 is_stmt 0 view .LVU183
+ 816 007e 02AE     		add	r6, sp, #8
+ 817              	.LBB22:
+ 128:Src/nema_hal_freertos.c ****     }
+ 818              		.loc 1 128 9 view .LVU184
+ 819 0080 0220     		movs	r0, #2
+ 820              	.LBE22:
+ 133:Src/nema_hal_freertos.c ****     assert(ring_buffer_str.bo.base_virt);
+ 821              		.loc 1 133 26 view .LVU185
+ 822 0082 1F4C     		ldr	r4, .L61+60
+ 823              	.LBB23:
+ 128:Src/nema_hal_freertos.c ****     }
+ 824              		.loc 1 128 9 view .LVU186
+ 825 0084 0095     		str	r5, [sp]
+ 826 0086 FFF7FEFF 		bl	tsi_malloc_init_pool
+ 827              	.LVL65:
+ 126:Src/nema_hal_freertos.c ****     {
+ 828              		.loc 1 126 68 is_stmt 1 discriminator 3 view .LVU187
+ 126:Src/nema_hal_freertos.c ****     {
+ 829              		.loc 1 126 33 discriminator 1 view .LVU188
+ 830              	.LBE23:
+ 133:Src/nema_hal_freertos.c ****     assert(ring_buffer_str.bo.base_virt);
+ 831              		.loc 1 133 5 view .LVU189
+ 133:Src/nema_hal_freertos.c ****     assert(ring_buffer_str.bo.base_virt);
+ 832              		.loc 1 133 26 is_stmt 0 view .LVU190
+ 833 008a 4FF48061 		mov	r1, #1024
+ 834 008e 3046     		mov	r0, r6
+ 835 0090 FFF7FEFF 		bl	nema_buffer_create
+ 836              	.LVL66:
+ 837 0094 96E80F00 		ldm	r6, {r0, r1, r2, r3}
+ 838 0098 84E80F00 		stm	r4, {r0, r1, r2, r3}
+ 134:Src/nema_hal_freertos.c **** 
+ 839              		.loc 1 134 5 is_stmt 1 view .LVU191
+ 840 009c 3AB9     		cbnz	r2, .L59
+ 134:Src/nema_hal_freertos.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 23
+
+
+ 841              		.loc 1 134 5 is_stmt 0 discriminator 1 view .LVU192
+ 842 009e 8621     		movs	r1, #134
+ 843 00a0 184B     		ldr	r3, .L61+64
+ 844 00a2 0B4A     		ldr	r2, .L61+12
+ 845 00a4 B8E7     		b	.L60
+ 846              	.LVL67:
+ 847              	.L55:
+ 122:Src/nema_hal_freertos.c **** #endif /* NEMA_WAIT_IRQ_BINARY_SEMAPHORE */
+ 848              		.loc 1 122 5 discriminator 1 view .LVU193
+ 849 00a6 7A21     		movs	r1, #122
+ 850 00a8 174B     		ldr	r3, .L61+68
+ 851 00aa 094A     		ldr	r2, .L61+12
+ 852 00ac B4E7     		b	.L60
+ 853              	.LVL68:
+ 854              	.L59:
+ 136:Src/nema_hal_freertos.c **** 
+ 855              		.loc 1 136 5 is_stmt 1 view .LVU194
+ 139:Src/nema_hal_freertos.c ****     if (ret < 0)
+ 856              		.loc 1 139 5 view .LVU195
+ 139:Src/nema_hal_freertos.c ****     if (ret < 0)
+ 857              		.loc 1 139 11 is_stmt 0 view .LVU196
+ 858 00ae 2946     		mov	r1, r5
+ 859 00b0 2046     		mov	r0, r4
+ 860 00b2 FFF7FEFF 		bl	nema_rb_init
+ 861              	.LVL69:
+ 140:Src/nema_hal_freertos.c ****     {
+ 862              		.loc 1 140 5 is_stmt 1 view .LVU197
+ 140:Src/nema_hal_freertos.c ****     {
+ 863              		.loc 1 140 8 is_stmt 0 view .LVU198
+ 864 00b6 0028     		cmp	r0, #0
+ 146:Src/nema_hal_freertos.c **** 
+ 865              		.loc 1 146 5 is_stmt 1 view .LVU199
+ 146:Src/nema_hal_freertos.c **** 
+ 866              		.loc 1 146 16 is_stmt 0 view .LVU200
+ 867 00b8 A2BF     		ittt	ge
+ 868 00ba 0020     		movge	r0, #0
+ 869              	.LVL70:
+ 146:Src/nema_hal_freertos.c **** 
+ 870              		.loc 1 146 16 view .LVU201
+ 871 00bc 134B     		ldrge	r3, .L61+72
+ 872 00be 1860     		strge	r0, [r3]
+ 148:Src/nema_hal_freertos.c **** }
+ 873              		.loc 1 148 5 is_stmt 1 view .LVU202
+ 149:Src/nema_hal_freertos.c **** 
+ 874              		.loc 1 149 1 is_stmt 0 view .LVU203
+ 875 00c0 06B0     		add	sp, sp, #24
+ 876              		.cfi_def_cfa_offset 16
+ 877              		@ sp needed
+ 878 00c2 70BD     		pop	{r4, r5, r6, pc}
+ 879              	.L62:
+ 880              		.align	2
+ 881              	.L61:
+ 882 00c4 00000000 		.word	nema_mutexes_buffers
+ 883 00c8 00000000 		.word	nema_mutexes_ids
+ 884 00cc 00000000 		.word	.LC4
+ 885 00d0 00000000 		.word	__func__.3
+ 886 00d4 0E000000 		.word	.LC1
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 24
+
+
+ 887 00d8 50000000 		.word	nema_mutexes_buffers+80
+ 888 00dc 1B000000 		.word	.LC5
+ 889 00e0 A0000000 		.word	nema_mutexes_buffers+160
+ 890 00e4 3A000000 		.word	.LC6
+ 891 00e8 00000000 		.word	nema_irq_sem_buffer
+ 892 00ec 00000000 		.word	nema_irq_sem
+ 893 00f0 00001834 		.word	873988096
+ 894 00f4 00E22E00 		.word	3072512
+ 895 00f8 00E22E90 		.word	-1875975680
+ 896 00fc 00DD0500 		.word	384256
+ 897 0100 00000000 		.word	ring_buffer_str
+ 898 0104 65000000 		.word	.LC8
+ 899 0108 58000000 		.word	.LC7
+ 900 010c 00000000 		.word	last_cl_id
+ 901              		.cfi_endproc
+ 902              	.LFE871:
+ 904              		.section	.text.nema_buffer_create_pool,"ax",%progbits
+ 905              		.align	1
+ 906              		.global	nema_buffer_create_pool
+ 907              		.syntax unified
+ 908              		.thumb
+ 909              		.thumb_func
+ 911              	nema_buffer_create_pool:
+ 912              	.LVL71:
+ 913              	.LFB878:
+ 213:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 914              		.loc 1 213 1 is_stmt 1 view -0
+ 915              		.cfi_startproc
+ 916              		@ args = 0, pretend = 0, frame = 0
+ 917              		@ frame_needed = 0, uses_anonymous_args = 0
+ 214:Src/nema_hal_freertos.c **** 
+ 918              		.loc 1 214 5 view .LVU205
+ 216:Src/nema_hal_freertos.c **** 
+ 919              		.loc 1 216 5 view .LVU206
+ 218:Src/nema_hal_freertos.c **** 
+ 920              		.loc 1 218 5 view .LVU207
+ 213:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 921              		.loc 1 213 1 is_stmt 0 view .LVU208
+ 922 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 923              		.cfi_def_cfa_offset 24
+ 924              		.cfi_offset 3, -24
+ 925              		.cfi_offset 4, -20
+ 926              		.cfi_offset 5, -16
+ 927              		.cfi_offset 6, -12
+ 928              		.cfi_offset 7, -8
+ 929              		.cfi_offset 14, -4
+ 213:Src/nema_hal_freertos.c ****     nema_buffer_t bo;
+ 930              		.loc 1 213 1 view .LVU209
+ 931 0002 0E46     		mov	r6, r1
+ 932 0004 1746     		mov	r7, r2
+ 933 0006 0446     		mov	r4, r0
+ 218:Src/nema_hal_freertos.c **** 
+ 934              		.loc 1 218 5 view .LVU210
+ 935 0008 0120     		movs	r0, #1
+ 936              	.LVL72:
+ 218:Src/nema_hal_freertos.c **** 
+ 937              		.loc 1 218 5 view .LVU211
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 25
+
+
+ 938 000a FFF7FEFF 		bl	nema_mutex_lock
+ 939              	.LVL73:
+ 220:Src/nema_hal_freertos.c ****     assert(bo.base_virt);
+ 940              		.loc 1 220 5 is_stmt 1 view .LVU212
+ 220:Src/nema_hal_freertos.c ****     assert(bo.base_virt);
+ 941              		.loc 1 220 20 is_stmt 0 view .LVU213
+ 942 000e 3946     		mov	r1, r7
+ 943 0010 3046     		mov	r0, r6
+ 944 0012 FFF7FEFF 		bl	tsi_malloc_pool
+ 945              	.LVL74:
+ 221:Src/nema_hal_freertos.c **** 
+ 946              		.loc 1 221 5 is_stmt 1 view .LVU214
+ 947 0016 0546     		mov	r5, r0
+ 948 0018 28B9     		cbnz	r0, .L64
+ 221:Src/nema_hal_freertos.c **** 
+ 949              		.loc 1 221 5 is_stmt 0 discriminator 1 view .LVU215
+ 950 001a DD21     		movs	r1, #221
+ 951 001c 064B     		ldr	r3, .L65
+ 952 001e 074A     		ldr	r2, .L65+4
+ 953 0020 0748     		ldr	r0, .L65+8
+ 954              	.LVL75:
+ 221:Src/nema_hal_freertos.c **** 
+ 955              		.loc 1 221 5 discriminator 1 view .LVU216
+ 956 0022 FFF7FEFF 		bl	__assert_func
+ 957              	.LVL76:
+ 958              	.L64:
+ 223:Src/nema_hal_freertos.c ****     bo.size      = size;
+ 959              		.loc 1 223 5 is_stmt 1 view .LVU217
+ 224:Src/nema_hal_freertos.c ****     bo.fd        = pool; /* use fd during the memory free */
+ 960              		.loc 1 224 5 view .LVU218
+ 225:Src/nema_hal_freertos.c **** 
+ 961              		.loc 1 225 5 view .LVU219
+ 227:Src/nema_hal_freertos.c **** 
+ 962              		.loc 1 227 5 view .LVU220
+ 963 0026 0120     		movs	r0, #1
+ 964              	.LVL77:
+ 227:Src/nema_hal_freertos.c **** 
+ 965              		.loc 1 227 5 is_stmt 0 view .LVU221
+ 966 0028 FFF7FEFF 		bl	nema_mutex_unlock
+ 967              	.LVL78:
+ 229:Src/nema_hal_freertos.c **** }
+ 968              		.loc 1 229 5 is_stmt 1 view .LVU222
+ 230:Src/nema_hal_freertos.c **** 
+ 969              		.loc 1 230 1 is_stmt 0 view .LVU223
+ 970 002c 2046     		mov	r0, r4
+ 229:Src/nema_hal_freertos.c **** }
+ 971              		.loc 1 229 12 view .LVU224
+ 972 002e C4E90076 		strd	r7, r6, [r4]
+ 973 0032 C4E90255 		strd	r5, r5, [r4, #8]
+ 974              	.LVL79:
+ 230:Src/nema_hal_freertos.c **** 
+ 975              		.loc 1 230 1 view .LVU225
+ 976 0036 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 977              	.LVL80:
+ 978              	.L66:
+ 230:Src/nema_hal_freertos.c **** 
+ 979              		.loc 1 230 1 view .LVU226
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 26
+
+
+ 980              		.align	2
+ 981              	.L65:
+ 982 0038 00000000 		.word	.LC3
+ 983 003c 00000000 		.word	__func__.1
+ 984 0040 0E000000 		.word	.LC1
+ 985              		.cfi_endproc
+ 986              	.LFE878:
+ 988              		.section	.text.nema_buffer_destroy,"ax",%progbits
+ 989              		.align	1
+ 990              		.global	nema_buffer_destroy
+ 991              		.syntax unified
+ 992              		.thumb
+ 993              		.thumb_func
+ 995              	nema_buffer_destroy:
+ 996              	.LVL81:
+ 997              	.LFB881:
+ 244:Src/nema_hal_freertos.c ****     nema_mutex_lock(MUTEX_MALLOC);
+ 998              		.loc 1 244 1 is_stmt 1 view -0
+ 999              		.cfi_startproc
+ 1000              		@ args = 0, pretend = 0, frame = 0
+ 1001              		@ frame_needed = 0, uses_anonymous_args = 0
+ 245:Src/nema_hal_freertos.c **** 
+ 1002              		.loc 1 245 5 view .LVU228
+ 244:Src/nema_hal_freertos.c ****     nema_mutex_lock(MUTEX_MALLOC);
+ 1003              		.loc 1 244 1 is_stmt 0 view .LVU229
+ 1004 0000 10B5     		push	{r4, lr}
+ 1005              		.cfi_def_cfa_offset 8
+ 1006              		.cfi_offset 4, -8
+ 1007              		.cfi_offset 14, -4
+ 244:Src/nema_hal_freertos.c ****     nema_mutex_lock(MUTEX_MALLOC);
+ 1008              		.loc 1 244 1 view .LVU230
+ 1009 0002 0446     		mov	r4, r0
+ 245:Src/nema_hal_freertos.c **** 
+ 1010              		.loc 1 245 5 view .LVU231
+ 1011 0004 0120     		movs	r0, #1
+ 1012              	.LVL82:
+ 245:Src/nema_hal_freertos.c **** 
+ 1013              		.loc 1 245 5 view .LVU232
+ 1014 0006 FFF7FEFF 		bl	nema_mutex_lock
+ 1015              	.LVL83:
+ 247:Src/nema_hal_freertos.c **** 
+ 1016              		.loc 1 247 5 is_stmt 1 view .LVU233
+ 1017 000a A068     		ldr	r0, [r4, #8]
+ 1018 000c FFF7FEFF 		bl	tsi_free
+ 1019              	.LVL84:
+ 249:Src/nema_hal_freertos.c **** }
+ 1020              		.loc 1 249 5 view .LVU234
+ 250:Src/nema_hal_freertos.c **** 
+ 1021              		.loc 1 250 1 is_stmt 0 view .LVU235
+ 1022 0010 BDE81040 		pop	{r4, lr}
+ 1023              		.cfi_restore 14
+ 1024              		.cfi_restore 4
+ 1025              		.cfi_def_cfa_offset 0
+ 1026              	.LVL85:
+ 249:Src/nema_hal_freertos.c **** }
+ 1027              		.loc 1 249 5 view .LVU236
+ 1028 0014 0120     		movs	r0, #1
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 27
+
+
+ 1029 0016 FFF7FEBF 		b	nema_mutex_unlock
+ 1030              	.LVL86:
+ 1031              		.cfi_endproc
+ 1032              	.LFE881:
+ 1034              		.section	.text.nema_buffer_flush,"ax",%progbits
+ 1035              		.align	1
+ 1036              		.global	nema_buffer_flush
+ 1037              		.syntax unified
+ 1038              		.thumb
+ 1039              		.thumb_func
+ 1041              	nema_buffer_flush:
+ 1042              	.LVL87:
+ 1043              	.LFB883:
+ 258:Src/nema_hal_freertos.c **** #if defined(NEMA_CACHED_MEMORY)
+ 1044              		.loc 1 258 1 is_stmt 1 view -0
+ 1045              		.cfi_startproc
+ 1046              		@ args = 0, pretend = 0, frame = 0
+ 1047              		@ frame_needed = 0, uses_anonymous_args = 0
+ 260:Src/nema_hal_freertos.c ****     SCB_CleanInvalidateDCache_by_Addr((uint32_t *)bo->base_virt, bo->size);
+ 1048              		.loc 1 260 5 view .LVU238
+ 258:Src/nema_hal_freertos.c **** #if defined(NEMA_CACHED_MEMORY)
+ 1049              		.loc 1 258 1 is_stmt 0 view .LVU239
+ 1050 0000 10B5     		push	{r4, lr}
+ 1051              		.cfi_def_cfa_offset 8
+ 1052              		.cfi_offset 4, -8
+ 1053              		.cfi_offset 14, -4
+ 258:Src/nema_hal_freertos.c **** #if defined(NEMA_CACHED_MEMORY)
+ 1054              		.loc 1 258 1 view .LVU240
+ 1055 0002 0446     		mov	r4, r0
+ 260:Src/nema_hal_freertos.c ****     SCB_CleanInvalidateDCache_by_Addr((uint32_t *)bo->base_virt, bo->size);
+ 1056              		.loc 1 260 5 view .LVU241
+ 1057 0004 0220     		movs	r0, #2
+ 1058              	.LVL88:
+ 260:Src/nema_hal_freertos.c ****     SCB_CleanInvalidateDCache_by_Addr((uint32_t *)bo->base_virt, bo->size);
+ 1059              		.loc 1 260 5 view .LVU242
+ 1060 0006 FFF7FEFF 		bl	nema_mutex_lock
+ 1061              	.LVL89:
+ 261:Src/nema_hal_freertos.c ****     nema_mutex_unlock(MUTEX_FLUSH);
+ 1062              		.loc 1 261 5 is_stmt 1 view .LVU243
+ 261:Src/nema_hal_freertos.c ****     nema_mutex_unlock(MUTEX_FLUSH);
+ 1063              		.loc 1 261 68 is_stmt 0 view .LVU244
+ 1064 000a 2268     		ldr	r2, [r4]
+ 1065              	.LVL90:
+ 1066              	.LBB24:
+ 1067              	.LBI24:
+ 1068              		.file 2 "STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h"
+   1:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /*
+   2:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * Copyright (c) 2020-2021 Arm Limited. All rights reserved.
+   3:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  *
+   4:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * SPDX-License-Identifier: Apache-2.0
+   5:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  *
+   6:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+   7:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * not use this file except in compliance with the License.
+   8:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * You may obtain a copy of the License at
+   9:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  *
+  10:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * www.apache.org/licenses/LICENSE-2.0
+  11:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  *
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 28
+
+
+  12:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * Unless required by applicable law or agreed to in writing, software
+  13:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  14:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  15:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * See the License for the specific language governing permissions and
+  16:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * limitations under the License.
+  17:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  */
+  18:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  19:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /*
+  20:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  * CMSIS-Core(M) Level 1 Cache API for Armv7-M and later
+  21:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  */
+  22:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  23:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #ifndef ARM_ARMV7M_CACHEL1_H
+  24:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #define ARM_ARMV7M_CACHEL1_H
+  25:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  26:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #if   defined ( __ICCARM__ )
+  27:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #pragma system_include         /* treat file as system include file for MISRA check */
+  28:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #elif defined (__clang__)
+  29:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #pragma clang system_header    /* treat file as system include file */
+  30:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #endif
+  31:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  32:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+  33:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \ingroup  CMSIS_Core_FunctionInterface
+  34:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \defgroup CMSIS_Core_CacheFunctions Cache Functions
+  35:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief    Functions that configure Instruction and Data cache.
+  36:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   @{
+  37:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****  */
+  38:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  39:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /* Cache Size ID Register Macros */
+  40:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #define CCSIDR_WAYS(x)         (((x) & SCB_CCSIDR_ASSOCIATIVITY_Msk) >> SCB_CCSIDR_ASSOCIATIVITY_Po
+  41:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #define CCSIDR_SETS(x)         (((x) & SCB_CCSIDR_NUMSETS_Msk      ) >> SCB_CCSIDR_NUMSETS_Pos     
+  42:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  43:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #ifndef __SCB_DCACHE_LINE_SIZE
+  44:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #define __SCB_DCACHE_LINE_SIZE  32U /*!< Cortex-M7 cache line size is fixed to 32 bytes (8 words). 
+  45:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #endif
+  46:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  47:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #ifndef __SCB_ICACHE_LINE_SIZE
+  48:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #define __SCB_ICACHE_LINE_SIZE  32U /*!< Cortex-M7 cache line size is fixed to 32 bytes (8 words). 
+  49:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** #endif
+  50:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  51:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+  52:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   Enable I-Cache
+  53:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Turns on I-Cache
+  54:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   */
+  55:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_EnableICache (void)
+  56:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+  57:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
+  58:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     if (SCB->CCR & SCB_CCR_IC_Msk) return;  /* return if ICache is already enabled */
+  59:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  60:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+  61:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+  62:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->ICIALLU = 0UL;                     /* invalidate I-Cache */
+  63:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+  64:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+  65:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CCR |=  (uint32_t)SCB_CCR_IC_Msk;  /* enable I-Cache */
+  66:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+  67:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+  68:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 29
+
+
+  69:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+  70:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  71:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  72:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+  73:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   Disable I-Cache
+  74:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Turns off I-Cache
+  75:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   */
+  76:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_DisableICache (void)
+  77:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+  78:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
+  79:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+  80:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+  81:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CCR &= ~(uint32_t)SCB_CCR_IC_Msk;  /* disable I-Cache */
+  82:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->ICIALLU = 0UL;                     /* invalidate I-Cache */
+  83:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+  84:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+  85:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+  86:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+  87:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  88:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+  89:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+  90:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   Invalidate I-Cache
+  91:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Invalidates I-Cache
+  92:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   */
+  93:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_InvalidateICache (void)
+  94:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+  95:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
+  96:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+  97:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+  98:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->ICIALLU = 0UL;
+  99:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 100:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+ 101:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ 102:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 103:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 104:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 105:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 106:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   I-Cache Invalidate by address
+ 107:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Invalidates I-Cache for the given address.
+ 108:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****            I-Cache is invalidated starting from a 32 byte aligned address in 32 byte granularity.
+ 109:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****            I-Cache memory blocks which are part of given address + given size are invalidated.
+ 110:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \param[in]   addr    address
+ 111:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \param[in]   isize   size of memory block (in number of bytes)
+ 112:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** */
+ 113:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_InvalidateICache_by_Addr (volatile void *addr, int32_t isize)
+ 114:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 115:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
+ 116:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     if ( isize > 0 ) {
+ 117:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        int32_t op_size = isize + (((uint32_t)addr) & (__SCB_ICACHE_LINE_SIZE - 1U));
+ 118:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       uint32_t op_addr = (uint32_t)addr /* & ~(__SCB_ICACHE_LINE_SIZE - 1U) */;
+ 119:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 120:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 121:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 122:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 123:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->ICIMVAU = op_addr;             /* register accepts only 32byte aligned values, only bi
+ 124:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_addr += __SCB_ICACHE_LINE_SIZE;
+ 125:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_size -= __SCB_ICACHE_LINE_SIZE;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 30
+
+
+ 126:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while ( op_size > 0 );
+ 127:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 128:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 129:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __ISB();
+ 130:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     }
+ 131:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ 132:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 133:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 134:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 135:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 136:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   Enable D-Cache
+ 137:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Turns on D-Cache
+ 138:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   */
+ 139:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_EnableDCache (void)
+ 140:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 141:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+ 142:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t ccsidr;
+ 143:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t sets;
+ 144:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t ways;
+ 145:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 146:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     if (SCB->CCR & SCB_CCR_DC_Msk) return;  /* return if DCache is already enabled */
+ 147:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 148:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
+ 149:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 150:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 151:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     ccsidr = SCB->CCSIDR;
+ 152:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 153:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                                             /* invalidate D-Cache */
+ 154:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     sets = (uint32_t)(CCSIDR_SETS(ccsidr));
+ 155:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     do {
+ 156:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
+ 157:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 158:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCISW = (((sets << SCB_DCISW_SET_Pos) & SCB_DCISW_SET_Msk) |
+ 159:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                       ((ways << SCB_DCISW_WAY_Pos) & SCB_DCISW_WAY_Msk)  );
+ 160:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #if defined ( __CC_ARM )
+ 161:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****           __schedule_barrier();
+ 162:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #endif
+ 163:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while (ways-- != 0U);
+ 164:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     } while(sets-- != 0U);
+ 165:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 166:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 167:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CCR |=  (uint32_t)SCB_CCR_DC_Msk;  /* enable D-Cache */
+ 168:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 169:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 170:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+ 171:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ 172:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 173:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 174:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 175:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 176:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   Disable D-Cache
+ 177:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Turns off D-Cache
+ 178:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   */
+ 179:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_DisableDCache (void)
+ 180:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 181:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+ 182:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     struct {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 31
+
+
+ 183:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       uint32_t ccsidr;
+ 184:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       uint32_t sets;
+ 185:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       uint32_t ways;
+ 186:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     } locals
+ 187:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     #if ((defined(__GNUC__) || defined(__clang__)) && !defined(__OPTIMIZE__))
+ 188:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        __ALIGNED(__SCB_DCACHE_LINE_SIZE)
+ 189:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     #endif
+ 190:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     ;
+ 191:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 192:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
+ 193:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 194:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 195:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CCR &= ~(uint32_t)SCB_CCR_DC_Msk;  /* disable D-Cache */
+ 196:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 197:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 198:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     #if !defined(__OPTIMIZE__)
+ 199:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       /*
+ 200:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        * For the endless loop issue with no optimization builds.
+ 201:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        * More details, see https://github.com/ARM-software/CMSIS_5/issues/620
+ 202:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        *
+ 203:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        * The issue only happens when local variables are in stack. If
+ 204:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        * local variables are saved in general purpose register, then the function
+ 205:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        * is OK.
+ 206:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        *
+ 207:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        * When local variables are in stack, after disabling the cache, flush the
+ 208:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        * local variables cache line for data consistency.
+ 209:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        */
+ 210:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       /* Clean and invalidate the local variable cache. */
+ 211:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     #if defined(__ICCARM__)
+ 212:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     /* As we can't align the stack to the cache line size, invalidate each of the variables */
+ 213:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       SCB->DCCIMVAC = (uint32_t)&locals.sets;
+ 214:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       SCB->DCCIMVAC = (uint32_t)&locals.ways;
+ 215:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       SCB->DCCIMVAC = (uint32_t)&locals.ccsidr;
+ 216:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     #else
+ 217:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       SCB->DCCIMVAC = (uint32_t)&locals;
+ 218:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     #endif
+ 219:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 220:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __ISB();
+ 221:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     #endif
+ 222:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 223:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     locals.ccsidr = SCB->CCSIDR;
+ 224:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                                             /* clean & invalidate D-Cache */
+ 225:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     locals.sets = (uint32_t)(CCSIDR_SETS(locals.ccsidr));
+ 226:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     do {
+ 227:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       locals.ways = (uint32_t)(CCSIDR_WAYS(locals.ccsidr));
+ 228:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 229:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCCISW = (((locals.sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
+ 230:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                        ((locals.ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
+ 231:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #if defined ( __CC_ARM )
+ 232:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****           __schedule_barrier();
+ 233:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #endif
+ 234:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while (locals.ways-- != 0U);
+ 235:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     } while(locals.sets-- != 0U);
+ 236:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 237:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 238:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+ 239:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 32
+
+
+ 240:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 241:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 242:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 243:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 244:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   Invalidate D-Cache
+ 245:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Invalidates D-Cache
+ 246:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   */
+ 247:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_InvalidateDCache (void)
+ 248:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 249:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+ 250:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t ccsidr;
+ 251:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t sets;
+ 252:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t ways;
+ 253:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 254:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
+ 255:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 256:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 257:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     ccsidr = SCB->CCSIDR;
+ 258:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 259:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                                             /* invalidate D-Cache */
+ 260:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     sets = (uint32_t)(CCSIDR_SETS(ccsidr));
+ 261:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     do {
+ 262:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
+ 263:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 264:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCISW = (((sets << SCB_DCISW_SET_Pos) & SCB_DCISW_SET_Msk) |
+ 265:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                       ((ways << SCB_DCISW_WAY_Pos) & SCB_DCISW_WAY_Msk)  );
+ 266:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #if defined ( __CC_ARM )
+ 267:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****           __schedule_barrier();
+ 268:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #endif
+ 269:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while (ways-- != 0U);
+ 270:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     } while(sets-- != 0U);
+ 271:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 272:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 273:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+ 274:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ 275:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 276:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 277:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 278:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 279:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   Clean D-Cache
+ 280:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Cleans D-Cache
+ 281:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   */
+ 282:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_CleanDCache (void)
+ 283:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 284:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+ 285:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t ccsidr;
+ 286:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t sets;
+ 287:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t ways;
+ 288:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 289:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
+ 290:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 291:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 292:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     ccsidr = SCB->CCSIDR;
+ 293:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 294:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                                             /* clean D-Cache */
+ 295:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     sets = (uint32_t)(CCSIDR_SETS(ccsidr));
+ 296:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     do {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 33
+
+
+ 297:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
+ 298:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 299:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCCSW = (((sets << SCB_DCCSW_SET_Pos) & SCB_DCCSW_SET_Msk) |
+ 300:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                       ((ways << SCB_DCCSW_WAY_Pos) & SCB_DCCSW_WAY_Msk)  );
+ 301:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #if defined ( __CC_ARM )
+ 302:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****           __schedule_barrier();
+ 303:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #endif
+ 304:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while (ways-- != 0U);
+ 305:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     } while(sets-- != 0U);
+ 306:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 307:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 308:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+ 309:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ 310:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 311:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 312:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 313:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 314:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   Clean & Invalidate D-Cache
+ 315:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Cleans and Invalidates D-Cache
+ 316:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   */
+ 317:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_CleanInvalidateDCache (void)
+ 318:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 319:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+ 320:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t ccsidr;
+ 321:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t sets;
+ 322:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     uint32_t ways;
+ 323:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 324:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     SCB->CSSELR = 0U;                       /* select Level 1 data cache */
+ 325:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 326:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 327:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     ccsidr = SCB->CCSIDR;
+ 328:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 329:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                                             /* clean & invalidate D-Cache */
+ 330:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     sets = (uint32_t)(CCSIDR_SETS(ccsidr));
+ 331:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     do {
+ 332:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       ways = (uint32_t)(CCSIDR_WAYS(ccsidr));
+ 333:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 334:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCCISW = (((sets << SCB_DCCISW_SET_Pos) & SCB_DCCISW_SET_Msk) |
+ 335:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****                        ((ways << SCB_DCCISW_WAY_Pos) & SCB_DCCISW_WAY_Msk)  );
+ 336:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #if defined ( __CC_ARM )
+ 337:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****           __schedule_barrier();
+ 338:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         #endif
+ 339:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while (ways-- != 0U);
+ 340:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     } while(sets-- != 0U);
+ 341:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 342:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __DSB();
+ 343:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     __ISB();
+ 344:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ 345:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 346:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 347:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 348:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 349:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   D-Cache Invalidate by address
+ 350:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Invalidates D-Cache for the given address.
+ 351:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****            D-Cache is invalidated starting from a 32 byte aligned address in 32 byte granularity.
+ 352:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****            D-Cache memory blocks which are part of given address + given size are invalidated.
+ 353:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \param[in]   addr    address
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 34
+
+
+ 354:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \param[in]   dsize   size of memory block (in number of bytes)
+ 355:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** */
+ 356:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_InvalidateDCache_by_Addr (volatile void *addr, int32_t dsize)
+ 357:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 358:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+ 359:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     if ( dsize > 0 ) {
+ 360:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        int32_t op_size = dsize + (((uint32_t)addr) & (__SCB_DCACHE_LINE_SIZE - 1U));
+ 361:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       uint32_t op_addr = (uint32_t)addr /* & ~(__SCB_DCACHE_LINE_SIZE - 1U) */;
+ 362:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 363:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 364:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 365:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 366:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCIMVAC = op_addr;             /* register accepts only 32byte aligned values, only bi
+ 367:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_addr += __SCB_DCACHE_LINE_SIZE;
+ 368:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_size -= __SCB_DCACHE_LINE_SIZE;
+ 369:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while ( op_size > 0 );
+ 370:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 371:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 372:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __ISB();
+ 373:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     }
+ 374:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ 375:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 376:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 377:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 378:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 379:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   D-Cache Clean by address
+ 380:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Cleans D-Cache for the given address
+ 381:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****            D-Cache is cleaned starting from a 32 byte aligned address in 32 byte granularity.
+ 382:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****            D-Cache memory blocks which are part of given address + given size are cleaned.
+ 383:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \param[in]   addr    address
+ 384:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \param[in]   dsize   size of memory block (in number of bytes)
+ 385:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** */
+ 386:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_CleanDCache_by_Addr (volatile void *addr, int32_t dsize)
+ 387:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 388:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+ 389:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     if ( dsize > 0 ) {
+ 390:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        int32_t op_size = dsize + (((uint32_t)addr) & (__SCB_DCACHE_LINE_SIZE - 1U));
+ 391:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       uint32_t op_addr = (uint32_t)addr /* & ~(__SCB_DCACHE_LINE_SIZE - 1U) */;
+ 392:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 393:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 394:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 395:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 396:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCCMVAC = op_addr;             /* register accepts only 32byte aligned values, only bi
+ 397:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_addr += __SCB_DCACHE_LINE_SIZE;
+ 398:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_size -= __SCB_DCACHE_LINE_SIZE;
+ 399:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while ( op_size > 0 );
+ 400:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 401:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 402:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __ISB();
+ 403:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     }
+ 404:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #endif
+ 405:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** }
+ 406:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 407:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 408:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** /**
+ 409:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \brief   D-Cache Clean and Invalidate by address
+ 410:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \details Cleans and invalidates D_Cache for the given address
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 35
+
+
+ 411:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****            D-Cache is cleaned and invalidated starting from a 32 byte aligned address in 32 byte gr
+ 412:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****            D-Cache memory blocks which are part of given address + given size are cleaned and inval
+ 413:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \param[in]   addr    address (aligned to 32-byte boundary)
+ 414:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   \param[in]   dsize   size of memory block (in number of bytes)
+ 415:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** */
+ 416:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** __STATIC_FORCEINLINE void SCB_CleanInvalidateDCache_by_Addr (volatile void *addr, int32_t dsize)
+ 1069              		.loc 2 416 27 is_stmt 1 view .LVU245
+ 1070              	.LBB25:
+ 417:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** {
+ 418:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****   #if defined (__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+ 419:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****     if ( dsize > 0 ) {
+ 1071              		.loc 2 419 5 view .LVU246
+ 1072              		.loc 2 419 8 is_stmt 0 view .LVU247
+ 1073 000c 002A     		cmp	r2, #0
+ 1074 000e 1CDD     		ble	.L69
+ 1075              	.LBB26:
+ 420:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****        int32_t op_size = dsize + (((uint32_t)addr) & (__SCB_DCACHE_LINE_SIZE - 1U));
+ 1076              		.loc 2 420 8 is_stmt 1 view .LVU248
+ 1077              		.loc 2 420 36 is_stmt 0 view .LVU249
+ 1078 0010 A368     		ldr	r3, [r4, #8]
+ 1079              		.loc 2 420 52 view .LVU250
+ 1080 0012 03F01F01 		and	r1, r3, #31
+ 1081              		.loc 2 420 32 view .LVU251
+ 1082 0016 1144     		add	r1, r1, r2
+ 1083              	.LVL91:
+ 421:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       uint32_t op_addr = (uint32_t)addr /* & ~(__SCB_DCACHE_LINE_SIZE - 1U) */;
+ 1084              		.loc 2 421 7 is_stmt 1 view .LVU252
+ 422:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 423:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 1085              		.loc 2 423 7 view .LVU253
+ 1086              	.LBB27:
+ 1087              	.LBI27:
+ 1088              		.file 3 "STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h"
+   1:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V6.0.0
+   5:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     27. July 2024
+   6:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /*
+   8:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2023 Arm Limited. All rights reserved.
+   9:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  10:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  12:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  16:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  18:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+  24:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 36
+
+
+  25:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  28:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC system_header   /* treat file as system include file */
+  29:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  30:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #include <arm_acle.h>
+  31:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  32:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  33:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  34:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  35:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  36:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  37:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  38:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  39:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  40:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  41:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  42:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  43:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  44:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  45:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  46:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  47:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE
+  48:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  49:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  50:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  51:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  52:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  53:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   CMSIS_DEPRECATED
+  54:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define CMSIS_DEPRECATED                       __attribute__((deprecated))
+  55:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  56:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  57:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  58:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  59:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  60:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  61:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  62:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  63:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  64:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  65:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  66:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  67:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  68:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  69:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  70:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  71:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  72:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  73:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  74:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  75:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  76:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  77:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  78:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  79:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  80:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  81:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 37
+
+
+  82:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  83:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  84:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  85:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  86:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  87:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  88:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  89:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  90:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  91:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  92:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  93:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+  94:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  95:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+  96:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  97:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  98:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  99:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 100:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 101:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 102:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 103:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 104:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 105:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 106:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 107:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 108:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 109:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __COMPILER_BARRIER
+ 110:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __COMPILER_BARRIER()                   __ASM volatile("":::"memory")
+ 111:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 112:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __NO_INIT
+ 113:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_INIT                              __attribute__ ((section (".noinit")))
+ 114:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 115:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __ALIAS
+ 116:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ALIAS(x)                             __attribute__ ((alias(x)))
+ 117:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 118:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 119:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /* ##########################  Core Instruction Access  ######################### */
+ 120:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /** \defgroup CMSIS_Core_InstructionInterface CMSIS Core Instruction Interface
+ 121:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   Access to dedicated instructions
+ 122:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   @{
+ 123:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** */
+ 124:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 125:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /* Define macros for porting to both thumb1 and thumb2.
+ 126:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * For thumb1, use low register (r0-r7), specified by constraint "l"
+ 127:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  * Otherwise, use general registers, specified by constraint "r" */
+ 128:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #if defined (__thumb__) && !defined (__thumb2__)
+ 129:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=l" (r)
+ 130:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+l" (r)
+ 131:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "l" (r)
+ 132:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #else
+ 133:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_OUT_REG(r) "=r" (r)
+ 134:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_RW_REG(r) "+r" (r)
+ 135:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_USE_REG(r) "r" (r)
+ 136:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 137:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 138:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 38
+
+
+ 139:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   No Operation
+ 140:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \details No Operation does nothing. This instruction can be used for code alignment purposes.
+ 141:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 142:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __NOP()         __ASM volatile ("nop")
+ 143:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 144:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 145:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 146:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Wait For Interrupt
+ 147:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Wait For Interrupt is a hint instruction that suspends execution until one of a number o
+ 148:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 149:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __WFI()         __ASM volatile ("wfi":::"memory")
+ 150:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 151:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 152:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 153:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Wait For Event
+ 154:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Wait For Event is a hint instruction that permits the processor to enter
+ 155:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****            a low-power state until one of a number of events occurs.
+ 156:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 157:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __WFE()         __ASM volatile ("wfe":::"memory")
+ 158:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 159:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 160:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 161:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Send Event
+ 162:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Send Event is a hint instruction. It causes an event to be signaled to the CPU.
+ 163:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 164:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** #define __SEV()         __ASM volatile ("sev")
+ 165:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 166:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 167:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 168:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Instruction Synchronization Barrier
+ 169:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Instruction Synchronization Barrier flushes the pipeline in the processor,
+ 170:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****            so that all instructions following the ISB are fetched from cache or memory,
+ 171:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****            after the instruction has been completed.
+ 172:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 173:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __ISB(void)
+ 174:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 175:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("isb 0xF":::"memory");
+ 176:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 177:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 178:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 179:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 180:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Data Synchronization Barrier
+ 181:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Acts as a special kind of Data Memory Barrier.
+ 182:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****            It completes when all explicit memory accesses before this instruction complete.
+ 183:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 184:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __DSB(void)
+ 1089              		.loc 3 184 27 view .LVU254
+ 1090              	.LBB28:
+ 185:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 186:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("dsb 0xF":::"memory");
+ 1091              		.loc 3 186 3 view .LVU255
+ 1092              		.syntax unified
+ 1093              	@ 186 "STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1094 0018 BFF34F8F 		dsb 0xF
+ 1095              	@ 0 "" 2
+ 1096              		.thumb
+ 1097              		.syntax unified
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 39
+
+
+ 1098              	.LBE28:
+ 1099              	.LBE27:
+ 424:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 425:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       do {
+ 426:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCCIMVAC = op_addr;            /* register accepts only 32byte aligned values, only bi
+ 427:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_addr +=          __SCB_DCACHE_LINE_SIZE;
+ 428:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_size -=          __SCB_DCACHE_LINE_SIZE;
+ 429:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while ( op_size > 0 );
+ 1100              		.loc 2 429 25 is_stmt 0 discriminator 1 view .LVU256
+ 1101 001c DA43     		mvns	r2, r3
+ 1102              	.LVL92:
+ 1103              		.loc 2 429 25 discriminator 1 view .LVU257
+ 1104 001e 5C18     		adds	r4, r3, r1
+ 1105              	.LVL93:
+ 1106              		.loc 2 429 25 discriminator 1 view .LVU258
+ 1107 0020 2244     		add	r2, r2, r4
+ 1108 0022 2039     		subs	r1, r1, #32
+ 1109              	.LVL94:
+ 1110              		.loc 2 429 25 discriminator 1 view .LVU259
+ 1111 0024 5209     		lsrs	r2, r2, #5
+ 1112 0026 2031     		adds	r1, r1, #32
+ 1113              	.LVL95:
+ 1114              		.loc 2 429 25 discriminator 1 view .LVU260
+ 1115 0028 02F1010E 		add	lr, r2, #1
+ 1116 002c D8BF     		it	le
+ 1117 002e 4FF0010E 		movle	lr, #1
+ 1118 0032 4EF001E0 		dls	lr, lr
+ 426:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_addr +=          __SCB_DCACHE_LINE_SIZE;
+ 1119              		.loc 2 426 23 view .LVU261
+ 1120 0036 0748     		ldr	r0, .L73
+ 1121              	.LVL96:
+ 1122              	.L70:
+ 425:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         SCB->DCCIMVAC = op_addr;            /* register accepts only 32byte aligned values, only bi
+ 1123              		.loc 2 425 7 is_stmt 1 view .LVU262
+ 426:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_addr +=          __SCB_DCACHE_LINE_SIZE;
+ 1124              		.loc 2 426 9 view .LVU263
+ 426:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_addr +=          __SCB_DCACHE_LINE_SIZE;
+ 1125              		.loc 2 426 23 is_stmt 0 view .LVU264
+ 1126 0038 C0F87032 		str	r3, [r0, #624]
+ 427:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_size -=          __SCB_DCACHE_LINE_SIZE;
+ 1127              		.loc 2 427 9 is_stmt 1 view .LVU265
+ 427:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****         op_size -=          __SCB_DCACHE_LINE_SIZE;
+ 1128              		.loc 2 427 17 is_stmt 0 view .LVU266
+ 1129 003c 2033     		adds	r3, r3, #32
+ 1130              	.LVL97:
+ 428:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       } while ( op_size > 0 );
+ 1131              		.loc 2 428 9 is_stmt 1 view .LVU267
+ 1132              		.loc 2 429 25 discriminator 1 view .LVU268
+ 1133 003e 0FF005C8 		le	lr, .L70
+ 430:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h **** 
+ 431:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __DSB();
+ 1134              		.loc 2 431 7 view .LVU269
+ 1135              	.LBB29:
+ 1136              	.LBI29:
+ 184:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 1137              		.loc 3 184 27 view .LVU270
+ 1138              	.LBB30:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 40
+
+
+ 1139              		.loc 3 186 3 view .LVU271
+ 1140              		.syntax unified
+ 1141              	@ 186 "STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1142 0042 BFF34F8F 		dsb 0xF
+ 1143              	@ 0 "" 2
+ 1144              		.thumb
+ 1145              		.syntax unified
+ 1146              	.LBE30:
+ 1147              	.LBE29:
+ 432:STM32Cube_FW_N6/Drivers/CMSIS/Include/m-profile/armv7m_cachel1.h ****       __ISB();
+ 1148              		.loc 2 432 7 view .LVU272
+ 1149              	.LBB31:
+ 1150              	.LBI31:
+ 173:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 1151              		.loc 3 173 27 view .LVU273
+ 1152              	.LBB32:
+ 175:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1153              		.loc 3 175 3 view .LVU274
+ 1154              		.syntax unified
+ 1155              	@ 175 "STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1156 0046 BFF36F8F 		isb 0xF
+ 1157              	@ 0 "" 2
+ 1158              	.LVL98:
+ 1159              		.thumb
+ 1160              		.syntax unified
+ 1161              	.L69:
+ 175:STM32Cube_FW_N6/Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1162              		.loc 3 175 3 is_stmt 0 view .LVU275
+ 1163              	.LBE32:
+ 1164              	.LBE31:
+ 1165              	.LBE26:
+ 1166              	.LBE25:
+ 1167              	.LBE24:
+ 262:Src/nema_hal_freertos.c **** #else /* !NEMA_CACHED_MEMORY */
+ 1168              		.loc 1 262 5 is_stmt 1 view .LVU276
+ 266:Src/nema_hal_freertos.c **** 
+ 1169              		.loc 1 266 1 is_stmt 0 view .LVU277
+ 1170 004a BDE81040 		pop	{r4, lr}
+ 1171              		.cfi_restore 14
+ 1172              		.cfi_restore 4
+ 1173              		.cfi_def_cfa_offset 0
+ 262:Src/nema_hal_freertos.c **** #else /* !NEMA_CACHED_MEMORY */
+ 1174              		.loc 1 262 5 view .LVU278
+ 1175 004e 0220     		movs	r0, #2
+ 1176 0050 FFF7FEBF 		b	nema_mutex_unlock
+ 1177              	.LVL99:
+ 1178              	.L74:
+ 1179              		.align	2
+ 1180              	.L73:
+ 1181 0054 00ED00E0 		.word	-536810240
+ 1182              		.cfi_endproc
+ 1183              	.LFE883:
+ 1185              		.section	.rodata.__func__.0,"a"
+ 1188              	__func__.0:
+ 1189 0000 6E656D61 		.ascii	"nema_host_malloc\000"
+ 1189      5F686F73 
+ 1189      745F6D61 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 41
+
+
+ 1189      6C6C6F63 
+ 1189      00
+ 1190              		.section	.rodata.__func__.1,"a"
+ 1193              	__func__.1:
+ 1194 0000 6E656D61 		.ascii	"nema_buffer_create_pool\000"
+ 1194      5F627566 
+ 1194      6665725F 
+ 1194      63726561 
+ 1194      74655F70 
+ 1195              		.section	.rodata.__func__.2,"a"
+ 1198              	__func__.2:
+ 1199 0000 6E656D61 		.ascii	"nema_buffer_create\000"
+ 1199      5F627566 
+ 1199      6665725F 
+ 1199      63726561 
+ 1199      746500
+ 1200              		.section	.rodata.__func__.3,"a"
+ 1203              	__func__.3:
+ 1204 0000 6E656D61 		.ascii	"nema_sys_init\000"
+ 1204      5F737973 
+ 1204      5F696E69 
+ 1204      7400
+ 1205              		.section	.rodata.__func__.4,"a"
+ 1208              	__func__.4:
+ 1209 0000 48414C5F 		.ascii	"HAL_GPU2D_CommandListCpltCallback\000"
+ 1209      47505532 
+ 1209      445F436F 
+ 1209      6D6D616E 
+ 1209      644C6973 
+ 1210              		.section	.bss.nema_irq_sem,"aw",%nobits
+ 1211              		.align	2
+ 1214              	nema_irq_sem:
+ 1215 0000 00000000 		.space	4
+ 1216              		.section	.bss.nema_irq_sem_buffer,"aw",%nobits
+ 1217              		.align	2
+ 1220              	nema_irq_sem_buffer:
+ 1221 0000 00000000 		.space	80
+ 1221      00000000 
+ 1221      00000000 
+ 1221      00000000 
+ 1221      00000000 
+ 1222              		.section	.bss.nema_mutexes_ids,"aw",%nobits
+ 1223              		.align	2
+ 1226              	nema_mutexes_ids:
+ 1227 0000 00000000 		.space	12
+ 1227      00000000 
+ 1227      00000000 
+ 1228              		.section	.bss.nema_mutexes_buffers,"aw",%nobits
+ 1229              		.align	2
+ 1232              	nema_mutexes_buffers:
+ 1233 0000 00000000 		.space	240
+ 1233      00000000 
+ 1233      00000000 
+ 1233      00000000 
+ 1233      00000000 
+ 1234              		.section	.data.last_cl_id,"aw"
+ 1235              		.align	2
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 42
+
+
+ 1238              	last_cl_id:
+ 1239 0000 FFFFFFFF 		.word	-1
+ 1240              		.section	.bss.ring_buffer_str,"aw",%nobits
+ 1241              		.align	2
+ 1244              	ring_buffer_str:
+ 1245 0000 00000000 		.space	24
+ 1245      00000000 
+ 1245      00000000 
+ 1245      00000000 
+ 1245      00000000 
+ 1246              		.text
+ 1247              	.Letext0:
+ 1248              		.file 4 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1249              		.file 5 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1250              		.file 6 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1251              		.file 7 "Lib/NemaGFX/include/nema_hal.h"
+ 1252              		.file 8 "STM32Cube_FW_N6/Drivers/CMSIS/Include/core_cm55.h"
+ 1253              		.file 9 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_def.h"
+ 1254              		.file 10 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_gpu2d.h"
+ 1255              		.file 11 "Inc/platform_pool_config.h"
+ 1256              		.file 12 "Lib/FreeRTOS/Source/portable/GCC/ARM_CM55_NTZ/non_secure/portmacrocommon.h"
+ 1257              		.file 13 "Lib/FreeRTOS/Source/include/FreeRTOS.h"
+ 1258              		.file 14 "Lib/FreeRTOS/Source/include/queue.h"
+ 1259              		.file 15 "Lib/FreeRTOS/Source/include/semphr.h"
+ 1260              		.file 16 "Lib/NemaGFX/include/tsi_malloc.h"
+ 1261              		.file 17 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltoo
+ 1262              		.file 18 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltoo
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 43
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 nema_hal_freertos.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:31     .text.HAL_GPU2D_CommandListCpltCallback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:37     .text.HAL_GPU2D_CommandListCpltCallback:00000000 HAL_GPU2D_CommandListCpltCallback
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:101    .text.HAL_GPU2D_CommandListCpltCallback:0000003c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1238   .data.last_cl_id:00000000 last_cl_id
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1214   .bss.nema_irq_sem:00000000 nema_irq_sem
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1208   .rodata.__func__.4:00000000 __func__.4
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:110    .text.nema_wait_irq:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:116    .text.nema_wait_irq:00000000 nema_wait_irq
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:143    .text.nema_wait_irq:00000014 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:148    .text.nema_wait_irq_cl:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:154    .text.nema_wait_irq_cl:00000000 nema_wait_irq_cl
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:193    .text.nema_wait_irq_cl:00000018 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:198    .text.nema_reg_read:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:204    .text.nema_reg_read:00000000 nema_reg_read
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:225    .text.nema_reg_read:00000008 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:230    .text.nema_wait_irq_brk:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:236    .text.nema_wait_irq_brk:00000000 nema_wait_irq_brk
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:272    .text.nema_reg_write:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:278    .text.nema_reg_write:00000000 nema_reg_write
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:302    .text.nema_reg_write:0000000c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:307    .text.nema_buffer_map:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:313    .text.nema_buffer_map:00000000 nema_buffer_map
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:331    .text.nema_buffer_unmap:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:337    .text.nema_buffer_unmap:00000000 nema_buffer_unmap
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:352    .text.nema_buffer_phys:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:358    .text.nema_buffer_phys:00000000 nema_buffer_phys
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:376    .text.nema_host_free:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:382    .text.nema_host_free:00000000 nema_host_free
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:406    .text.nema_host_malloc:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:412    .text.nema_host_malloc:00000000 nema_host_malloc
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:450    .text.nema_host_malloc:0000001c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1188   .rodata.__func__.0:00000000 __func__.0
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:457    .text.nema_mutex_lock:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:463    .text.nema_mutex_lock:00000000 nema_mutex_lock
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:518    .text.nema_mutex_lock:00000028 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1226   .bss.nema_mutexes_ids:00000000 nema_mutexes_ids
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:523    .text.nema_mutex_unlock:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:529    .text.nema_mutex_unlock:00000000 nema_mutex_unlock
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:586    .text.nema_mutex_unlock:00000028 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:594    .text.nema_buffer_create:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:600    .text.nema_buffer_create:00000000 nema_buffer_create
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:679    .text.nema_buffer_create:00000044 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1198   .rodata.__func__.2:00000000 __func__.2
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:697    .text.nema_sys_init:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:703    .text.nema_sys_init:00000000 nema_sys_init
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:882    .text.nema_sys_init:000000c4 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1232   .bss.nema_mutexes_buffers:00000000 nema_mutexes_buffers
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1203   .rodata.__func__.3:00000000 __func__.3
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1220   .bss.nema_irq_sem_buffer:00000000 nema_irq_sem_buffer
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1244   .bss.ring_buffer_str:00000000 ring_buffer_str
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:905    .text.nema_buffer_create_pool:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:911    .text.nema_buffer_create_pool:00000000 nema_buffer_create_pool
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:982    .text.nema_buffer_create_pool:00000038 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1193   .rodata.__func__.1:00000000 __func__.1
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:989    .text.nema_buffer_destroy:00000000 $t
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 44
+
+
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:995    .text.nema_buffer_destroy:00000000 nema_buffer_destroy
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1035   .text.nema_buffer_flush:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1041   .text.nema_buffer_flush:00000000 nema_buffer_flush
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1181   .text.nema_buffer_flush:00000054 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1211   .bss.nema_irq_sem:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1217   .bss.nema_irq_sem_buffer:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1223   .bss.nema_mutexes_ids:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1229   .bss.nema_mutexes_buffers:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1235   .data.last_cl_id:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s:1241   .bss.ring_buffer_str:00000000 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.e0c9f337c65cb9f22ed5f23d082bc78b
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.newlib.h.7.a37ffbe9e5aff74303f4e60b1cc1c01b
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.stddef.h.185.882514a1a6169ceba9142f401cbe27c6
+                           .group:00000000 wm4.stddef.h.39.794fa375de48dda278c4aebb5c74aa5b
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4.stdio.h.47.dc31ec4674d7bcb103c9f08809549f45
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.nema_sys_defs.h.40.e9dd9a953c9c86f3f3b90dba3354a55a
+                           .group:00000000 wm4.nema_hal.h.193.74a3b292db2bcbda0132dae40ae0f4e5
+                           .group:00000000 wm4.nema_cmdlist.h.30.a652eb980f08f0ed22ad00119d504926
+                           .group:00000000 wm4.nema_graphics.h.61.b3907f86eccb4e55a4b69e8aebdd3657
+                           .group:00000000 wm4.nema_blender.h.30.fb13cc9231bd108bca212984b3a891e0
+                           .group:00000000 wm4.nema_math.h.30.ef7265c89982f7dae18e3ec2d7f3d003
+                           .group:00000000 wm4.nema_version.h.35.87498d41e60726ff7fa9fcd83ce9dd12
+                           .group:00000000 wm4.assert.h.11.db24e541f16414db224bf986d21017e2
+                           .group:00000000 wm4.string.h.8.c4b8571ce60dff2817f43fec8b86aecd
+                           .group:00000000 wm4.string.h.177.59a005921fa78485abc80a0267de5752
+                           .group:00000000 wm4.stm32n6xx_hal_conf.h.21.004a06df6e15ac197e03f723792da58a
+                           .group:00000000 wm4.arm_cmse.h.103.a0d15a79c4c9a67da8d5831704d7248e
+                           .group:00000000 wm4.stm32n6xx.h.34.c523a1ffdf274a69e8802892c6776332
+                           .group:00000000 wm4.stm32n657xx.h.26.acd272cb67318cc1a4791ce2f0720ca6
+                           .group:00000000 wm4.cmsis_version.h.30.d128735bf87720f7436b74fefeb5043c
+                           .group:00000000 wm4.core_cm55.h.67.25006a3ce7048d64bcddd2996d5fac93
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 45
+
+
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.core_cm55.h.213.0528f46a674315ef8d35c4477e230358
+                           .group:00000000 wm4.armv8m_mpu.h.24.bf28cc25bee30a7ff9d2f7a44a5e2230
+                           .group:00000000 wm4.armv8m_pmu.h.24.6ded195d2625055391fd378c0e1d2519
+                           .group:00000000 wm4.core_cm55.h.4477.396e822ef855bcfb932819ad48de1c4c
+                           .group:00000000 wm4.armv7m_cachel1.h.24.936dd92d6e204a8d0b17d5e4ea4a356e
+                           .group:00000000 wm4.stm32n657xx.h.575.78d331c417ec710388ced647138f735f
+                           .group:00000000 wm4.stm32n6xx.h.116.b4247d9785590e7c5ec9234ffb2153bf
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.e62aae2fd3ae33360b6781c8a72e5b18
+                           .group:00000000 wm4.math.h.13.47cfc34cae8a1153323939c4d32cf7c2
+                           .group:00000000 wm4.stm32n6xx_hal_def.h.63.3a8f01490e8852464e9fcb69092e9c75
+                           .group:00000000 wm4.stm32n6xx_ll_bus.h.38.2366a295ee4cdb04833997d3787fcd2d
+                           .group:00000000 wm4.stm32n6xx_ll_rcc.h.21.656bd5637db608589ad16ea57d39430c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.194.69b522b1afdf59a82d05a1f71efe03c7
+                           .group:00000000 wm4.stm32n6xx_hal_rcc_ex.h.21.cc6be0a7d168882a1a6f470236ba784c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.4361.4b490a4a19722e68c21f88cb8a774a30
+                           .group:00000000 wm4.stm32n6xx_hal_gpio.h.21.89d54af663b98eb8fc098192053f7eeb
+                           .group:00000000 wm4.stm32n6xx_hal_gpio_ex.h.22.f7e795fb05a69a19b87d946b47c8db8b
+                           .group:00000000 wm4.stm32n6xx_hal_rif.h.21.33f2c553a8a3fc14dca8c470b213ab19
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.21.61e48c5c2e8d25d22177834b232fe45c
+                           .group:00000000 wm4.stm32n6xx_hal_dma_ex.h.21.82f854ecdb6a463b06d0b4e5c217c368
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.1020.87e2180c009560b617c1f8208140c950
+                           .group:00000000 wm4.stm32n6xx_hal_cortex.h.21.f493623cc58f9454ab4eae41e395c5cc
+                           .group:00000000 wm4.stm32n6xx_hal_bsec.h.21.1ee89319140541f82434908b4267aa30
+                           .group:00000000 wm4.stm32n6xx_hal_dcmipp.h.21.e2b87dce83d7d722d696a597f6ac56bf
+                           .group:00000000 wm4.stm32n6xx_hal_dma2d.h.21.75c8d46cdbb72970123b3f34ae2043d7
+                           .group:00000000 wm4.stm32n6xx_hal_exti.h.21.e0efb23591051684dc14f1f2431c6aab
+                           .group:00000000 wm4.stm32n6xx_hal_gfxmmu.h.21.9784a9103143d48bd3c37389d0e0b8e6
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.21.3f483626ff64c5bf027265bb2e1d1331
+                           .group:00000000 wm4.stm32n6xx_hal_i2c_ex.h.21.79e9196c22282cdaf6b4047893638c45
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.741.1084702632703acc669e4282b3043372
+                           .group:00000000 wm4.stm32n6xx_hal_icache.h.21.194b4ec6e76f32b14f65c85616854850
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.21.ae1eb09930e7e550e48e418ac5849e4d
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.1002.b13ede7fc94ed5ad1c6768a157d2149a
+                           .group:00000000 wm4.stm32n6xx_ll_usb.h.21.daaf86158046f2cf02166c495d637480
+                           .group:00000000 wm4.stm32n6xx_hal_pcd.h.155.27040aac6844effe2af8c180caf1dd2e
+                           .group:00000000 wm4.stm32n6xx_hal_pwr.h.21.cdb73e4869c3fed3fc84f901ec0e5f0a
+                           .group:00000000 wm4.stm32n6xx_hal_pwr_ex.h.21.1a673224a58b0c1e5fad8eeda6514208
+                           .group:00000000 wm4.stm32n6xx_hal_ramcfg.h.21.a62dfbb4d2c14e9a8c634a215e37bd3d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.21.9f810303326e2d91749800e9911f8e4d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.906.8ad9375f39dce09dc0a4db0025ee7a76
+                           .group:00000000 wm4.stm32n6xx_hal_tim.h.21.839dd2b2a70382fb2c44f8f293a84d5f
+                           .group:00000000 wm4.stm32n6xx_hal_tim_ex.h.21.e372d5ac63c13441211ea4ecbd353150
+                           .group:00000000 wm4.stm32n6xx_hal_uart.h.21.230f549bfa0d5ebfd77bfb311b2aca15
+                           .group:00000000 wm4.stm32n6xx_hal_uart_ex.h.21.a0d5511e1d0703b7b5278c8f5472b96d
+                           .group:00000000 wm4.stm32n6xx_hal_xspi.h.21.7fd922d3bdb871475cf18436a68935bb
+                           .group:00000000 wm4.stm32n6xx_hal_cacheaxi.h.21.7c3375b7903ec42376e4883320997f74
+                           .group:00000000 wm4.stm32n6xx_hal_gpu2d.h.21.48d0249122abad294a630c39cc4ebaed
+                           .group:00000000 wm4.stm32n6xx_hal.h.81.e79d59262ba173c33cf1d69281830d15
+                           .group:00000000 wm4.assert.h.11.d99a111e320bc5106fc4046225782672
+                           .group:00000000 wm4.nema_display.h.18.a7ea37edc500f52f8edd143955a5b4f5
+                           .group:00000000 wm4.platform_pool_config.h.55.9893eddd2f808b024f6f3dc8bc315b05
+                           .group:00000000 wm4.tsi_malloc.h.29.8d287b6f4ac182efa834fa8a5d12b58f
+                           .group:00000000 wm4.FreeRTOS.h.59.647b1b0da38e4e98108aae13c8abe9ee
+                           .group:00000000 wm4.FreeRTOSConfig.h.59.0e97f89e6eb1b28c12ea610dd500bb25
+                           .group:00000000 wm4.FreeRTOS.h.80.7742fabaf5accf3762dc12f7f259a8a0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccV9ixJu.s 			page 46
+
+
+                           .group:00000000 wm4.projdefs.h.30.55a824156f299c075c33148a9fdadb99
+                           .group:00000000 wm4.portmacro.h.30.cbb4b2da41f551c2a9904f0d03a1ce3e
+                           .group:00000000 wm4.portmacrocommon.h.30.d5cb67896ab50a95311be7e023da5c4f
+                           .group:00000000 wm4.portmacro.h.68.4051ecf710d074fb55b16d91dfebeeaa
+                           .group:00000000 wm4.portable.h.61.d557c57974d490f056246a26cdcddd6c
+                           .group:00000000 wm4.mpu_wrappers.h.30.ccc5f1a6903f941a88c268f5f62af3fe
+                           .group:00000000 wm4.portable.h.189.522b8bd52a171d3fd1432ef06d0caa63
+                           .group:00000000 wm4.FreeRTOS.h.102.fb871f3e464d99c5a57b3115545a02ad
+                           .group:00000000 wm4.list.h.59.bce6419520cd4f5f98779a1530bf2118
+                           .group:00000000 wm4.task.h.56.84290139c73b47f5b9aac361361a2a31
+                           .group:00000000 wm4.queue.h.68.219f47fba8b59640449b84d04c5bd6d8
+                           .group:00000000 wm4.semphr.h.40.c1a9c6f5bf0feb4da0b6a45d234a79d0
+
+UNDEFINED SYMBOLS
+xQueueGiveFromISR
+__assert_func
+xQueueSemaphoreTake
+HAL_GPU2D_ReadRegister
+hgpu2d
+HAL_GPU2D_WriteRegister
+tsi_free
+tsi_malloc_pool
+xQueueGenericSend
+xQueueCreateMutexStatic
+xQueueCreateCountingSemaphoreStatic
+tsi_malloc_init_pool
+nema_rb_init

@@ -1,0 +1,315 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"stm32_lcd_ex.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Src/stm32_lcd_ex.c"
+  25              		.section	.text.UTIL_LCDEx_PrintfAtLine,"ax",%progbits
+  26              		.align	1
+  27              		.global	UTIL_LCDEx_PrintfAtLine
+  28              		.syntax unified
+  29              		.thumb
+  30              		.thumb_func
+  32              	UTIL_LCDEx_PrintfAtLine:
+  33              	.LVL0:
+  34              	.LFB3:
+   1:Src/stm32_lcd_ex.c ****  /**
+   2:Src/stm32_lcd_ex.c ****  ******************************************************************************
+   3:Src/stm32_lcd_ex.c ****  * @file    stm32_lcd_ex.c
+   4:Src/stm32_lcd_ex.c ****  * @author  GPM Application Team
+   5:Src/stm32_lcd_ex.c ****  *
+   6:Src/stm32_lcd_ex.c ****  ******************************************************************************
+   7:Src/stm32_lcd_ex.c ****  * @attention
+   8:Src/stm32_lcd_ex.c ****  *
+   9:Src/stm32_lcd_ex.c ****  * Copyright (c) 2023 STMicroelectronics.
+  10:Src/stm32_lcd_ex.c ****  * All rights reserved.
+  11:Src/stm32_lcd_ex.c ****  *
+  12:Src/stm32_lcd_ex.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  13:Src/stm32_lcd_ex.c ****  * in the root directory of this software component.
+  14:Src/stm32_lcd_ex.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Src/stm32_lcd_ex.c ****  *
+  16:Src/stm32_lcd_ex.c ****  ******************************************************************************
+  17:Src/stm32_lcd_ex.c ****  */
+  18:Src/stm32_lcd_ex.c **** 
+  19:Src/stm32_lcd_ex.c **** /* Includes ------------------------------------------------------------------*/
+  20:Src/stm32_lcd_ex.c **** #include "stm32_lcd_ex.h"
+  21:Src/stm32_lcd_ex.c **** #include <stdio.h>
+  22:Src/stm32_lcd_ex.c **** #include <stdarg.h>
+  23:Src/stm32_lcd_ex.c **** 
+  24:Src/stm32_lcd_ex.c **** /* Private define ------------------------------------------------------------*/
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s 			page 2
+
+
+  25:Src/stm32_lcd_ex.c **** #define N_PRINTABLE_CHARS    47 /*!< 800px wide screen / 17px wide font */
+  26:Src/stm32_lcd_ex.c **** 
+  27:Src/stm32_lcd_ex.c **** /* Functions Definition ------------------------------------------------------*/
+  28:Src/stm32_lcd_ex.c **** void UTIL_LCDEx_PrintfAtLine(uint16_t line, const char * format, ...)
+  29:Src/stm32_lcd_ex.c **** {
+  35              		.loc 1 29 1 view -0
+  36              		.cfi_startproc
+  37              		@ args = 4, pretend = 12, frame = 8
+  38              		@ frame_needed = 0, uses_anonymous_args = 1
+  30:Src/stm32_lcd_ex.c ****   static char buffer[N_PRINTABLE_CHARS + 1];
+  39              		.loc 1 30 3 view .LVU1
+  31:Src/stm32_lcd_ex.c ****   va_list args;
+  40              		.loc 1 31 3 view .LVU2
+  32:Src/stm32_lcd_ex.c ****   va_start(args, format);
+  41              		.loc 1 32 3 view .LVU3
+  29:Src/stm32_lcd_ex.c ****   static char buffer[N_PRINTABLE_CHARS + 1];
+  42              		.loc 1 29 1 is_stmt 0 view .LVU4
+  43 0000 0EB4     		push	{r1, r2, r3}
+  44              		.cfi_def_cfa_offset 12
+  45              		.cfi_offset 1, -12
+  46              		.cfi_offset 2, -8
+  47              		.cfi_offset 3, -4
+  48 0002 33B5     		push	{r0, r1, r4, r5, lr}
+  49              		.cfi_def_cfa_offset 32
+  50              		.cfi_offset 4, -24
+  51              		.cfi_offset 5, -20
+  52              		.cfi_offset 14, -16
+  29:Src/stm32_lcd_ex.c ****   static char buffer[N_PRINTABLE_CHARS + 1];
+  53              		.loc 1 29 1 view .LVU5
+  54 0004 0446     		mov	r4, r0
+  55 0006 05AB     		add	r3, sp, #20
+  33:Src/stm32_lcd_ex.c ****   vsnprintf(buffer, N_PRINTABLE_CHARS + 1, format, args);
+  56              		.loc 1 33 3 view .LVU6
+  57 0008 084D     		ldr	r5, .L2
+  29:Src/stm32_lcd_ex.c ****   static char buffer[N_PRINTABLE_CHARS + 1];
+  58              		.loc 1 29 1 view .LVU7
+  59 000a 53F8042B 		ldr	r2, [r3], #4
+  60              		.loc 1 33 3 view .LVU8
+  61 000e 3021     		movs	r1, #48
+  62 0010 2846     		mov	r0, r5
+  63              	.LVL1:
+  32:Src/stm32_lcd_ex.c ****   va_start(args, format);
+  64              		.loc 1 32 3 view .LVU9
+  65 0012 0193     		str	r3, [sp, #4]
+  66              		.loc 1 33 3 is_stmt 1 view .LVU10
+  67 0014 FFF7FEFF 		bl	vsnprintf
+  68              	.LVL2:
+  34:Src/stm32_lcd_ex.c ****   UTIL_LCD_DisplayStringAtLine(line, (uint8_t *) buffer);
+  69              		.loc 1 34 3 view .LVU11
+  70 0018 2946     		mov	r1, r5
+  71 001a 2046     		mov	r0, r4
+  72 001c FFF7FEFF 		bl	UTIL_LCD_DisplayStringAtLine
+  73              	.LVL3:
+  35:Src/stm32_lcd_ex.c ****   va_end(args);
+  74              		.loc 1 35 3 view .LVU12
+  36:Src/stm32_lcd_ex.c **** }
+  75              		.loc 1 36 1 is_stmt 0 view .LVU13
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s 			page 3
+
+
+  76 0020 02B0     		add	sp, sp, #8
+  77              		.cfi_def_cfa_offset 24
+  78              		@ sp needed
+  79 0022 BDE83040 		pop	{r4, r5, lr}
+  80              		.cfi_restore 14
+  81              		.cfi_restore 5
+  82              		.cfi_restore 4
+  83              		.cfi_def_cfa_offset 12
+  84              	.LVL4:
+  85              		.loc 1 36 1 view .LVU14
+  86 0026 03B0     		add	sp, sp, #12
+  87              		.cfi_restore 3
+  88              		.cfi_restore 2
+  89              		.cfi_restore 1
+  90              		.cfi_def_cfa_offset 0
+  91 0028 7047     		bx	lr
+  92              	.L3:
+  93 002a 00BF     		.align	2
+  94              	.L2:
+  95 002c 00000000 		.word	buffer.1
+  96              		.cfi_endproc
+  97              	.LFE3:
+  99              		.section	.text.UTIL_LCDEx_PrintfAt,"ax",%progbits
+ 100              		.align	1
+ 101              		.global	UTIL_LCDEx_PrintfAt
+ 102              		.syntax unified
+ 103              		.thumb
+ 104              		.thumb_func
+ 106              	UTIL_LCDEx_PrintfAt:
+ 107              	.LVL5:
+ 108              	.LFB4:
+  37:Src/stm32_lcd_ex.c **** 
+  38:Src/stm32_lcd_ex.c **** void UTIL_LCDEx_PrintfAt(uint32_t x_pos, uint32_t y_pos, Text_AlignModeTypdef mode, const char * fo
+  39:Src/stm32_lcd_ex.c **** {
+ 109              		.loc 1 39 1 is_stmt 1 view -0
+ 110              		.cfi_startproc
+ 111              		@ args = 4, pretend = 4, frame = 8
+ 112              		@ frame_needed = 0, uses_anonymous_args = 1
+  40:Src/stm32_lcd_ex.c ****   static char buffer[N_PRINTABLE_CHARS + 1];
+ 113              		.loc 1 40 3 view .LVU16
+  41:Src/stm32_lcd_ex.c ****   va_list args;
+ 114              		.loc 1 41 3 view .LVU17
+  42:Src/stm32_lcd_ex.c ****   va_start(args, format);
+ 115              		.loc 1 42 3 view .LVU18
+  39:Src/stm32_lcd_ex.c ****   static char buffer[N_PRINTABLE_CHARS + 1];
+ 116              		.loc 1 39 1 is_stmt 0 view .LVU19
+ 117 0000 08B4     		push	{r3}
+ 118              		.cfi_def_cfa_offset 4
+ 119              		.cfi_offset 3, -4
+ 120 0002 F3B5     		push	{r0, r1, r4, r5, r6, r7, lr}
+ 121              		.cfi_def_cfa_offset 32
+ 122              		.cfi_offset 4, -24
+ 123              		.cfi_offset 5, -20
+ 124              		.cfi_offset 6, -16
+ 125              		.cfi_offset 7, -12
+ 126              		.cfi_offset 14, -8
+  39:Src/stm32_lcd_ex.c ****   static char buffer[N_PRINTABLE_CHARS + 1];
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s 			page 4
+
+
+ 127              		.loc 1 39 1 view .LVU20
+ 128 0004 0446     		mov	r4, r0
+ 129 0006 0D46     		mov	r5, r1
+ 130 0008 1646     		mov	r6, r2
+ 131 000a 07AB     		add	r3, sp, #28
+  43:Src/stm32_lcd_ex.c ****   vsnprintf(buffer, N_PRINTABLE_CHARS + 1, format, args);
+ 132              		.loc 1 43 3 view .LVU21
+ 133 000c 094F     		ldr	r7, .L5
+  39:Src/stm32_lcd_ex.c ****   static char buffer[N_PRINTABLE_CHARS + 1];
+ 134              		.loc 1 39 1 view .LVU22
+ 135 000e 53F8042B 		ldr	r2, [r3], #4
+ 136              	.LVL6:
+ 137              		.loc 1 43 3 view .LVU23
+ 138 0012 3021     		movs	r1, #48
+ 139              	.LVL7:
+ 140              		.loc 1 43 3 view .LVU24
+ 141 0014 3846     		mov	r0, r7
+ 142              	.LVL8:
+  42:Src/stm32_lcd_ex.c ****   va_start(args, format);
+ 143              		.loc 1 42 3 view .LVU25
+ 144 0016 0193     		str	r3, [sp, #4]
+ 145              		.loc 1 43 3 is_stmt 1 view .LVU26
+ 146 0018 FFF7FEFF 		bl	vsnprintf
+ 147              	.LVL9:
+  44:Src/stm32_lcd_ex.c ****   UTIL_LCD_DisplayStringAt(x_pos, y_pos, (uint8_t *) buffer, mode);
+ 148              		.loc 1 44 3 view .LVU27
+ 149 001c 3346     		mov	r3, r6
+ 150 001e 3A46     		mov	r2, r7
+ 151 0020 2946     		mov	r1, r5
+ 152 0022 2046     		mov	r0, r4
+ 153 0024 FFF7FEFF 		bl	UTIL_LCD_DisplayStringAt
+ 154              	.LVL10:
+  45:Src/stm32_lcd_ex.c ****   va_end(args);
+ 155              		.loc 1 45 3 view .LVU28
+  46:Src/stm32_lcd_ex.c **** }
+ 156              		.loc 1 46 1 is_stmt 0 view .LVU29
+ 157 0028 02B0     		add	sp, sp, #8
+ 158              		.cfi_def_cfa_offset 24
+ 159              		@ sp needed
+ 160 002a BDE8F040 		pop	{r4, r5, r6, r7, lr}
+ 161              		.cfi_restore 14
+ 162              		.cfi_restore 7
+ 163              		.cfi_restore 6
+ 164              		.cfi_restore 5
+ 165              		.cfi_restore 4
+ 166              		.cfi_def_cfa_offset 4
+ 167              	.LVL11:
+ 168              		.loc 1 46 1 view .LVU30
+ 169 002e 01B0     		add	sp, sp, #4
+ 170              		.cfi_restore 3
+ 171              		.cfi_def_cfa_offset 0
+ 172 0030 7047     		bx	lr
+ 173              	.L6:
+ 174 0032 00BF     		.align	2
+ 175              	.L5:
+ 176 0034 00000000 		.word	buffer.0
+ 177              		.cfi_endproc
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s 			page 5
+
+
+ 178              	.LFE4:
+ 180              		.section	.bss.buffer.0,"aw",%nobits
+ 183              	buffer.0:
+ 184 0000 00000000 		.space	48
+ 184      00000000 
+ 184      00000000 
+ 184      00000000 
+ 184      00000000 
+ 185              		.section	.bss.buffer.1,"aw",%nobits
+ 188              	buffer.1:
+ 189 0000 00000000 		.space	48
+ 189      00000000 
+ 189      00000000 
+ 189      00000000 
+ 189      00000000 
+ 190              		.text
+ 191              	.Letext0:
+ 192              		.file 2 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 193              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 194              		.file 4 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 195              		.file 5 "STM32Cube_FW_N6/Utilities/lcd/stm32_lcd.h"
+ 196              		.file 6 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 197              		.file 7 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 198              		.file 8 "<built-in>"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32_lcd_ex.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:26     .text.UTIL_LCDEx_PrintfAtLine:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:32     .text.UTIL_LCDEx_PrintfAtLine:00000000 UTIL_LCDEx_PrintfAtLine
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:95     .text.UTIL_LCDEx_PrintfAtLine:0000002c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:188    .bss.buffer.1:00000000 buffer.1
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:100    .text.UTIL_LCDEx_PrintfAt:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:106    .text.UTIL_LCDEx_PrintfAt:00000000 UTIL_LCDEx_PrintfAt
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:176    .text.UTIL_LCDEx_PrintfAt:00000034 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:183    .bss.buffer.0:00000000 buffer.0
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:184    .bss.buffer.0:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccPO2J4c.s:189    .bss.buffer.1:00000000 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.e0c9f337c65cb9f22ed5f23d082bc78b
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.lcd.h.21.98701c105e66fef2e089854e5bc0fe32
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.stm32_lcd.h.55.1a04e503950bf34ef3721d2ebb9542fc
+                           .group:00000000 wm4.newlib.h.7.a37ffbe9e5aff74303f4e60b1cc1c01b
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.stdio.h.31.7c0e28c411445f3f9c5b11accf882760
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.stdio.h.67.0cf8a9c281ab0b348aef5c02e7e48825
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.stdarg.h.31.7f63356e624ebff93a920b53ed006e12
+
+UNDEFINED SYMBOLS
+vsnprintf
+UTIL_LCD_DisplayStringAtLine
+UTIL_LCD_DisplayStringAt

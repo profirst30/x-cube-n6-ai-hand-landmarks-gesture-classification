@@ -1,0 +1,3703 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"ecloader.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Lib/AI_Runtime/Npu/ll_aton/ecloader.c"
+  25              		.section	.rodata.ec_get_blob_ptr.str1.1,"aMS",%progbits,1
+  26              	.LC0:
+  27 0000 4572726F 		.ascii	"Error: Epoch Controller binary is invalid\000"
+  27      723A2045 
+  27      706F6368 
+  27      20436F6E 
+  27      74726F6C 
+  28              	.LC1:
+  29 002a 4572726F 		.ascii	"Error: Blob section offset in blob binary is invali"
+  29      723A2042 
+  29      6C6F6220 
+  29      73656374 
+  29      696F6E20 
+  30 005d 6400     		.ascii	"d\000"
+  31              		.section	.text.ec_get_blob_ptr,"ax",%progbits
+  32              		.align	1
+  33              		.global	ec_get_blob_ptr
+  34              		.syntax unified
+  35              		.thumb
+  36              		.thumb_func
+  38              	ec_get_blob_ptr:
+  39              	.LVL0:
+  40              	.LFB3:
+   1:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+   2:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  ******************************************************************************
+   3:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * @file    ecloader.h
+   4:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * @author  SRA Artificial Intelligence & Embedded Architectures
+   5:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * @brief   Loader for Epoch Controller BLobs.
+   6:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  ******************************************************************************
+   7:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * @attention
+   8:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+   9:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Copyright (c) 2024 STMicroelectronics.
+  10:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * All rights reserved.
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 2
+
+
+  11:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+  12:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  13:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * in the root directory of this software component.
+  14:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+  16:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  ******************************************************************************
+  17:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+  18:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  19:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #if defined(USE_FILES)
+  20:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #include <stdio.h>
+  21:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #endif
+  22:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  23:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #include <inttypes.h>
+  24:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #include <string.h>
+  25:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  26:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #include "ecloader.h"
+  27:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #include "ll_aton_util.h"
+  28:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  29:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #ifdef USE_FILES
+  30:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  31:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+  32:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Return the size of a file.
+  33:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+  34:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] path is the path of the file
+  35:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+  36:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the size of file having path equal to \e path, or -1 in case of errors
+  37:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+  38:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  39:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** long ec_file_size(const char *path)
+  40:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+  41:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   FILE *file = fopen(path, "r+");
+  42:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  43:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (file == NULL)
+  44:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+  45:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Cannot open file '%s'\n", path);
+  46:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  47:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return -1;
+  48:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+  49:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  50:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   fseek(file, 0, SEEK_END);
+  51:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  52:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   long pos = ftell(file);
+  53:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  54:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   fclose(file);
+  55:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  56:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return pos;
+  57:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+  58:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  59:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+  60:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Copy a file to memory.
+  61:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+  62:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] path is the path of the file
+  63:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] ptr  is the pointer to the memory area (which must be already allocated and large eno
+  64:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * must be copied
+  65:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+  66:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e true  on success
+  67:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e false otherwise
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 3
+
+
+  68:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+  69:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  70:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** bool ec_copy_file(const char *path, uint8_t *ptr)
+  71:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+  72:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   FILE *file = fopen(path, "r+");
+  73:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  74:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (file == NULL)
+  75:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+  76:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Cannot open file '%s'\n", path);
+  77:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  78:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+  79:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+  80:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  81:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   while (true)
+  82:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+  83:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     uint8_t byte;
+  84:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  85:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (fread(&byte, sizeof(uint8_t), 1, file) != 1)
+  86:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       break;
+  87:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  88:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     *ptr = byte;
+  89:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  90:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ptr++;
+  91:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+  92:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  93:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   fclose(file);
+  94:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  95:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return true;
+  96:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+  97:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  98:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** #endif /* #ifdef USE_FILES */
+  99:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 100:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 101:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Get the pointer to the blob contained in an Epoch Controller binary.
+ 102:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 103:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] binary_ptr is the pointer to the memory area containing the whole Epoch Controller bi
+ 104:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 105:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the pointer to the blob contained in the Epoch Controller binary pointed by \e binary_pt
+ 106:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * errors
+ 107:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 108:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 109:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** const uint64_t *ec_get_blob_ptr(const uint8_t *binary_ptr)
+ 110:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+  41              		.loc 1 110 1 view -0
+  42              		.cfi_startproc
+  43              		@ args = 0, pretend = 0, frame = 0
+  44              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = binary_ptr;
+  45              		.loc 1 111 3 view .LVU1
+ 112:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 113:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the binary header
+ 114:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 115:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry magic = 0;
+  46              		.loc 1 115 3 view .LVU2
+ 116:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry blob_offset = 0;
+  47              		.loc 1 116 3 view .LVU3
+ 117:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 4
+
+
+ 118:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   magic = *((ECFileEntry *)ptr);
+  48              		.loc 1 118 3 view .LVU4
+ 119:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 120:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr += sizeof(ECFileEntry);
+  49              		.loc 1 120 3 view .LVU5
+ 121:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 122:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (magic != ECASM_BINARY_MAGIC)
+  50              		.loc 1 122 3 view .LVU6
+ 110:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = binary_ptr;
+  51              		.loc 1 110 1 is_stmt 0 view .LVU7
+  52 0000 08B5     		push	{r3, lr}
+  53              		.cfi_def_cfa_offset 8
+  54              		.cfi_offset 3, -8
+  55              		.cfi_offset 14, -4
+  56              		.loc 1 122 6 view .LVU8
+  57 0002 0268     		ldr	r2, [r0]
+  58 0004 064B     		ldr	r3, .L7
+  59 0006 9A42     		cmp	r2, r3
+  60 0008 04D0     		beq	.L2
+ 123:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 124:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Epoch Controller binary is invalid\n");
+  61              		.loc 1 124 5 is_stmt 1 view .LVU9
+  62 000a 0648     		ldr	r0, .L7+4
+  63              	.LVL1:
+  64              	.L6:
+ 125:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 126:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return NULL;
+ 127:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 128:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 129:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr = binary_ptr + sizeof(ECFileEntry) + 3 * sizeof(ECFileEntry);
+ 130:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 131:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   blob_offset = *((ECFileEntry *)ptr);
+ 132:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 133:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr += sizeof(ECFileEntry);
+ 134:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 135:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (blob_offset == 0)
+ 136:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 137:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Blob section offset in blob binary is invalid\n");
+  65              		.loc 1 137 5 is_stmt 0 view .LVU10
+  66 000c FFF7FEFF 		bl	puts
+  67              	.LVL2:
+ 138:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 139:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return NULL;
+  68              		.loc 1 139 5 is_stmt 1 view .LVU11
+ 126:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+  69              		.loc 1 126 12 is_stmt 0 view .LVU12
+  70 0010 0020     		movs	r0, #0
+  71              	.L1:
+ 140:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 141:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 142:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return (const uint64_t *)(binary_ptr + blob_offset);
+ 143:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+  72              		.loc 1 143 1 view .LVU13
+  73 0012 08BD     		pop	{r3, pc}
+  74              	.LVL3:
+  75              	.L2:
+ 129:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 5
+
+
+  76              		.loc 1 129 3 is_stmt 1 view .LVU14
+ 131:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  77              		.loc 1 131 3 view .LVU15
+ 131:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  78              		.loc 1 131 15 is_stmt 0 view .LVU16
+  79 0014 0369     		ldr	r3, [r0, #16]
+  80              	.LVL4:
+ 133:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  81              		.loc 1 133 3 is_stmt 1 view .LVU17
+ 135:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+  82              		.loc 1 135 3 view .LVU18
+ 142:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+  83              		.loc 1 142 10 is_stmt 0 view .LVU19
+  84 0016 1844     		add	r0, r0, r3
+  85              	.LVL5:
+ 135:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+  86              		.loc 1 135 6 view .LVU20
+  87 0018 002B     		cmp	r3, #0
+  88 001a FAD1     		bne	.L1
+ 137:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+  89              		.loc 1 137 5 is_stmt 1 view .LVU21
+  90 001c 0248     		ldr	r0, .L7+8
+  91 001e F5E7     		b	.L6
+  92              	.L8:
+  93              		.align	2
+  94              	.L7:
+  95 0020 5000BFEC 		.word	-323026864
+  96 0024 00000000 		.word	.LC0
+  97 0028 2A000000 		.word	.LC1
+  98              		.cfi_endproc
+  99              	.LFE3:
+ 101              		.section	.rodata.ec_copy_blob.str1.1,"aMS",%progbits,1
+ 102              	.LC2:
+ 103 0000 4572726F 		.ascii	"Error: Invalid magic number of Epoch Controller blo"
+ 103      723A2049 
+ 103      6E76616C 
+ 103      6964206D 
+ 103      61676963 
+ 104 0033 6200     		.ascii	"b\000"
+ 105              	.LC3:
+ 106 0035 4572726F 		.ascii	"Error: Memory allocated for the Epoch Controller bl"
+ 106      723A204D 
+ 106      656D6F72 
+ 106      7920616C 
+ 106      6C6F6361 
+ 107 0068 6F62206D 		.ascii	"ob must be 8-byte aligned\000"
+ 107      75737420 
+ 107      62652038 
+ 107      2D627974 
+ 107      6520616C 
+ 108              	.LC4:
+ 109 0082 4572726F 		.ascii	"Error: Size of memory allocated for the Epoch Contr"
+ 109      723A2053 
+ 109      697A6520 
+ 109      6F66206D 
+ 109      656D6F72 
+ 110 00b5 6F6C6C65 		.ascii	"oller blob has not been specified\000"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 6
+
+
+ 110      7220626C 
+ 110      6F622068 
+ 110      6173206E 
+ 110      6F742062 
+ 111              	.LC5:
+ 112 00d7 4572726F 		.ascii	"Error: Memory allocated for the Epoch Controller bl"
+ 112      723A204D 
+ 112      656D6F72 
+ 112      7920616C 
+ 112      6C6F6361 
+ 113 010a 6F622069 		.ascii	"ob is not sufficient (at least space for %lu 32-bit"
+ 113      73206E6F 
+ 113      74207375 
+ 113      66666963 
+ 113      69656E74 
+ 114 013d 20776F72 		.ascii	" words must be allocated, but only %u 32-bit words "
+ 114      6473206D 
+ 114      75737420 
+ 114      62652061 
+ 114      6C6C6F63 
+ 115 0170 77657265 		.ascii	"were allocated)\012\000"
+ 115      20616C6C 
+ 115      6F636174 
+ 115      6564290A 
+ 115      00
+ 116              		.section	.text.ec_copy_blob,"ax",%progbits
+ 117              		.align	1
+ 118              		.global	ec_copy_blob
+ 119              		.syntax unified
+ 120              		.thumb
+ 121              		.thumb_func
+ 123              	ec_copy_blob:
+ 124              	.LVL6:
+ 125              	.LFB4:
+ 144:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 145:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 146:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Copy to memory an Epoch Controller blob contained in an Epoch Controller binary.
+ 147:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * The magic number and the length of the blob will be copied as well.
+ 148:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 149:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[out]    blob      is the pointer to the memory area (which must be already allocated and 
+ 150:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * will contain the Epoch Controller blob
+ 151:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     binary_ptr   is the pointer to the memory area containing the whole Epoch Control
+ 152:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in,out] blob_size is the pointer to the variable that, if \e
+ 153:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * blob is not \e NULL, contains the size in terms of 32-bit words of the memory area pointed by \e
+ 154:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * blob is \e NULL, will contain the size in terms of 32-bit words of the Epoch Controller blob (in
+ 155:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * number and blob length):
+ 156:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>blob == NULL && blob_size != NULL</em> ==> the size of the blo
+ 157:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * must be retrieved
+ 158:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>blob != NULL && blob_size != NULL</em> ==> the blob section mu
+ 159:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * (\e blob_size is used for checking that the allocated space is sufficient)
+ 160:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>blob != NULL && blob_size == NULL</em> ==> not allowed
+ 161:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>blob == NULL && blob_size == NULL</em> ==> not allowed
+ 162:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 163:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e true  on success
+ 164:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e false otherwise
+ 165:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 166:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 7
+
+
+ 167:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** bool ec_copy_blob(ECInstr *blob, const uint8_t *binary_ptr, unsigned int *blob_size)
+ 168:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 126              		.loc 1 168 1 view -0
+ 127              		.cfi_startproc
+ 128              		@ args = 0, pretend = 0, frame = 0
+ 129              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = (const uint8_t *)ec_get_blob_ptr(binary_ptr);
+ 130              		.loc 1 169 3 view .LVU23
+ 168:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = (const uint8_t *)ec_get_blob_ptr(binary_ptr);
+ 131              		.loc 1 168 1 is_stmt 0 view .LVU24
+ 132 0000 70B5     		push	{r4, r5, r6, lr}
+ 133              		.cfi_def_cfa_offset 16
+ 134              		.cfi_offset 4, -16
+ 135              		.cfi_offset 5, -12
+ 136              		.cfi_offset 6, -8
+ 137              		.cfi_offset 14, -4
+ 168:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = (const uint8_t *)ec_get_blob_ptr(binary_ptr);
+ 138              		.loc 1 168 1 view .LVU25
+ 139 0002 0446     		mov	r4, r0
+ 140              		.loc 1 169 41 view .LVU26
+ 141 0004 0846     		mov	r0, r1
+ 142              	.LVL7:
+ 168:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = (const uint8_t *)ec_get_blob_ptr(binary_ptr);
+ 143              		.loc 1 168 1 view .LVU27
+ 144 0006 1546     		mov	r5, r2
+ 145              		.loc 1 169 41 view .LVU28
+ 146 0008 FFF7FEFF 		bl	ec_get_blob_ptr
+ 147              	.LVL8:
+ 170:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 171:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (ptr == NULL)
+ 148              		.loc 1 171 3 is_stmt 1 view .LVU29
+ 149              		.loc 1 171 6 is_stmt 0 view .LVU30
+ 150 000c 30B1     		cbz	r0, .L10
+ 172:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 173:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 174:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the Epoch Controller blob section
+ 175:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 176:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECInstr blob_magic = 0;
+ 151              		.loc 1 176 3 is_stmt 1 view .LVU31
+ 152              	.LVL9:
+ 177:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 178:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   blob_magic = *((ECInstr *)ptr);
+ 153              		.loc 1 178 3 view .LVU32
+ 179:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 180:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr += sizeof(ECInstr);
+ 154              		.loc 1 180 3 view .LVU33
+ 181:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 182:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (blob_magic != ECASM_BLOB_MAGIC)
+ 155              		.loc 1 182 3 view .LVU34
+ 156              		.loc 1 182 6 is_stmt 0 view .LVU35
+ 157 000e 0668     		ldr	r6, [r0]
+ 158 0010 134B     		ldr	r3, .L25
+ 159 0012 9E42     		cmp	r6, r3
+ 160 0014 04D0     		beq	.L11
+ 183:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 184:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Invalid magic number of Epoch Controller blob\n");
+ 161              		.loc 1 184 5 is_stmt 1 view .LVU36
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 8
+
+
+ 162 0016 1348     		ldr	r0, .L25+4
+ 163              	.LVL10:
+ 164              	.L24:
+ 165              		.loc 1 184 5 is_stmt 0 view .LVU37
+ 166 0018 FFF7FEFF 		bl	puts
+ 167              	.LVL11:
+ 185:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 186:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 168              		.loc 1 186 5 is_stmt 1 view .LVU38
+ 169              	.L10:
+ 172:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 170              		.loc 1 172 12 is_stmt 0 view .LVU39
+ 171 001c 0020     		movs	r0, #0
+ 172              	.L12:
+ 187:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 188:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 189:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECInstr size = 0;
+ 190:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 191:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   size = *((ECInstr *)ptr);
+ 192:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 193:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr += sizeof(ECInstr);
+ 194:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 195:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (blob == NULL)
+ 196:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 197:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (blob_size != NULL)
+ 198:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *blob_size = size + 2;
+ 199:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 200:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   else
+ 201:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 202:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if ((((intptr_t)blob) % 8) != 0)
+ 203:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 204:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF("Error: Memory allocated for the Epoch Controller blob must be 8-byte aligned\
+ 205:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 206:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 207:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 208:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 209:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (blob_size == NULL)
+ 210:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 211:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF("Error: Size of memory allocated for the Epoch Controller blob has not been sp
+ 212:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 213:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 214:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 215:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 216:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (*blob_size < (size + 2))
+ 217:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 218:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF(
+ 219:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the Epoch Controller blob is not sufficient (at least space 
+ 220:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           " 32-bit words must be allocated, but only %u 32-bit words were allocated)\n",
+ 221:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           size + 2, *blob_size);
+ 222:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 223:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 224:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 225:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 226:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     blob[0] = blob_magic;
+ 227:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     blob[1] = size;
+ 228:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 229:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     memcpy((uint8_t *)(blob + 2), ptr, size * sizeof(ECInstr));
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 9
+
+
+ 230:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 231:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 232:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return true;
+ 233:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 173              		.loc 1 233 1 view .LVU40
+ 174 001e 70BD     		pop	{r4, r5, r6, pc}
+ 175              	.LVL12:
+ 176              	.L11:
+ 189:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 177              		.loc 1 189 3 is_stmt 1 view .LVU41
+ 191:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 178              		.loc 1 191 3 view .LVU42
+ 191:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 179              		.loc 1 191 8 is_stmt 0 view .LVU43
+ 180 0020 4368     		ldr	r3, [r0, #4]
+ 181              	.LVL13:
+ 193:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 182              		.loc 1 193 3 is_stmt 1 view .LVU44
+ 195:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 183              		.loc 1 195 3 view .LVU45
+ 195:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 184              		.loc 1 195 6 is_stmt 0 view .LVU46
+ 185 0022 24B9     		cbnz	r4, .L13
+ 197:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *blob_size = size + 2;
+ 186              		.loc 1 197 5 is_stmt 1 view .LVU47
+ 197:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *blob_size = size + 2;
+ 187              		.loc 1 197 8 is_stmt 0 view .LVU48
+ 188 0024 0DB1     		cbz	r5, .L14
+ 198:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 189              		.loc 1 198 7 is_stmt 1 view .LVU49
+ 198:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 190              		.loc 1 198 25 is_stmt 0 view .LVU50
+ 191 0026 0233     		adds	r3, r3, #2
+ 192              	.LVL14:
+ 198:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 193              		.loc 1 198 18 view .LVU51
+ 194 0028 2B60     		str	r3, [r5]
+ 195              	.LVL15:
+ 196              	.L14:
+ 232:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 197              		.loc 1 232 10 view .LVU52
+ 198 002a 0120     		movs	r0, #1
+ 199 002c F7E7     		b	.L12
+ 200              	.LVL16:
+ 201              	.L13:
+ 202:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 202              		.loc 1 202 5 is_stmt 1 view .LVU53
+ 202:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 203              		.loc 1 202 8 is_stmt 0 view .LVU54
+ 204 002e 6207     		lsls	r2, r4, #29
+ 205 0030 01D0     		beq	.L15
+ 204:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 206              		.loc 1 204 7 is_stmt 1 view .LVU55
+ 207 0032 0D48     		ldr	r0, .L25+8
+ 208              	.LVL17:
+ 204:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 209              		.loc 1 204 7 is_stmt 0 view .LVU56
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 10
+
+
+ 210 0034 F0E7     		b	.L24
+ 211              	.LVL18:
+ 212              	.L15:
+ 209:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 213              		.loc 1 209 5 is_stmt 1 view .LVU57
+ 209:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 214              		.loc 1 209 8 is_stmt 0 view .LVU58
+ 215 0036 0DB9     		cbnz	r5, .L16
+ 211:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 216              		.loc 1 211 7 is_stmt 1 view .LVU59
+ 217 0038 0C48     		ldr	r0, .L25+12
+ 218              	.LVL19:
+ 211:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 219              		.loc 1 211 7 is_stmt 0 view .LVU60
+ 220 003a EDE7     		b	.L24
+ 221              	.LVL20:
+ 222              	.L16:
+ 216:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 223              		.loc 1 216 5 is_stmt 1 view .LVU61
+ 216:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 224              		.loc 1 216 9 is_stmt 0 view .LVU62
+ 225 003c 2A68     		ldr	r2, [r5]
+ 216:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 226              		.loc 1 216 28 view .LVU63
+ 227 003e 991C     		adds	r1, r3, #2
+ 216:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 228              		.loc 1 216 8 view .LVU64
+ 229 0040 8A42     		cmp	r2, r1
+ 230 0042 03D2     		bcs	.L17
+ 218:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the Epoch Controller blob is not sufficient (at least space 
+ 231              		.loc 1 218 7 is_stmt 1 view .LVU65
+ 232 0044 0A48     		ldr	r0, .L25+16
+ 233              	.LVL21:
+ 218:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the Epoch Controller blob is not sufficient (at least space 
+ 234              		.loc 1 218 7 is_stmt 0 view .LVU66
+ 235 0046 FFF7FEFF 		bl	printf
+ 236              	.LVL22:
+ 223:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 237              		.loc 1 223 7 is_stmt 1 view .LVU67
+ 223:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 238              		.loc 1 223 14 is_stmt 0 view .LVU68
+ 239 004a E7E7     		b	.L10
+ 240              	.LVL23:
+ 241              	.L17:
+ 226:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     blob[1] = size;
+ 242              		.loc 1 226 5 is_stmt 1 view .LVU69
+ 229:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 243              		.loc 1 229 5 is_stmt 0 view .LVU70
+ 244 004c 00F10801 		add	r1, r0, #8
+ 227:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 245              		.loc 1 227 13 view .LVU71
+ 246 0050 C4E90063 		strd	r6, r3, [r4]
+ 229:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 247              		.loc 1 229 5 is_stmt 1 view .LVU72
+ 248 0054 9A00     		lsls	r2, r3, #2
+ 249 0056 04F10800 		add	r0, r4, #8
+ 250              	.LVL24:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 11
+
+
+ 229:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 251              		.loc 1 229 5 is_stmt 0 view .LVU73
+ 252 005a FFF7FEFF 		bl	memcpy
+ 253              	.LVL25:
+ 229:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 254              		.loc 1 229 5 view .LVU74
+ 255 005e E4E7     		b	.L14
+ 256              	.L26:
+ 257              		.align	2
+ 258              	.L25:
+ 259 0060 7A7A05CA 		.word	-905610630
+ 260 0064 00000000 		.word	.LC2
+ 261 0068 35000000 		.word	.LC3
+ 262 006c 82000000 		.word	.LC4
+ 263 0070 D7000000 		.word	.LC5
+ 264              		.cfi_endproc
+ 265              	.LFE4:
+ 267              		.section	.rodata.ec_copy_reloc_table.str1.1,"aMS",%progbits,1
+ 268              	.LC6:
+ 269 0000 4572726F 		.ascii	"Error: Relocation table is not present\000"
+ 269      723A2052 
+ 269      656C6F63 
+ 269      6174696F 
+ 269      6E207461 
+ 270              	.LC7:
+ 271 0027 4572726F 		.ascii	"Error: Size of the relocation table of an Epoch Con"
+ 271      723A2053 
+ 271      697A6520 
+ 271      6F662074 
+ 271      68652072 
+ 272 005a 74726F6C 		.ascii	"troller blob must be 4-byte aligned\000"
+ 272      6C657220 
+ 272      626C6F62 
+ 272      206D7573 
+ 272      74206265 
+ 273              	.LC8:
+ 274 007e 4572726F 		.ascii	"Error: Memory allocated for the relocation table of"
+ 274      723A204D 
+ 274      656D6F72 
+ 274      7920616C 
+ 274      6C6F6361 
+ 275 00b1 20746865 		.ascii	" the Epoch Controller blob must be 4-byte aligned\000"
+ 275      2045706F 
+ 275      63682043 
+ 275      6F6E7472 
+ 275      6F6C6C65 
+ 276              	.LC9:
+ 277 00e3 4572726F 		.ascii	"Error: Size of memory allocated for the relocation "
+ 277      723A2053 
+ 277      697A6520 
+ 277      6F66206D 
+ 277      656D6F72 
+ 278 0116 7461626C 		.ascii	"table of the Epoch Controller has not been specifie"
+ 278      65206F66 
+ 278      20746865 
+ 278      2045706F 
+ 278      63682043 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 12
+
+
+ 279 0149 6400     		.ascii	"d\000"
+ 280              	.LC10:
+ 281 014b 4572726F 		.ascii	"Error: Memory allocated for the relocation table of"
+ 281      723A204D 
+ 281      656D6F72 
+ 281      7920616C 
+ 281      6C6F6361 
+ 282 017e 20746865 		.ascii	" the Epoch Controller blob is not sufficient (at le"
+ 282      2045706F 
+ 282      63682043 
+ 282      6F6E7472 
+ 282      6F6C6C65 
+ 283 01b1 61737420 		.ascii	"ast space for %lu 32-bit words must be allocated)\012"
+ 283      73706163 
+ 283      6520666F 
+ 283      7220256C 
+ 283      75203332 
+ 284 01e3 00       		.ascii	"\000"
+ 285              		.section	.text.ec_copy_reloc_table,"ax",%progbits
+ 286              		.align	1
+ 287              		.global	ec_copy_reloc_table
+ 288              		.syntax unified
+ 289              		.thumb
+ 290              		.thumb_func
+ 292              	ec_copy_reloc_table:
+ 293              	.LVL26:
+ 294              	.LFB5:
+ 234:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 235:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 236:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Copy to memory the relocation table contained in an Epoch Controller binary.
+ 237:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 238:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[out]    reloc_table     is the pointer to the memory area (which must be already allocate
+ 239:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * that will contain the Epoch Controller blob
+ 240:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     binary_ptr      is the pointer to the memory area containing the whole Epoch Cont
+ 241:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in,out] reloc_table_size is the pointer to the variable that,
+ 242:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * if \e reloc_table is not \e NULL, contains the size in terms of 32-bit words of the memory area 
+ 243:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * reloc_table or, if \e reloc_table is \e NULL, will contain the size in terms of 32-bit words of 
+ 244:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>reloc_table == NULL && reloc_table_size != NULL</em> ==> the s
+ 245:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * table must be retrieved
+ 246:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>reloc_table != NULL && reloc_table_size != NULL</em> ==> the r
+ 247:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * be copied
+ 248:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * (\e reloc_table_size is used for checking that the allocated space is sufficient)
+ 249:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>reloc_table != NULL && reloc_table_size == NULL</em> ==> not a
+ 250:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>reloc_table == NULL && reloc_table_size == NULL</em> ==> not a
+ 251:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 252:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e true  on success
+ 253:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e false otherwise
+ 254:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 255:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 256:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** bool ec_copy_reloc_table(ECFileEntry *reloc_table, const uint8_t *binary_ptr, unsigned int *reloc_t
+ 257:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 295              		.loc 1 257 1 is_stmt 1 view -0
+ 296              		.cfi_startproc
+ 297              		@ args = 0, pretend = 0, frame = 0
+ 298              		@ frame_needed = 0, uses_anonymous_args = 0
+ 258:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = (const ECFileEntry *)binary_ptr;
+ 299              		.loc 1 258 3 view .LVU76
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 13
+
+
+ 259:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 260:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the binary header
+ 261:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 262:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry magic = *ptr++;
+ 300              		.loc 1 262 3 view .LVU77
+ 263:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 264:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (magic != ECASM_BINARY_MAGIC)
+ 301              		.loc 1 264 3 view .LVU78
+ 257:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = (const ECFileEntry *)binary_ptr;
+ 302              		.loc 1 257 1 is_stmt 0 view .LVU79
+ 303 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 304              		.cfi_def_cfa_offset 24
+ 305              		.cfi_offset 3, -24
+ 306              		.cfi_offset 4, -20
+ 307              		.cfi_offset 5, -16
+ 308              		.cfi_offset 6, -12
+ 309              		.cfi_offset 7, -8
+ 310              		.cfi_offset 14, -4
+ 311              		.loc 1 264 6 view .LVU80
+ 312 0002 0C68     		ldr	r4, [r1]
+ 257:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = (const ECFileEntry *)binary_ptr;
+ 313              		.loc 1 257 1 view .LVU81
+ 314 0004 0B46     		mov	r3, r1
+ 315              		.loc 1 264 6 view .LVU82
+ 316 0006 1A49     		ldr	r1, .L44
+ 317              	.LVL27:
+ 257:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = (const ECFileEntry *)binary_ptr;
+ 318              		.loc 1 257 1 view .LVU83
+ 319 0008 0546     		mov	r5, r0
+ 320              		.loc 1 264 6 view .LVU84
+ 321 000a 8C42     		cmp	r4, r1
+ 322 000c 04D0     		beq	.L28
+ 265:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 266:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Epoch Controller binary is invalid\n");
+ 323              		.loc 1 266 5 is_stmt 1 view .LVU85
+ 324 000e 1948     		ldr	r0, .L44+4
+ 325              	.LVL28:
+ 326              	.L43:
+ 267:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 268:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 269:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 270:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 271:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry reloc_table_offset = *((ECFileEntry *)ptr++);
+ 272:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry patch_offset = *((ECFileEntry *)ptr++);
+ 273:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry debug_offset = *((ECFileEntry *)ptr++);
+ 274:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry blob_offset = *((ECFileEntry *)ptr++);
+ 275:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 276:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_offset == 0)
+ 277:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 278:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Relocation table is not present\n");
+ 327              		.loc 1 278 5 is_stmt 0 view .LVU86
+ 328 0010 FFF7FEFF 		bl	puts
+ 329              	.LVL29:
+ 279:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 280:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 330              		.loc 1 280 5 is_stmt 1 view .LVU87
+ 331              	.L29:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 14
+
+
+ 268:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 332              		.loc 1 268 12 is_stmt 0 view .LVU88
+ 333 0014 0020     		movs	r0, #0
+ 334              	.L31:
+ 281:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 282:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 283:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry end = blob_offset;
+ 284:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 285:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (debug_offset != 0)
+ 286:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     end = debug_offset;
+ 287:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 288:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_offset != 0)
+ 289:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     end = patch_offset;
+ 290:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 291:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry size = end - reloc_table_offset;
+ 292:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 293:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if ((size % 4) != 0)
+ 294:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 295:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Size of the relocation table of an Epoch Controller blob must be 4-byte 
+ 296:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 297:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 298:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 299:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 300:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   size /= 4;
+ 301:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 302:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table == NULL)
+ 303:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 304:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (reloc_table_size != NULL)
+ 305:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *reloc_table_size = size;
+ 306:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 307:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   else
+ 308:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 309:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if ((((intptr_t)reloc_table) % 4) != 0)
+ 310:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 311:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF(
+ 312:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the relocation table of the Epoch Controller blob must be 4-
+ 313:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 314:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 315:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 316:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 317:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (reloc_table_size == NULL)
+ 318:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 319:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF(
+ 320:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Size of memory allocated for the relocation table of the Epoch Controller has not
+ 321:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 322:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 323:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 324:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 325:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (*reloc_table_size < size)
+ 326:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 327:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF("Error: Memory allocated for the relocation table of the Epoch Controller blob
+ 328:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      "(at least space for %" PRIu32 " 32-bit words must be allocated)\n",
+ 329:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      size);
+ 330:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 331:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 332:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 333:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 15
+
+
+ 334:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     memcpy(reloc_table, binary_ptr + reloc_table_offset, size * 4);
+ 335:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 336:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 337:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return true;
+ 338:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 335              		.loc 1 338 1 view .LVU89
+ 336 0016 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 337              	.LVL30:
+ 338              	.L28:
+ 271:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry patch_offset = *((ECFileEntry *)ptr++);
+ 339              		.loc 1 271 3 is_stmt 1 view .LVU90
+ 272:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry debug_offset = *((ECFileEntry *)ptr++);
+ 340              		.loc 1 272 15 is_stmt 0 view .LVU91
+ 341 0018 D3E90174 		ldrd	r7, r4, [r3, #4]
+ 342              	.LVL31:
+ 273:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry blob_offset = *((ECFileEntry *)ptr++);
+ 343              		.loc 1 273 3 is_stmt 1 view .LVU92
+ 274:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 344              		.loc 1 274 15 is_stmt 0 view .LVU93
+ 345 001c D3E90361 		ldrd	r6, r1, [r3, #12]
+ 346              	.LVL32:
+ 276:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 347              		.loc 1 276 3 is_stmt 1 view .LVU94
+ 276:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 348              		.loc 1 276 6 is_stmt 0 view .LVU95
+ 349 0020 0FB9     		cbnz	r7, .L30
+ 278:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 350              		.loc 1 278 5 is_stmt 1 view .LVU96
+ 351 0022 1548     		ldr	r0, .L44+8
+ 352              	.LVL33:
+ 278:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 353              		.loc 1 278 5 is_stmt 0 view .LVU97
+ 354 0024 F4E7     		b	.L43
+ 355              	.LVL34:
+ 356              	.L30:
+ 283:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 357              		.loc 1 283 3 is_stmt 1 view .LVU98
+ 285:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     end = debug_offset;
+ 358              		.loc 1 285 3 view .LVU99
+ 283:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 359              		.loc 1 283 15 is_stmt 0 view .LVU100
+ 360 0026 002E     		cmp	r6, #0
+ 361 0028 08BF     		it	eq
+ 362 002a 0E46     		moveq	r6, r1
+ 363              	.LVL35:
+ 288:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     end = patch_offset;
+ 364              		.loc 1 288 3 is_stmt 1 view .LVU101
+ 288:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     end = patch_offset;
+ 365              		.loc 1 288 6 is_stmt 0 view .LVU102
+ 366 002c 002C     		cmp	r4, #0
+ 367 002e 08BF     		it	eq
+ 368 0030 3446     		moveq	r4, r6
+ 369              	.LVL36:
+ 291:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 370              		.loc 1 291 3 is_stmt 1 view .LVU103
+ 291:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 371              		.loc 1 291 15 is_stmt 0 view .LVU104
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 16
+
+
+ 372 0032 E41B     		subs	r4, r4, r7
+ 373              	.LVL37:
+ 293:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 374              		.loc 1 293 3 is_stmt 1 view .LVU105
+ 293:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 375              		.loc 1 293 6 is_stmt 0 view .LVU106
+ 376 0034 A607     		lsls	r6, r4, #30
+ 377              	.LVL38:
+ 293:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 378              		.loc 1 293 6 view .LVU107
+ 379 0036 01D0     		beq	.L34
+ 295:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 380              		.loc 1 295 5 is_stmt 1 view .LVU108
+ 381 0038 1048     		ldr	r0, .L44+12
+ 382              	.LVL39:
+ 295:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 383              		.loc 1 295 5 is_stmt 0 view .LVU109
+ 384 003a E9E7     		b	.L43
+ 385              	.LVL40:
+ 386              	.L34:
+ 300:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 387              		.loc 1 300 3 is_stmt 1 view .LVU110
+ 300:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 388              		.loc 1 300 8 is_stmt 0 view .LVU111
+ 389 003c A108     		lsrs	r1, r4, #2
+ 390              	.LVL41:
+ 302:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 391              		.loc 1 302 3 is_stmt 1 view .LVU112
+ 302:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 392              		.loc 1 302 6 is_stmt 0 view .LVU113
+ 393 003e 18B9     		cbnz	r0, .L35
+ 304:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *reloc_table_size = size;
+ 394              		.loc 1 304 5 is_stmt 1 view .LVU114
+ 304:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *reloc_table_size = size;
+ 395              		.loc 1 304 8 is_stmt 0 view .LVU115
+ 396 0040 02B1     		cbz	r2, .L36
+ 305:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 397              		.loc 1 305 7 is_stmt 1 view .LVU116
+ 305:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 398              		.loc 1 305 25 is_stmt 0 view .LVU117
+ 399 0042 1160     		str	r1, [r2]
+ 400              	.LVL42:
+ 401              	.L36:
+ 337:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 402              		.loc 1 337 10 view .LVU118
+ 403 0044 0120     		movs	r0, #1
+ 404 0046 E6E7     		b	.L31
+ 405              	.LVL43:
+ 406              	.L35:
+ 309:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 407              		.loc 1 309 5 is_stmt 1 view .LVU119
+ 309:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 408              		.loc 1 309 8 is_stmt 0 view .LVU120
+ 409 0048 AD07     		lsls	r5, r5, #30
+ 410 004a 01D0     		beq	.L37
+ 311:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the relocation table of the Epoch Controller blob must be 4-
+ 411              		.loc 1 311 7 is_stmt 1 view .LVU121
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 17
+
+
+ 412 004c 0C48     		ldr	r0, .L44+16
+ 413              	.LVL44:
+ 311:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the relocation table of the Epoch Controller blob must be 4-
+ 414              		.loc 1 311 7 is_stmt 0 view .LVU122
+ 415 004e DFE7     		b	.L43
+ 416              	.LVL45:
+ 417              	.L37:
+ 317:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 418              		.loc 1 317 5 is_stmt 1 view .LVU123
+ 317:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 419              		.loc 1 317 8 is_stmt 0 view .LVU124
+ 420 0050 0AB9     		cbnz	r2, .L38
+ 319:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Size of memory allocated for the relocation table of the Epoch Controller has not
+ 421              		.loc 1 319 7 is_stmt 1 view .LVU125
+ 422 0052 0C48     		ldr	r0, .L44+20
+ 423              	.LVL46:
+ 319:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Size of memory allocated for the relocation table of the Epoch Controller has not
+ 424              		.loc 1 319 7 is_stmt 0 view .LVU126
+ 425 0054 DCE7     		b	.L43
+ 426              	.LVL47:
+ 427              	.L38:
+ 325:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 428              		.loc 1 325 5 is_stmt 1 view .LVU127
+ 325:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 429              		.loc 1 325 8 is_stmt 0 view .LVU128
+ 430 0056 1268     		ldr	r2, [r2]
+ 431              	.LVL48:
+ 325:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 432              		.loc 1 325 8 view .LVU129
+ 433 0058 8A42     		cmp	r2, r1
+ 434 005a 03D2     		bcs	.L39
+ 327:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      "(at least space for %" PRIu32 " 32-bit words must be allocated)\n",
+ 435              		.loc 1 327 7 is_stmt 1 view .LVU130
+ 436 005c 0A48     		ldr	r0, .L44+24
+ 437              	.LVL49:
+ 327:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      "(at least space for %" PRIu32 " 32-bit words must be allocated)\n",
+ 438              		.loc 1 327 7 is_stmt 0 view .LVU131
+ 439 005e FFF7FEFF 		bl	printf
+ 440              	.LVL50:
+ 331:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 441              		.loc 1 331 7 is_stmt 1 view .LVU132
+ 331:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 442              		.loc 1 331 14 is_stmt 0 view .LVU133
+ 443 0062 D7E7     		b	.L29
+ 444              	.LVL51:
+ 445              	.L39:
+ 334:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 446              		.loc 1 334 5 is_stmt 1 view .LVU134
+ 447 0064 24F00302 		bic	r2, r4, #3
+ 448 0068 D919     		adds	r1, r3, r7
+ 449              	.LVL52:
+ 334:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 450              		.loc 1 334 5 is_stmt 0 view .LVU135
+ 451 006a FFF7FEFF 		bl	memcpy
+ 452              	.LVL53:
+ 334:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 453              		.loc 1 334 5 view .LVU136
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 18
+
+
+ 454 006e E9E7     		b	.L36
+ 455              	.L45:
+ 456              		.align	2
+ 457              	.L44:
+ 458 0070 5000BFEC 		.word	-323026864
+ 459 0074 00000000 		.word	.LC0
+ 460 0078 00000000 		.word	.LC6
+ 461 007c 27000000 		.word	.LC7
+ 462 0080 7E000000 		.word	.LC8
+ 463 0084 E3000000 		.word	.LC9
+ 464 0088 4B010000 		.word	.LC10
+ 465              		.cfi_endproc
+ 466              	.LFE5:
+ 468              		.section	.text.ec_get_reloc_table_ptr,"ax",%progbits
+ 469              		.align	1
+ 470              		.global	ec_get_reloc_table_ptr
+ 471              		.syntax unified
+ 472              		.thumb
+ 473              		.thumb_func
+ 475              	ec_get_reloc_table_ptr:
+ 476              	.LVL54:
+ 477              	.LFB6:
+ 339:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 340:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 341:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Get the pointer to the relocation table contained in an Epoch Controller binary.
+ 342:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 343:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] binary_ptr is the pointer to the memory area containing the whole Epoch Controller bi
+ 344:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 345:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the pointer to the relocation table contained in the Epoch Controller binary pointed by 
+ 346:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * NULL if the Epoch Controller binary does not contain any relocation table or on errors
+ 347:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 348:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 349:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** const ECFileEntry *ec_get_reloc_table_ptr(const uint8_t *binary_ptr)
+ 350:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 478              		.loc 1 350 1 is_stmt 1 view -0
+ 479              		.cfi_startproc
+ 480              		@ args = 0, pretend = 0, frame = 0
+ 481              		@ frame_needed = 0, uses_anonymous_args = 0
+ 351:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = binary_ptr;
+ 482              		.loc 1 351 3 view .LVU138
+ 352:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 353:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the binary header
+ 354:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 355:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry magic = 0;
+ 483              		.loc 1 355 3 view .LVU139
+ 356:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry reloc_offset = 0;
+ 484              		.loc 1 356 3 view .LVU140
+ 357:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 358:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   magic = *((ECFileEntry *)ptr);
+ 485              		.loc 1 358 3 view .LVU141
+ 359:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 360:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr += sizeof(ECFileEntry);
+ 486              		.loc 1 360 3 view .LVU142
+ 361:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 362:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (magic != ECASM_BINARY_MAGIC)
+ 487              		.loc 1 362 3 view .LVU143
+ 350:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = binary_ptr;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 19
+
+
+ 488              		.loc 1 350 1 is_stmt 0 view .LVU144
+ 489 0000 08B5     		push	{r3, lr}
+ 490              		.cfi_def_cfa_offset 8
+ 491              		.cfi_offset 3, -8
+ 492              		.cfi_offset 14, -4
+ 493              		.loc 1 362 6 view .LVU145
+ 494 0002 0268     		ldr	r2, [r0]
+ 495 0004 064B     		ldr	r3, .L51
+ 496 0006 9A42     		cmp	r2, r3
+ 497 0008 04D0     		beq	.L47
+ 363:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 364:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Epoch Controller binary is invalid\n");
+ 498              		.loc 1 364 5 is_stmt 1 view .LVU146
+ 499 000a 0648     		ldr	r0, .L51+4
+ 500              	.LVL55:
+ 501              		.loc 1 364 5 is_stmt 0 view .LVU147
+ 502 000c FFF7FEFF 		bl	puts
+ 503              	.LVL56:
+ 365:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 366:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return NULL;
+ 504              		.loc 1 366 5 is_stmt 1 view .LVU148
+ 505              	.L48:
+ 506              		.loc 1 366 12 is_stmt 0 view .LVU149
+ 507 0010 0020     		movs	r0, #0
+ 508              	.L46:
+ 367:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 368:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 369:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   reloc_offset = *((ECFileEntry *)ptr);
+ 370:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 371:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return (reloc_offset == 0) ? NULL : (const ECFileEntry *)(binary_ptr + reloc_offset);
+ 372:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 509              		.loc 1 372 1 view .LVU150
+ 510 0012 08BD     		pop	{r3, pc}
+ 511              	.LVL57:
+ 512              	.L47:
+ 369:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 513              		.loc 1 369 3 is_stmt 1 view .LVU151
+ 369:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 514              		.loc 1 369 16 is_stmt 0 view .LVU152
+ 515 0014 4368     		ldr	r3, [r0, #4]
+ 516              	.LVL58:
+ 371:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 517              		.loc 1 371 3 is_stmt 1 view .LVU153
+ 371:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 518              		.loc 1 371 37 is_stmt 0 view .LVU154
+ 519 0016 002B     		cmp	r3, #0
+ 520 0018 FAD0     		beq	.L48
+ 371:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 521              		.loc 1 371 37 discriminator 1 view .LVU155
+ 522 001a 1844     		add	r0, r0, r3
+ 523              	.LVL59:
+ 371:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 524              		.loc 1 371 37 discriminator 1 view .LVU156
+ 525 001c F9E7     		b	.L46
+ 526              	.L52:
+ 527 001e 00BF     		.align	2
+ 528              	.L51:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 20
+
+
+ 529 0020 5000BFEC 		.word	-323026864
+ 530 0024 00000000 		.word	.LC0
+ 531              		.cfi_endproc
+ 532              	.LFE6:
+ 534              		.section	.text.ec_get_num_relocs,"ax",%progbits
+ 535              		.align	1
+ 536              		.global	ec_get_num_relocs
+ 537              		.syntax unified
+ 538              		.thumb
+ 539              		.thumb_func
+ 541              	ec_get_num_relocs:
+ 542              	.LVL60:
+ 543              	.LFB7:
+ 373:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 374:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 375:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Return the number of different relocations contained in an Epoch Controller binary.
+ 376:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 377:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] reloc_table_ptr is the pointer to the relocation table (contained in an Epoch Control
+ 378:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 379:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 380:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the number of different relocations contained in the relocation table contained in the m
+ 381:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * at \e reloc_table_ptr
+ 382:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 383:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 384:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** unsigned int ec_get_num_relocs(const ECFileEntry *reloc_table_ptr)
+ 385:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 544              		.loc 1 385 1 is_stmt 1 view -0
+ 545              		.cfi_startproc
+ 546              		@ args = 0, pretend = 0, frame = 0
+ 547              		@ frame_needed = 0, uses_anonymous_args = 0
+ 548              		@ link register save eliminated.
+ 386:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry size = 0;
+ 549              		.loc 1 386 3 view .LVU158
+ 387:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 388:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the relocation table, if any
+ 389:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_ptr != NULL)
+ 550              		.loc 1 389 3 view .LVU159
+ 551              		.loc 1 389 6 is_stmt 0 view .LVU160
+ 552 0000 00B1     		cbz	r0, .L53
+ 390:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     size = *reloc_table_ptr;
+ 553              		.loc 1 390 5 is_stmt 1 view .LVU161
+ 554              		.loc 1 390 10 is_stmt 0 view .LVU162
+ 555 0002 0068     		ldr	r0, [r0]
+ 556              	.LVL61:
+ 557              	.L53:
+ 391:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 392:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return size;
+ 393:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 558              		.loc 1 393 1 view .LVU163
+ 559 0004 7047     		bx	lr
+ 560              		.cfi_endproc
+ 561              	.LFE7:
+ 563              		.section	.text.ec_get_reloc_id,"ax",%progbits
+ 564              		.align	1
+ 565              		.global	ec_get_reloc_id
+ 566              		.syntax unified
+ 567              		.thumb
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 21
+
+
+ 568              		.thumb_func
+ 570              	ec_get_reloc_id:
+ 571              	.LVL62:
+ 572              	.LFB8:
+ 394:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 395:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 396:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Return the identifier of a relocation contained in an Epoch Controller binary.
+ 397:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 398:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] reloc_table_ptr is the pointer to the relocation table (contained in an Epoch Control
+ 399:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 400:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] idx      is the index of the relocation whose identifier must be retrieved
+ 401:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 402:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the identifier of relocation having index \e idx among the relocations contained in the 
+ 403:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * contained in the memory area starting at \e reloc_table_ptr, or \e NULL if that relocation does 
+ 404:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 405:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 406:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** const char *ec_get_reloc_id(const ECFileEntry *reloc_table_ptr, unsigned int idx)
+ 407:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 573              		.loc 1 407 1 is_stmt 1 view -0
+ 574              		.cfi_startproc
+ 575              		@ args = 0, pretend = 0, frame = 0
+ 576              		@ frame_needed = 0, uses_anonymous_args = 0
+ 577              		@ link register save eliminated.
+ 408:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the relocation table, if any
+ 409:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_ptr != NULL)
+ 578              		.loc 1 409 3 view .LVU165
+ 579              		.loc 1 409 6 is_stmt 0 view .LVU166
+ 580 0000 48B1     		cbz	r0, .L57
+ 581              	.LBB2:
+ 410:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 411:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     const ECFileEntry *ptr = reloc_table_ptr;
+ 582              		.loc 1 411 5 is_stmt 1 view .LVU167
+ 583              	.LVL63:
+ 412:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 413:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry size = *ptr;
+ 584              		.loc 1 413 5 view .LVU168
+ 414:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 415:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (idx < size)
+ 585              		.loc 1 415 5 view .LVU169
+ 586              		.loc 1 415 8 is_stmt 0 view .LVU170
+ 587 0002 0368     		ldr	r3, [r0]
+ 588 0004 8B42     		cmp	r3, r1
+ 589 0006 05D9     		bls	.L58
+ 590              	.LBB3:
+ 416:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 417:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ptr = reloc_table_ptr + 3 * idx + 1;
+ 591              		.loc 1 417 7 is_stmt 1 view .LVU171
+ 592              	.LVL64:
+ 418:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 419:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry offset = *ptr;
+ 593              		.loc 1 419 7 view .LVU172
+ 420:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 421:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return (const char *)((const uint8_t *)reloc_table_ptr + offset);
+ 594              		.loc 1 421 7 view .LVU173
+ 419:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 595              		.loc 1 419 19 is_stmt 0 view .LVU174
+ 596 0008 0C23     		movs	r3, #12
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 22
+
+
+ 597 000a 03FB0101 		mla	r1, r3, r1, r0
+ 598              	.LVL65:
+ 599              		.loc 1 421 14 view .LVU175
+ 600 000e 4B68     		ldr	r3, [r1, #4]
+ 601 0010 1844     		add	r0, r0, r3
+ 602              	.LVL66:
+ 603              		.loc 1 421 14 view .LVU176
+ 604 0012 7047     		bx	lr
+ 605              	.LVL67:
+ 606              	.L58:
+ 607              		.loc 1 421 14 view .LVU177
+ 608              	.LBE3:
+ 609              	.LBE2:
+ 422:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 423:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 424:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 425:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return NULL;
+ 610              		.loc 1 425 10 view .LVU178
+ 611 0014 0020     		movs	r0, #0
+ 612              	.LVL68:
+ 613              	.L57:
+ 426:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 614              		.loc 1 426 1 view .LVU179
+ 615 0016 7047     		bx	lr
+ 616              		.cfi_endproc
+ 617              	.LFE8:
+ 619              		.section	.rodata.ec_reloc.str1.1,"aMS",%progbits,1
+ 620              	.LC11:
+ 621 0000 4572726F 		.ascii	"Error: Cannot relocate because the pointer to the E"
+ 621      723A2043 
+ 621      616E6E6F 
+ 621      74207265 
+ 621      6C6F6361 
+ 622 0033 706F6368 		.ascii	"poch Controller relocation table is invalid\000"
+ 622      20436F6E 
+ 622      74726F6C 
+ 622      6C657220 
+ 622      72656C6F 
+ 623              	.LC12:
+ 624 005f 4572726F 		.ascii	"Error: Offset %lu in Epoch Controller binary is inv"
+ 624      723A204F 
+ 624      66667365 
+ 624      7420256C 
+ 624      7520696E 
+ 625 0092 616C6964 		.ascii	"alid\012\000"
+ 625      0A00
+ 626              		.section	.text.ec_reloc,"ax",%progbits
+ 627              		.align	1
+ 628              		.global	ec_reloc
+ 629              		.syntax unified
+ 630              		.thumb
+ 631              		.thumb_func
+ 633              	ec_reloc:
+ 634              	.LVL69:
+ 635              	.LFB9:
+ 427:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 428:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 23
+
+
+ 429:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Relocate the value associated with a relocation specified by using an index.
+ 430:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 431:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[out]    blob         is the pointer to the memory area containing the Epoch Controller
+ 432:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * blob (that will be patched)
+ 433:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     reloc_table_ptr is the pointer to the relocation table (contained in an Epoch Con
+ 434:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 435:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     idx             is the index of the relocation whose values must be
+ 436:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * relocated
+ 437:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     base            is the offset that must be added to the values to be relocated
+ 438:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in,out] prev_base       is the pointer to a memory location containing the previous value
+ 439:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * associated with this relocation (this memory location will be updated with \e base if this funct
+ 440:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * successfully)
+ 441:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 442:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e true  on success
+ 443:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e false otherwise
+ 444:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 445:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 446:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** bool ec_reloc(ECInstr *blob, const ECFileEntry *reloc_table_ptr, unsigned int idx, ECAddr base, ECA
+ 447:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 636              		.loc 1 447 1 is_stmt 1 view -0
+ 637              		.cfi_startproc
+ 638              		@ args = 4, pretend = 0, frame = 0
+ 639              		@ frame_needed = 0, uses_anonymous_args = 0
+ 448:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_ptr == NULL)
+ 640              		.loc 1 448 3 view .LVU181
+ 447:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_ptr == NULL)
+ 641              		.loc 1 447 1 is_stmt 0 view .LVU182
+ 642 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 643              		.cfi_def_cfa_offset 24
+ 644              		.cfi_offset 3, -24
+ 645              		.cfi_offset 4, -20
+ 646              		.cfi_offset 5, -16
+ 647              		.cfi_offset 6, -12
+ 648              		.cfi_offset 7, -8
+ 649              		.cfi_offset 14, -4
+ 447:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_ptr == NULL)
+ 650              		.loc 1 447 1 view .LVU183
+ 651 0002 069D     		ldr	r5, [sp, #24]
+ 652              		.loc 1 448 6 view .LVU184
+ 653 0004 0C46     		mov	r4, r1
+ 654 0006 21B9     		cbnz	r1, .L63
+ 449:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 450:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Cannot relocate because the pointer to the Epoch Controller relocation t
+ 655              		.loc 1 450 5 is_stmt 1 view .LVU185
+ 656 0008 1548     		ldr	r0, .L72
+ 657              	.LVL70:
+ 658              		.loc 1 450 5 is_stmt 0 view .LVU186
+ 659 000a FFF7FEFF 		bl	puts
+ 660              	.LVL71:
+ 451:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 452:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 661              		.loc 1 452 5 is_stmt 1 view .LVU187
+ 662              	.L64:
+ 663              		.loc 1 452 12 is_stmt 0 view .LVU188
+ 664 000e 0020     		movs	r0, #0
+ 665 0010 07E0     		b	.L67
+ 666              	.LVL72:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 24
+
+
+ 667              	.L63:
+ 453:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 454:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 455:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (base == *prev_base)
+ 668              		.loc 1 455 3 is_stmt 1 view .LVU189
+ 669              		.loc 1 455 6 is_stmt 0 view .LVU190
+ 670 0012 2968     		ldr	r1, [r5]
+ 671              	.LVL73:
+ 672              		.loc 1 455 6 view .LVU191
+ 673 0014 9942     		cmp	r1, r3
+ 674 0016 03D0     		beq	.L65
+ 456:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return true;
+ 457:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 458:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = reloc_table_ptr;
+ 675              		.loc 1 458 3 is_stmt 1 view .LVU192
+ 676              	.LVL74:
+ 459:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 460:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry size = *ptr;
+ 677              		.loc 1 460 3 view .LVU193
+ 461:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 462:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (idx < size)
+ 678              		.loc 1 462 3 view .LVU194
+ 679              		.loc 1 462 6 is_stmt 0 view .LVU195
+ 680 0018 2168     		ldr	r1, [r4]
+ 681 001a 9142     		cmp	r1, r2
+ 682 001c 02D8     		bhi	.L66
+ 683              	.LVL75:
+ 684              	.L71:
+ 463:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 464:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ptr = reloc_table_ptr + 3 * idx + 2;
+ 465:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 466:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry num = *ptr++;
+ 467:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 468:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry offset = *ptr;
+ 469:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 470:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if ((offset % sizeof(ECFileEntry)) != 0)
+ 471:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 472:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF("Error: Offset %lu in Epoch Controller binary is invalid\n", (unsigned long)of
+ 473:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 474:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 475:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 476:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 477:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ptr = (const ECFileEntry *)((const uint8_t *)reloc_table_ptr + offset);
+ 478:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 479:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     for (unsigned int i = 0; i < num; i++)
+ 480:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 481:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry offset = *ptr++;
+ 482:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 483:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       // offset is from the real beginning of the EC blob, that is, from the first real instruction
+ 484:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       // following the magic number of the EC blob and its size)
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] += base - *prev_base;
+ 486:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 487:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 488:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 489:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   *prev_base = base;
+ 685              		.loc 1 489 3 is_stmt 1 view .LVU196
+ 686              		.loc 1 489 14 is_stmt 0 view .LVU197
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 25
+
+
+ 687 001e 2B60     		str	r3, [r5]
+ 490:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 491:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return true;
+ 688              		.loc 1 491 3 is_stmt 1 view .LVU198
+ 689              	.LVL76:
+ 690              	.L65:
+ 456:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 691              		.loc 1 456 12 is_stmt 0 view .LVU199
+ 692 0020 0120     		movs	r0, #1
+ 693              	.LVL77:
+ 694              	.L67:
+ 492:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 695              		.loc 1 492 1 view .LVU200
+ 696 0022 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 697              	.LVL78:
+ 698              	.L66:
+ 699              	.LBB4:
+ 464:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 700              		.loc 1 464 5 is_stmt 1 view .LVU201
+ 464:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 701              		.loc 1 464 37 is_stmt 0 view .LVU202
+ 702 0024 0C21     		movs	r1, #12
+ 703              	.LVL79:
+ 464:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 704              		.loc 1 464 37 view .LVU203
+ 705 0026 4A43     		muls	r2, r1, r2
+ 706              	.LVL80:
+ 464:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 707              		.loc 1 464 37 view .LVU204
+ 708 0028 0832     		adds	r2, r2, #8
+ 464:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 709              		.loc 1 464 9 view .LVU205
+ 710 002a A118     		adds	r1, r4, r2
+ 711              	.LVL81:
+ 466:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 712              		.loc 1 466 5 is_stmt 1 view .LVU206
+ 468:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 713              		.loc 1 468 17 is_stmt 0 view .LVU207
+ 714 002c 4968     		ldr	r1, [r1, #4]
+ 715              	.LVL82:
+ 466:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 716              		.loc 1 466 17 view .LVU208
+ 717 002e A258     		ldr	r2, [r4, r2]
+ 718              	.LVL83:
+ 468:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 719              		.loc 1 468 5 is_stmt 1 view .LVU209
+ 470:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 720              		.loc 1 470 5 view .LVU210
+ 470:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 721              		.loc 1 470 8 is_stmt 0 view .LVU211
+ 722 0030 11F00306 		ands	r6, r1, #3
+ 723 0034 03D0     		beq	.L68
+ 472:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 724              		.loc 1 472 7 is_stmt 1 view .LVU212
+ 725 0036 0B48     		ldr	r0, .L72+4
+ 726              	.LVL84:
+ 472:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 26
+
+
+ 727              		.loc 1 472 7 is_stmt 0 view .LVU213
+ 728 0038 FFF7FEFF 		bl	printf
+ 729              	.LVL85:
+ 474:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 730              		.loc 1 474 7 is_stmt 1 view .LVU214
+ 474:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 731              		.loc 1 474 14 is_stmt 0 view .LVU215
+ 732 003c E7E7     		b	.L64
+ 733              	.LVL86:
+ 734              	.L68:
+ 477:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 735              		.loc 1 477 5 is_stmt 1 view .LVU216
+ 477:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 736              		.loc 1 477 9 is_stmt 0 view .LVU217
+ 737 003e 0C44     		add	r4, r4, r1
+ 738              	.LVL87:
+ 479:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 739              		.loc 1 479 5 is_stmt 1 view .LVU218
+ 740              	.LBB5:
+ 479:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 741              		.loc 1 479 10 view .LVU219
+ 479:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 742              		.loc 1 479 10 is_stmt 0 view .LVU220
+ 743              	.LBE5:
+ 477:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 744              		.loc 1 477 9 view .LVU221
+ 745 0040 0132     		adds	r2, r2, #1
+ 746              	.LVL88:
+ 747              	.L69:
+ 748              	.LBB8:
+ 479:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 749              		.loc 1 479 32 is_stmt 1 discriminator 1 view .LVU222
+ 750 0042 013A     		subs	r2, r2, #1
+ 751 0044 EBD0     		beq	.L71
+ 752              	.LBB6:
+ 481:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 753              		.loc 1 481 7 view .LVU223
+ 754              	.LVL89:
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 755              		.loc 1 485 7 view .LVU224
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 756              		.loc 1 485 11 is_stmt 0 view .LVU225
+ 757 0046 54F82610 		ldr	r1, [r4, r6, lsl #2]
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 758              		.loc 1 485 32 view .LVU226
+ 759 004a 2F68     		ldr	r7, [r5]
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 760              		.loc 1 485 11 view .LVU227
+ 761 004c 0231     		adds	r1, r1, #2
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 762              		.loc 1 485 32 view .LVU228
+ 763 004e A3EB070C 		sub	ip, r3, r7
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 764              		.loc 1 485 24 view .LVU229
+ 765 0052 50F82170 		ldr	r7, [r0, r1, lsl #2]
+ 766              	.LBE6:
+ 479:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 27
+
+
+ 767              		.loc 1 479 40 discriminator 3 view .LVU230
+ 768 0056 0136     		adds	r6, r6, #1
+ 769              	.LVL90:
+ 770              	.LBB7:
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 771              		.loc 1 485 24 view .LVU231
+ 772 0058 6744     		add	r7, r7, ip
+ 773 005a 40F82170 		str	r7, [r0, r1, lsl #2]
+ 774              	.LVL91:
+ 485:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 775              		.loc 1 485 24 view .LVU232
+ 776              	.LBE7:
+ 479:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 777              		.loc 1 479 40 is_stmt 1 discriminator 3 view .LVU233
+ 479:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 778              		.loc 1 479 40 is_stmt 0 discriminator 3 view .LVU234
+ 779 005e F0E7     		b	.L69
+ 780              	.L73:
+ 781              		.align	2
+ 782              	.L72:
+ 783 0060 00000000 		.word	.LC11
+ 784 0064 5F000000 		.word	.LC12
+ 785              	.LBE8:
+ 786              	.LBE4:
+ 787              		.cfi_endproc
+ 788              	.LFE9:
+ 790              		.section	.rodata.ec_reloc_by_id.str1.1,"aMS",%progbits,1
+ 791              	.LC13:
+ 792 0000 4572726F 		.ascii	"Error: Relocation symbol '%s' not found in Epoch Co"
+ 792      723A2052 
+ 792      656C6F63 
+ 792      6174696F 
+ 792      6E207379 
+ 793 0033 6E74726F 		.ascii	"ntroller relocation table\012\000"
+ 793      6C6C6572 
+ 793      2072656C 
+ 793      6F636174 
+ 793      696F6E20 
+ 794              		.section	.text.ec_reloc_by_id,"ax",%progbits
+ 795              		.align	1
+ 796              		.global	ec_reloc_by_id
+ 797              		.syntax unified
+ 798              		.thumb
+ 799              		.thumb_func
+ 801              	ec_reloc_by_id:
+ 802              	.LVL92:
+ 803              	.LFB10:
+ 493:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 494:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 495:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Relocate the value associated with a relocation specified by using an identifier.
+ 496:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 497:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[out]    blob         is the pointer to the memory area containing the Epoch Controller
+ 498:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * blob (that will be patched)
+ 499:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     reloc_table_ptr is the pointer to the relocation table (contained in an Epoch Con
+ 500:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 501:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     id       is the identifier of the relocation whose values must be relocated
+ 502:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     base            is the offset that must be added to the values to be relocated
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 28
+
+
+ 503:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in,out] prev_base       is the pointer to a memory location containing the previous value
+ 504:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * associated with this relocation (this memory location will be updated with \e base if this funct
+ 505:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * successfully)
+ 506:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 507:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e true  on success
+ 508:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e false otherwise
+ 509:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 510:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 511:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** bool ec_reloc_by_id(ECInstr *blob, const ECFileEntry *reloc_table_ptr, const char *id, ECAddr base,
+ 512:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 804              		.loc 1 512 1 is_stmt 1 view -0
+ 805              		.cfi_startproc
+ 806              		@ args = 4, pretend = 0, frame = 8
+ 807              		@ frame_needed = 0, uses_anonymous_args = 0
+ 513:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_ptr == NULL)
+ 808              		.loc 1 513 3 view .LVU236
+ 512:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_ptr == NULL)
+ 809              		.loc 1 512 1 is_stmt 0 view .LVU237
+ 810 0000 2DE9F74F 		push	{r0, r1, r2, r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 811              		.cfi_def_cfa_offset 48
+ 812              		.cfi_offset 4, -36
+ 813              		.cfi_offset 5, -32
+ 814              		.cfi_offset 6, -28
+ 815              		.cfi_offset 7, -24
+ 816              		.cfi_offset 8, -20
+ 817              		.cfi_offset 9, -16
+ 818              		.cfi_offset 10, -12
+ 819              		.cfi_offset 11, -8
+ 820              		.cfi_offset 14, -4
+ 512:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (reloc_table_ptr == NULL)
+ 821              		.loc 1 512 1 view .LVU238
+ 822 0004 DDF83090 		ldr	r9, [sp, #48]
+ 823 0008 0746     		mov	r7, r0
+ 824 000a 9046     		mov	r8, r2
+ 825 000c 1E46     		mov	r6, r3
+ 826              		.loc 1 513 6 view .LVU239
+ 827 000e 0C46     		mov	r4, r1
+ 828 0010 31B9     		cbnz	r1, .L75
+ 514:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 515:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Cannot relocate because the pointer to the Epoch Controller relocation t
+ 829              		.loc 1 515 5 is_stmt 1 view .LVU240
+ 830 0012 2048     		ldr	r0, .L86
+ 831              	.LVL93:
+ 832              		.loc 1 515 5 is_stmt 0 view .LVU241
+ 833 0014 FFF7FEFF 		bl	puts
+ 834              	.LVL94:
+ 516:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 517:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 835              		.loc 1 517 5 is_stmt 1 view .LVU242
+ 836              	.L76:
+ 837              		.loc 1 517 12 is_stmt 0 view .LVU243
+ 838 0018 0020     		movs	r0, #0
+ 839              	.LVL95:
+ 840              	.L81:
+ 518:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 519:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 520:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (base == *prev_base)
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 29
+
+
+ 521:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return true;
+ 522:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 523:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = reloc_table_ptr;
+ 524:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 525:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry size = *ptr;
+ 526:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 527:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   for (unsigned int n = 0; n < size; n++)
+ 528:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 529:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ptr = reloc_table_ptr + 3 * n + 1;
+ 530:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 531:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry offset = *ptr;
+ 532:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 533:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     const char *tmp_id = (const char *)((const uint8_t *)reloc_table_ptr + offset);
+ 534:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 535:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (strcmp(id, tmp_id) == 0)
+ 536:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 537:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ptr++;
+ 538:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 539:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry num = *ptr++;
+ 540:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 541:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry offset = *ptr;
+ 542:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 543:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       if ((offset % sizeof(ECFileEntry)) != 0)
+ 544:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 545:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         LL_ATON_PRINTF("Error: Offset %lu in Epoch Controller binary is invalid\n", (unsigned long)
+ 546:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 547:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         return false;
+ 548:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 549:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 550:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ptr = (const ECFileEntry *)((const uint8_t *)reloc_table_ptr + offset);
+ 551:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       for (unsigned int i = 0; i < num; i++)
+ 553:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 554:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         ECFileEntry offset = *ptr++;
+ 555:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 556:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         // offset is from the real beginning of the EC blob, that is, from the first real instructi
+ 557:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         // following the magic number of the EC blob and its size)
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] += base - *prev_base;
+ 559:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 560:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 561:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *prev_base = base;
+ 562:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 563:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return true;
+ 564:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 565:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 566:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 567:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   LL_ATON_PRINTF("Error: Relocation symbol '%s' not found in Epoch Controller relocation table\n", 
+ 568:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 569:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return false;
+ 570:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 841              		.loc 1 570 1 view .LVU244
+ 842 001a 03B0     		add	sp, sp, #12
+ 843              		.cfi_remember_state
+ 844              		.cfi_def_cfa_offset 36
+ 845              		@ sp needed
+ 846 001c BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 847              	.LVL96:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 30
+
+
+ 848              	.L75:
+ 849              		.cfi_restore_state
+ 520:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return true;
+ 850              		.loc 1 520 3 is_stmt 1 view .LVU245
+ 520:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return true;
+ 851              		.loc 1 520 6 is_stmt 0 view .LVU246
+ 852 0020 D9F80030 		ldr	r3, [r9]
+ 853              	.LVL97:
+ 520:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return true;
+ 854              		.loc 1 520 6 view .LVU247
+ 855 0024 B342     		cmp	r3, r6
+ 856 0026 22D0     		beq	.L77
+ 523:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 857              		.loc 1 523 3 is_stmt 1 view .LVU248
+ 858              	.LVL98:
+ 525:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 859              		.loc 1 525 3 view .LVU249
+ 525:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 860              		.loc 1 525 15 is_stmt 0 view .LVU250
+ 861 0028 0D46     		mov	r5, r1
+ 862              	.LBB9:
+ 527:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 863              		.loc 1 527 21 view .LVU251
+ 864 002a 4FF0000A 		mov	r10, #0
+ 865              	.LBE9:
+ 525:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 866              		.loc 1 525 15 view .LVU252
+ 867 002e 55F8043B 		ldr	r3, [r5], #4
+ 868              	.LVL99:
+ 527:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 869              		.loc 1 527 3 is_stmt 1 view .LVU253
+ 870              	.LBB19:
+ 527:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 871              		.loc 1 527 8 view .LVU254
+ 872              	.L78:
+ 527:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 873              		.loc 1 527 30 discriminator 1 view .LVU255
+ 874 0032 9A45     		cmp	r10, r3
+ 875 0034 02D1     		bne	.L84
+ 876              	.LBE19:
+ 567:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 877              		.loc 1 567 3 view .LVU256
+ 878 0036 4146     		mov	r1, r8
+ 879 0038 1748     		ldr	r0, .L86+4
+ 880 003a 0FE0     		b	.L85
+ 881              	.L84:
+ 882              	.LBB20:
+ 883              	.LBB10:
+ 529:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 884              		.loc 1 529 9 is_stmt 0 view .LVU257
+ 885 003c AB46     		mov	fp, r5
+ 533:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 886              		.loc 1 533 17 view .LVU258
+ 887 003e 55F80C1B 		ldr	r1, [r5], #12
+ 535:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 888              		.loc 1 535 9 view .LVU259
+ 889 0042 4046     		mov	r0, r8
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 31
+
+
+ 890 0044 2144     		add	r1, r1, r4
+ 891 0046 0193     		str	r3, [sp, #4]
+ 529:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 892              		.loc 1 529 5 is_stmt 1 view .LVU260
+ 531:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 893              		.loc 1 531 5 view .LVU261
+ 533:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 894              		.loc 1 533 5 view .LVU262
+ 535:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 895              		.loc 1 535 5 view .LVU263
+ 535:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 896              		.loc 1 535 9 is_stmt 0 view .LVU264
+ 897 0048 FFF7FEFF 		bl	strcmp
+ 898              	.LVL100:
+ 535:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 899              		.loc 1 535 8 discriminator 1 view .LVU265
+ 900 004c 019B     		ldr	r3, [sp, #4]
+ 901 004e E8B9     		cbnz	r0, .L79
+ 902              	.LVL101:
+ 903              	.LBB11:
+ 537:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 904              		.loc 1 537 7 is_stmt 1 view .LVU266
+ 539:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 905              		.loc 1 539 7 view .LVU267
+ 541:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 906              		.loc 1 541 19 is_stmt 0 view .LVU268
+ 907 0050 DBE90131 		ldrd	r3, r1, [fp, #4]
+ 908              	.LVL102:
+ 543:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 909              		.loc 1 543 7 is_stmt 1 view .LVU269
+ 543:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 910              		.loc 1 543 10 is_stmt 0 view .LVU270
+ 911 0054 11F00300 		ands	r0, r1, #3
+ 912 0058 03D0     		beq	.L80
+ 545:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 913              		.loc 1 545 9 is_stmt 1 view .LVU271
+ 914 005a 1048     		ldr	r0, .L86+8
+ 915              	.LVL103:
+ 916              	.L85:
+ 545:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 917              		.loc 1 545 9 is_stmt 0 view .LVU272
+ 918 005c FFF7FEFF 		bl	printf
+ 919              	.LVL104:
+ 547:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 920              		.loc 1 547 9 is_stmt 1 view .LVU273
+ 547:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 921              		.loc 1 547 16 is_stmt 0 view .LVU274
+ 922 0060 DAE7     		b	.L76
+ 923              	.LVL105:
+ 924              	.L80:
+ 550:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 925              		.loc 1 550 7 is_stmt 1 view .LVU275
+ 550:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 926              		.loc 1 550 11 is_stmt 0 view .LVU276
+ 927 0062 2144     		add	r1, r1, r4
+ 928              	.LVL106:
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 32
+
+
+ 929              		.loc 1 552 7 is_stmt 1 view .LVU277
+ 930              	.LBB12:
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 931              		.loc 1 552 12 view .LVU278
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 932              		.loc 1 552 12 is_stmt 0 view .LVU279
+ 933              	.LBE12:
+ 550:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 934              		.loc 1 550 11 view .LVU280
+ 935 0064 0133     		adds	r3, r3, #1
+ 936              	.LVL107:
+ 937              	.L82:
+ 938              	.LBB15:
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 939              		.loc 1 552 34 is_stmt 1 discriminator 1 view .LVU281
+ 940 0066 013B     		subs	r3, r3, #1
+ 941 0068 03D1     		bne	.L83
+ 942              	.LBE15:
+ 561:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 943              		.loc 1 561 7 view .LVU282
+ 561:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 944              		.loc 1 561 18 is_stmt 0 view .LVU283
+ 945 006a C9F80060 		str	r6, [r9]
+ 563:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 946              		.loc 1 563 7 is_stmt 1 view .LVU284
+ 947              	.LVL108:
+ 948              	.L77:
+ 563:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 949              		.loc 1 563 7 is_stmt 0 view .LVU285
+ 950              	.LBE11:
+ 951              	.LBE10:
+ 952              	.LBE20:
+ 521:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 953              		.loc 1 521 12 view .LVU286
+ 954 006e 0120     		movs	r0, #1
+ 955 0070 D3E7     		b	.L81
+ 956              	.LVL109:
+ 957              	.L83:
+ 958              	.LBB21:
+ 959              	.LBB18:
+ 960              	.LBB17:
+ 961              	.LBB16:
+ 962              	.LBB13:
+ 554:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 963              		.loc 1 554 9 is_stmt 1 view .LVU287
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 964              		.loc 1 558 9 view .LVU288
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 965              		.loc 1 558 13 is_stmt 0 view .LVU289
+ 966 0072 51F82020 		ldr	r2, [r1, r0, lsl #2]
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 967              		.loc 1 558 34 view .LVU290
+ 968 0076 D9F80040 		ldr	r4, [r9]
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 969              		.loc 1 558 13 view .LVU291
+ 970 007a 0232     		adds	r2, r2, #2
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 33
+
+
+ 971              		.loc 1 558 34 view .LVU292
+ 972 007c 351B     		subs	r5, r6, r4
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 973              		.loc 1 558 26 view .LVU293
+ 974 007e 57F82240 		ldr	r4, [r7, r2, lsl #2]
+ 975              	.LBE13:
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 976              		.loc 1 552 42 discriminator 3 view .LVU294
+ 977 0082 0130     		adds	r0, r0, #1
+ 978              	.LVL110:
+ 979              	.LBB14:
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 980              		.loc 1 558 26 view .LVU295
+ 981 0084 2C44     		add	r4, r4, r5
+ 982 0086 47F82240 		str	r4, [r7, r2, lsl #2]
+ 983              	.LVL111:
+ 558:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 984              		.loc 1 558 26 view .LVU296
+ 985              	.LBE14:
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 986              		.loc 1 552 42 is_stmt 1 discriminator 3 view .LVU297
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 987              		.loc 1 552 42 is_stmt 0 discriminator 3 view .LVU298
+ 988 008a ECE7     		b	.L82
+ 989              	.LVL112:
+ 990              	.L79:
+ 552:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 991              		.loc 1 552 42 discriminator 3 view .LVU299
+ 992              	.LBE16:
+ 993              	.LBE17:
+ 994              	.LBE18:
+ 527:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 995              		.loc 1 527 39 is_stmt 1 discriminator 2 view .LVU300
+ 996 008c 0AF1010A 		add	r10, r10, #1
+ 997              	.LVL113:
+ 527:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 998              		.loc 1 527 39 is_stmt 0 discriminator 2 view .LVU301
+ 999 0090 CFE7     		b	.L78
+ 1000              	.L87:
+ 1001 0092 00BF     		.align	2
+ 1002              	.L86:
+ 1003 0094 00000000 		.word	.LC11
+ 1004 0098 00000000 		.word	.LC13
+ 1005 009c 5F000000 		.word	.LC12
+ 1006              	.LBE21:
+ 1007              		.cfi_endproc
+ 1008              	.LFE10:
+ 1010              		.section	.rodata.ec_copy_patch_table.str1.1,"aMS",%progbits,1
+ 1011              	.LC14:
+ 1012 0000 4572726F 		.ascii	"Error: Patch table is not present\000"
+ 1012      723A2050 
+ 1012      61746368 
+ 1012      20746162 
+ 1012      6C652069 
+ 1013              	.LC15:
+ 1014 0022 4572726F 		.ascii	"Error: Size of the patch table of an Epoch Controll"
+ 1014      723A2053 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 34
+
+
+ 1014      697A6520 
+ 1014      6F662074 
+ 1014      68652070 
+ 1015 0055 65722062 		.ascii	"er blob must be 4-byte aligned\000"
+ 1015      6C6F6220 
+ 1015      6D757374 
+ 1015      20626520 
+ 1015      342D6279 
+ 1016              	.LC16:
+ 1017 0074 4572726F 		.ascii	"Error: Memory allocated for the patch table of the "
+ 1017      723A204D 
+ 1017      656D6F72 
+ 1017      7920616C 
+ 1017      6C6F6361 
+ 1018 00a7 45706F63 		.ascii	"Epoch Controller blob must be 4-byte aligned\000"
+ 1018      6820436F 
+ 1018      6E74726F 
+ 1018      6C6C6572 
+ 1018      20626C6F 
+ 1019              	.LC17:
+ 1020 00d4 4572726F 		.ascii	"Error: Size of memory allocated for the patch table"
+ 1020      723A2053 
+ 1020      697A6520 
+ 1020      6F66206D 
+ 1020      656D6F72 
+ 1021 0107 206F6620 		.ascii	" of the Epoch Controller has not been specified\000"
+ 1021      74686520 
+ 1021      45706F63 
+ 1021      6820436F 
+ 1021      6E74726F 
+ 1022              	.LC18:
+ 1023 0137 4572726F 		.ascii	"Error: Memory allocated for the patch table of the "
+ 1023      723A204D 
+ 1023      656D6F72 
+ 1023      7920616C 
+ 1023      6C6F6361 
+ 1024 016a 45706F63 		.ascii	"Epoch Controller blob is not sufficient (at least s"
+ 1024      6820436F 
+ 1024      6E74726F 
+ 1024      6C6C6572 
+ 1024      20626C6F 
+ 1025 019d 70616365 		.ascii	"pace for %u 32-bit words must be allocated)\012\000"
+ 1025      20666F72 
+ 1025      20257520 
+ 1025      33322D62 
+ 1025      69742077 
+ 1026              		.section	.text.ec_copy_patch_table,"ax",%progbits
+ 1027              		.align	1
+ 1028              		.global	ec_copy_patch_table
+ 1029              		.syntax unified
+ 1030              		.thumb
+ 1031              		.thumb_func
+ 1033              	ec_copy_patch_table:
+ 1034              	.LVL114:
+ 1035              	.LFB11:
+ 571:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 572:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 35
+
+
+ 573:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Copy to memory the patch table contained in an Epoch Controller binary.
+ 574:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 575:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[out]    patch_table     is the pointer to the memory area (which must be already allocate
+ 576:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * that will contain the Epoch Controller blob
+ 577:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     binary_ptr      is the pointer to the memory area containing the whole Epoch Cont
+ 578:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in,out] patch_table_size is the pointer to the variable that,
+ 579:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * if \e patch_table is not \e NULL, contains the size in terms of 32-bit words of the memory area 
+ 580:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * patch_table or, if \e patch_table is \e NULL, will contain the size in terms of 32-bit words of 
+ 581:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>patch_table == NULL && patch_table_size != NULL</em> ==> the s
+ 582:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * table must be retrieved
+ 583:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>patch_table != NULL && patch_table_size != NULL</em> ==> the p
+ 584:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * be copied
+ 585:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * (\e patch_table_size is used for checking that the allocated space is sufficient)
+ 586:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>patch_table != NULL && patch_table_size == NULL</em> ==> not a
+ 587:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *                             - <em>patch_table == NULL && patch_table_size == NULL</em> ==> not a
+ 588:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 589:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e true  on success
+ 590:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e false otherwise
+ 591:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 592:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 593:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** bool ec_copy_patch_table(ECFileEntry *patch_table, const uint8_t *binary_ptr, unsigned int *patch_t
+ 594:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 1036              		.loc 1 594 1 is_stmt 1 view -0
+ 1037              		.cfi_startproc
+ 1038              		@ args = 0, pretend = 0, frame = 0
+ 1039              		@ frame_needed = 0, uses_anonymous_args = 0
+ 595:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = (const ECFileEntry *)binary_ptr;
+ 1040              		.loc 1 595 3 view .LVU303
+ 596:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 597:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the binary header
+ 598:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 599:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry magic = *ptr++;
+ 1041              		.loc 1 599 3 view .LVU304
+ 600:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 601:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (magic != ECASM_BINARY_MAGIC)
+ 1042              		.loc 1 601 3 view .LVU305
+ 594:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = (const ECFileEntry *)binary_ptr;
+ 1043              		.loc 1 594 1 is_stmt 0 view .LVU306
+ 1044 0000 70B5     		push	{r4, r5, r6, lr}
+ 1045              		.cfi_def_cfa_offset 16
+ 1046              		.cfi_offset 4, -16
+ 1047              		.cfi_offset 5, -12
+ 1048              		.cfi_offset 6, -8
+ 1049              		.cfi_offset 14, -4
+ 1050              		.loc 1 601 6 view .LVU307
+ 1051 0002 194B     		ldr	r3, .L104
+ 594:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = (const ECFileEntry *)binary_ptr;
+ 1052              		.loc 1 594 1 view .LVU308
+ 1053 0004 0C46     		mov	r4, r1
+ 1054              		.loc 1 601 6 view .LVU309
+ 1055 0006 0968     		ldr	r1, [r1]
+ 1056              	.LVL115:
+ 594:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = (const ECFileEntry *)binary_ptr;
+ 1057              		.loc 1 594 1 view .LVU310
+ 1058 0008 0546     		mov	r5, r0
+ 1059              		.loc 1 601 6 view .LVU311
+ 1060 000a 9942     		cmp	r1, r3
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 36
+
+
+ 1061 000c 04D0     		beq	.L89
+ 602:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 603:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Epoch Controller binary is invalid\n");
+ 1062              		.loc 1 603 5 is_stmt 1 view .LVU312
+ 1063 000e 1748     		ldr	r0, .L104+4
+ 1064              	.LVL116:
+ 1065              	.L103:
+ 604:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 605:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 606:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 607:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 608:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr++;
+ 609:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 610:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry patch_table_offset = *(ptr++);
+ 611:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry debug_offset = *(ptr++);
+ 612:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry blob_offset = *(ptr++);
+ 613:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 614:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_offset == 0)
+ 615:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 616:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Patch table is not present\n");
+ 1066              		.loc 1 616 5 is_stmt 0 view .LVU313
+ 1067 0010 FFF7FEFF 		bl	puts
+ 1068              	.LVL117:
+ 617:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 618:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 1069              		.loc 1 618 5 is_stmt 1 view .LVU314
+ 1070              	.L90:
+ 605:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 1071              		.loc 1 605 12 is_stmt 0 view .LVU315
+ 1072 0014 0020     		movs	r0, #0
+ 1073              	.L92:
+ 619:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 620:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 621:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry end = blob_offset;
+ 622:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 623:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (debug_offset != 0)
+ 624:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     end = debug_offset;
+ 625:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 626:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry size = end - patch_table_offset;
+ 627:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 628:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if ((size % 4) != 0)
+ 629:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 630:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Size of the patch table of an Epoch Controller blob must be 4-byte align
+ 631:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 632:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 633:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 634:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 635:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   size /= 4;
+ 636:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 637:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table == NULL)
+ 638:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 639:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (patch_table_size != NULL)
+ 640:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *patch_table_size = size;
+ 641:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 642:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   else
+ 643:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 644:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if ((((intptr_t)patch_table) % 4) != 0)
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 37
+
+
+ 645:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 646:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF(
+ 647:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the patch table of the Epoch Controller blob must be 4-byte 
+ 648:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 649:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 650:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 651:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 652:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (patch_table_size == NULL)
+ 653:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 654:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF(
+ 655:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Size of memory allocated for the patch table of the Epoch Controller has not been
+ 656:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 657:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 658:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 659:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 660:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (*patch_table_size < size)
+ 661:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 662:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF("Error: Memory allocated for the patch table of the Epoch Controller blob is n
+ 663:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      "least space for %u "
+ 664:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      "32-bit words must be allocated)\n",
+ 665:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      size);
+ 666:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 667:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 668:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 669:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 670:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     memcpy(patch_table, binary_ptr + patch_table_offset, size * 4);
+ 671:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 672:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 673:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return true;
+ 674:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1074              		.loc 1 674 1 view .LVU316
+ 1075 0016 70BD     		pop	{r4, r5, r6, pc}
+ 1076              	.LVL118:
+ 1077              	.L89:
+ 608:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1078              		.loc 1 608 3 is_stmt 1 view .LVU317
+ 610:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry debug_offset = *(ptr++);
+ 1079              		.loc 1 610 3 view .LVU318
+ 612:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1080              		.loc 1 612 15 is_stmt 0 view .LVU319
+ 1081 0018 2169     		ldr	r1, [r4, #16]
+ 611:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry blob_offset = *(ptr++);
+ 1082              		.loc 1 611 15 view .LVU320
+ 1083 001a D4E90263 		ldrd	r6, r3, [r4, #8]
+ 1084              	.LVL119:
+ 612:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1085              		.loc 1 612 3 is_stmt 1 view .LVU321
+ 614:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1086              		.loc 1 614 3 view .LVU322
+ 614:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1087              		.loc 1 614 6 is_stmt 0 view .LVU323
+ 1088 001e 0EB9     		cbnz	r6, .L91
+ 616:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1089              		.loc 1 616 5 is_stmt 1 view .LVU324
+ 1090 0020 1348     		ldr	r0, .L104+8
+ 1091              	.LVL120:
+ 616:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 38
+
+
+ 1092              		.loc 1 616 5 is_stmt 0 view .LVU325
+ 1093 0022 F5E7     		b	.L103
+ 1094              	.LVL121:
+ 1095              	.L91:
+ 621:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1096              		.loc 1 621 3 is_stmt 1 view .LVU326
+ 623:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     end = debug_offset;
+ 1097              		.loc 1 623 3 view .LVU327
+ 621:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1098              		.loc 1 621 15 is_stmt 0 view .LVU328
+ 1099 0024 002B     		cmp	r3, #0
+ 1100 0026 08BF     		it	eq
+ 1101 0028 0B46     		moveq	r3, r1
+ 1102              	.LVL122:
+ 626:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1103              		.loc 1 626 3 is_stmt 1 view .LVU329
+ 626:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1104              		.loc 1 626 15 is_stmt 0 view .LVU330
+ 1105 002a 9B1B     		subs	r3, r3, r6
+ 1106              	.LVL123:
+ 628:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1107              		.loc 1 628 3 is_stmt 1 view .LVU331
+ 628:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1108              		.loc 1 628 6 is_stmt 0 view .LVU332
+ 1109 002c 9907     		lsls	r1, r3, #30
+ 1110              	.LVL124:
+ 628:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1111              		.loc 1 628 6 view .LVU333
+ 1112 002e 01D0     		beq	.L94
+ 630:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1113              		.loc 1 630 5 is_stmt 1 view .LVU334
+ 1114 0030 1048     		ldr	r0, .L104+12
+ 1115              	.LVL125:
+ 630:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1116              		.loc 1 630 5 is_stmt 0 view .LVU335
+ 1117 0032 EDE7     		b	.L103
+ 1118              	.LVL126:
+ 1119              	.L94:
+ 635:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1120              		.loc 1 635 3 is_stmt 1 view .LVU336
+ 635:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1121              		.loc 1 635 8 is_stmt 0 view .LVU337
+ 1122 0034 9908     		lsrs	r1, r3, #2
+ 1123              	.LVL127:
+ 637:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1124              		.loc 1 637 3 is_stmt 1 view .LVU338
+ 637:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1125              		.loc 1 637 6 is_stmt 0 view .LVU339
+ 1126 0036 18B9     		cbnz	r0, .L95
+ 639:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *patch_table_size = size;
+ 1127              		.loc 1 639 5 is_stmt 1 view .LVU340
+ 639:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       *patch_table_size = size;
+ 1128              		.loc 1 639 8 is_stmt 0 view .LVU341
+ 1129 0038 02B1     		cbz	r2, .L96
+ 640:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 1130              		.loc 1 640 7 is_stmt 1 view .LVU342
+ 640:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 39
+
+
+ 1131              		.loc 1 640 25 is_stmt 0 view .LVU343
+ 1132 003a 1160     		str	r1, [r2]
+ 1133              	.LVL128:
+ 1134              	.L96:
+ 673:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1135              		.loc 1 673 10 view .LVU344
+ 1136 003c 0120     		movs	r0, #1
+ 1137 003e EAE7     		b	.L92
+ 1138              	.LVL129:
+ 1139              	.L95:
+ 644:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1140              		.loc 1 644 5 is_stmt 1 view .LVU345
+ 644:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1141              		.loc 1 644 8 is_stmt 0 view .LVU346
+ 1142 0040 AD07     		lsls	r5, r5, #30
+ 1143 0042 01D0     		beq	.L97
+ 646:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the patch table of the Epoch Controller blob must be 4-byte 
+ 1144              		.loc 1 646 7 is_stmt 1 view .LVU347
+ 1145 0044 0C48     		ldr	r0, .L104+16
+ 1146              	.LVL130:
+ 646:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Memory allocated for the patch table of the Epoch Controller blob must be 4-byte 
+ 1147              		.loc 1 646 7 is_stmt 0 view .LVU348
+ 1148 0046 E3E7     		b	.L103
+ 1149              	.LVL131:
+ 1150              	.L97:
+ 652:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1151              		.loc 1 652 5 is_stmt 1 view .LVU349
+ 652:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1152              		.loc 1 652 8 is_stmt 0 view .LVU350
+ 1153 0048 0AB9     		cbnz	r2, .L98
+ 654:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Size of memory allocated for the patch table of the Epoch Controller has not been
+ 1154              		.loc 1 654 7 is_stmt 1 view .LVU351
+ 1155 004a 0C48     		ldr	r0, .L104+20
+ 1156              	.LVL132:
+ 654:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****           "Error: Size of memory allocated for the patch table of the Epoch Controller has not been
+ 1157              		.loc 1 654 7 is_stmt 0 view .LVU352
+ 1158 004c E0E7     		b	.L103
+ 1159              	.LVL133:
+ 1160              	.L98:
+ 660:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1161              		.loc 1 660 5 is_stmt 1 view .LVU353
+ 660:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1162              		.loc 1 660 8 is_stmt 0 view .LVU354
+ 1163 004e 1268     		ldr	r2, [r2]
+ 1164              	.LVL134:
+ 660:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1165              		.loc 1 660 8 view .LVU355
+ 1166 0050 8A42     		cmp	r2, r1
+ 1167 0052 03D2     		bcs	.L99
+ 662:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      "least space for %u "
+ 1168              		.loc 1 662 7 is_stmt 1 view .LVU356
+ 1169 0054 0A48     		ldr	r0, .L104+24
+ 1170              	.LVL135:
+ 662:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****                      "least space for %u "
+ 1171              		.loc 1 662 7 is_stmt 0 view .LVU357
+ 1172 0056 FFF7FEFF 		bl	printf
+ 1173              	.LVL136:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 40
+
+
+ 667:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1174              		.loc 1 667 7 is_stmt 1 view .LVU358
+ 667:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1175              		.loc 1 667 14 is_stmt 0 view .LVU359
+ 1176 005a DBE7     		b	.L90
+ 1177              	.LVL137:
+ 1178              	.L99:
+ 670:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 1179              		.loc 1 670 5 is_stmt 1 view .LVU360
+ 1180 005c 23F00302 		bic	r2, r3, #3
+ 1181 0060 A119     		adds	r1, r4, r6
+ 1182              	.LVL138:
+ 670:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 1183              		.loc 1 670 5 is_stmt 0 view .LVU361
+ 1184 0062 FFF7FEFF 		bl	memcpy
+ 1185              	.LVL139:
+ 670:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 1186              		.loc 1 670 5 view .LVU362
+ 1187 0066 E9E7     		b	.L96
+ 1188              	.L105:
+ 1189              		.align	2
+ 1190              	.L104:
+ 1191 0068 5000BFEC 		.word	-323026864
+ 1192 006c 00000000 		.word	.LC0
+ 1193 0070 00000000 		.word	.LC14
+ 1194 0074 22000000 		.word	.LC15
+ 1195 0078 74000000 		.word	.LC16
+ 1196 007c D4000000 		.word	.LC17
+ 1197 0080 37010000 		.word	.LC18
+ 1198              		.cfi_endproc
+ 1199              	.LFE11:
+ 1201              		.section	.text.ec_get_patch_table_ptr,"ax",%progbits
+ 1202              		.align	1
+ 1203              		.global	ec_get_patch_table_ptr
+ 1204              		.syntax unified
+ 1205              		.thumb
+ 1206              		.thumb_func
+ 1208              	ec_get_patch_table_ptr:
+ 1209              	.LVL140:
+ 1210              	.LFB12:
+ 675:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 676:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 677:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Get the pointer to the patch table contained in an Epoch Controller binary.
+ 678:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 679:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] binary_ptr is the pointer to the memory area containing the whole Epoch Controller bi
+ 680:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 681:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the pointer to the patch table contained in the Epoch Controller binary pointed by \e bi
+ 682:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * NULL if the Epoch Controller binary does not contain any patch table or on errors
+ 683:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 684:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 685:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** const ECFileEntry *ec_get_patch_table_ptr(const uint8_t *binary_ptr)
+ 686:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 1211              		.loc 1 686 1 is_stmt 1 view -0
+ 1212              		.cfi_startproc
+ 1213              		@ args = 0, pretend = 0, frame = 0
+ 1214              		@ frame_needed = 0, uses_anonymous_args = 0
+ 687:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = binary_ptr;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 41
+
+
+ 1215              		.loc 1 687 3 view .LVU364
+ 688:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 689:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the binary header
+ 690:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 691:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry magic = 0;
+ 1216              		.loc 1 691 3 view .LVU365
+ 692:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry patch_offset = 0;
+ 1217              		.loc 1 692 3 view .LVU366
+ 693:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 694:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   magic = *((ECFileEntry *)ptr);
+ 1218              		.loc 1 694 3 view .LVU367
+ 695:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 696:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr += sizeof(ECFileEntry);
+ 1219              		.loc 1 696 3 view .LVU368
+ 697:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 698:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (magic != ECASM_BINARY_MAGIC)
+ 1220              		.loc 1 698 3 view .LVU369
+ 686:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const uint8_t *ptr = binary_ptr;
+ 1221              		.loc 1 686 1 is_stmt 0 view .LVU370
+ 1222 0000 08B5     		push	{r3, lr}
+ 1223              		.cfi_def_cfa_offset 8
+ 1224              		.cfi_offset 3, -8
+ 1225              		.cfi_offset 14, -4
+ 1226              		.loc 1 698 6 view .LVU371
+ 1227 0002 0268     		ldr	r2, [r0]
+ 1228 0004 064B     		ldr	r3, .L111
+ 1229 0006 9A42     		cmp	r2, r3
+ 1230 0008 04D0     		beq	.L107
+ 699:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 700:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Epoch Controller binary is invalid\n");
+ 1231              		.loc 1 700 5 is_stmt 1 view .LVU372
+ 1232 000a 0648     		ldr	r0, .L111+4
+ 1233              	.LVL141:
+ 1234              		.loc 1 700 5 is_stmt 0 view .LVU373
+ 1235 000c FFF7FEFF 		bl	puts
+ 1236              	.LVL142:
+ 701:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 702:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return NULL;
+ 1237              		.loc 1 702 5 is_stmt 1 view .LVU374
+ 1238              	.L108:
+ 1239              		.loc 1 702 12 is_stmt 0 view .LVU375
+ 1240 0010 0020     		movs	r0, #0
+ 1241              	.L106:
+ 703:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 704:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 705:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ptr += sizeof(ECFileEntry);
+ 706:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 707:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   patch_offset = *((ECFileEntry *)ptr);
+ 708:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 709:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return (patch_offset == 0) ? NULL : (const ECFileEntry *)(binary_ptr + patch_offset);
+ 710:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1242              		.loc 1 710 1 view .LVU376
+ 1243 0012 08BD     		pop	{r3, pc}
+ 1244              	.LVL143:
+ 1245              	.L107:
+ 705:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1246              		.loc 1 705 3 is_stmt 1 view .LVU377
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 42
+
+
+ 707:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1247              		.loc 1 707 3 view .LVU378
+ 707:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1248              		.loc 1 707 16 is_stmt 0 view .LVU379
+ 1249 0014 8368     		ldr	r3, [r0, #8]
+ 1250              	.LVL144:
+ 709:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1251              		.loc 1 709 3 is_stmt 1 view .LVU380
+ 709:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1252              		.loc 1 709 37 is_stmt 0 view .LVU381
+ 1253 0016 002B     		cmp	r3, #0
+ 1254 0018 FAD0     		beq	.L108
+ 709:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1255              		.loc 1 709 37 discriminator 1 view .LVU382
+ 1256 001a 1844     		add	r0, r0, r3
+ 1257              	.LVL145:
+ 709:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1258              		.loc 1 709 37 discriminator 1 view .LVU383
+ 1259 001c F9E7     		b	.L106
+ 1260              	.L112:
+ 1261 001e 00BF     		.align	2
+ 1262              	.L111:
+ 1263 0020 5000BFEC 		.word	-323026864
+ 1264 0024 00000000 		.word	.LC0
+ 1265              		.cfi_endproc
+ 1266              	.LFE12:
+ 1268              		.section	.text.ec_get_num_patches,"ax",%progbits
+ 1269              		.align	1
+ 1270              		.global	ec_get_num_patches
+ 1271              		.syntax unified
+ 1272              		.thumb
+ 1273              		.thumb_func
+ 1275              	ec_get_num_patches:
+ 1276              	.LFB20:
+ 1277              		.cfi_startproc
+ 711:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 712:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 713:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Return the number of different patches contained in an Epoch Controller binary.
+ 714:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 715:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] patch_table_ptr is the pointer to the patch table (contained in an Epoch Controller b
+ 716:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 717:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 718:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the number of different patches contained in the patch table contained in the memory are
+ 719:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * at \e patch_table_ptr
+ 720:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 721:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 722:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** unsigned int ec_get_num_patches(const ECFileEntry *patch_table_ptr)
+ 1278              		.loc 1 722 14 is_stmt 1 view -0
+ 1279              		@ args = 0, pretend = 0, frame = 0
+ 1280              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1281              		@ link register save eliminated.
+ 1282 0000 00B1     		cbz	r0, .L113
+ 1283 0002 0068     		ldr	r0, [r0]
+ 1284              	.L113:
+ 1285 0004 7047     		bx	lr
+ 1286              		.cfi_endproc
+ 1287              	.LFE20:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 43
+
+
+ 1289              		.section	.text.ec_get_patch_id,"ax",%progbits
+ 1290              		.align	1
+ 1291              		.global	ec_get_patch_id
+ 1292              		.syntax unified
+ 1293              		.thumb
+ 1294              		.thumb_func
+ 1296              	ec_get_patch_id:
+ 1297              	.LVL146:
+ 1298              	.LFB14:
+ 723:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 724:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry size = 0;
+ 725:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 726:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the patch table, if any
+ 727:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr != NULL)
+ 728:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     size = *patch_table_ptr;
+ 729:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 730:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return size;
+ 731:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 732:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 733:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 734:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Return the identifier of a patch contained in an Epoch Controller binary.
+ 735:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 736:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] patch_table_ptr is the pointer to the patch table (contained in an Epoch Controller b
+ 737:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 738:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] idx      is the index of the patch whose identifier must be retrieved
+ 739:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 740:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the identifier of patch having index \e idx among the patches contained in the patch tab
+ 741:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * contained in the memory area starting at \e patch_table_ptr, or \e NULL if that patch does not e
+ 742:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 743:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 744:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** const char *ec_get_patch_id(const ECFileEntry *patch_table_ptr, unsigned int idx)
+ 745:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 1299              		.loc 1 745 1 view -0
+ 1300              		.cfi_startproc
+ 1301              		@ args = 0, pretend = 0, frame = 0
+ 1302              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1303              		@ link register save eliminated.
+ 746:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the patch table, if any
+ 747:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr != NULL)
+ 1304              		.loc 1 747 3 view .LVU386
+ 1305              		.loc 1 747 6 is_stmt 0 view .LVU387
+ 1306 0000 48B1     		cbz	r0, .L117
+ 1307              	.LBB22:
+ 748:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 749:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     const ECFileEntry *ptr = patch_table_ptr;
+ 1308              		.loc 1 749 5 is_stmt 1 view .LVU388
+ 1309              	.LVL147:
+ 750:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 751:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry size = *ptr;
+ 1310              		.loc 1 751 5 view .LVU389
+ 752:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 753:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (idx < size)
+ 1311              		.loc 1 753 5 view .LVU390
+ 1312              		.loc 1 753 8 is_stmt 0 view .LVU391
+ 1313 0002 0368     		ldr	r3, [r0]
+ 1314 0004 8B42     		cmp	r3, r1
+ 1315 0006 05D9     		bls	.L118
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 44
+
+
+ 1316              	.LBB23:
+ 754:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 755:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ptr = patch_table_ptr + 5 * idx + 1;
+ 1317              		.loc 1 755 7 is_stmt 1 view .LVU392
+ 1318              	.LVL148:
+ 756:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 757:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry offset = *ptr;
+ 1319              		.loc 1 757 7 view .LVU393
+ 758:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 759:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return (const char *)((const uint8_t *)patch_table_ptr + offset);
+ 1320              		.loc 1 759 7 view .LVU394
+ 757:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1321              		.loc 1 757 19 is_stmt 0 view .LVU395
+ 1322 0008 1423     		movs	r3, #20
+ 1323 000a 03FB0101 		mla	r1, r3, r1, r0
+ 1324              	.LVL149:
+ 1325              		.loc 1 759 14 view .LVU396
+ 1326 000e 4B68     		ldr	r3, [r1, #4]
+ 1327 0010 1844     		add	r0, r0, r3
+ 1328              	.LVL150:
+ 1329              		.loc 1 759 14 view .LVU397
+ 1330 0012 7047     		bx	lr
+ 1331              	.LVL151:
+ 1332              	.L118:
+ 1333              		.loc 1 759 14 view .LVU398
+ 1334              	.LBE23:
+ 1335              	.LBE22:
+ 760:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 761:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 762:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 763:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return NULL;
+ 1336              		.loc 1 763 10 view .LVU399
+ 1337 0014 0020     		movs	r0, #0
+ 1338              	.LVL152:
+ 1339              	.L117:
+ 764:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1340              		.loc 1 764 1 view .LVU400
+ 1341 0016 7047     		bx	lr
+ 1342              		.cfi_endproc
+ 1343              	.LFE14:
+ 1345              		.section	.text.ec_get_patch_shr,"ax",%progbits
+ 1346              		.align	1
+ 1347              		.global	ec_get_patch_shr
+ 1348              		.syntax unified
+ 1349              		.thumb
+ 1350              		.thumb_func
+ 1352              	ec_get_patch_shr:
+ 1353              	.LVL153:
+ 1354              	.LFB15:
+ 765:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 766:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 767:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Get the number of bits for which the value to apply to the patch contained in an Epoch Controlle
+ 768:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * shifted right or left.
+ 769:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 770:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] patch_table_ptr is the pointer to the patch table (contained in an Epoch Controller b
+ 771:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 772:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] idx      is the index of the patch whose least significant bit must be retrieved
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 45
+
+
+ 773:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 774:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the number of bits for which the value to apply to the patch having index \e idx among t
+ 775:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * in the patch table contained in the memory area starting at \e patch_table_ptr must be shifted r
+ 776:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * value greater than 63 if that patch does not exist
+ 777:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 778:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 779:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** int32_t ec_get_patch_shr(const ECFileEntry *patch_table_ptr, unsigned int idx)
+ 780:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 1355              		.loc 1 780 1 is_stmt 1 view -0
+ 1356              		.cfi_startproc
+ 1357              		@ args = 0, pretend = 0, frame = 0
+ 1358              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1359              		@ link register save eliminated.
+ 781:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the patch table, if any
+ 782:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr != NULL)
+ 1360              		.loc 1 782 3 view .LVU402
+ 1361              		.loc 1 782 6 is_stmt 0 view .LVU403
+ 1362 0000 40B1     		cbz	r0, .L122
+ 1363              	.LBB24:
+ 783:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 784:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     const ECFileEntry *ptr = patch_table_ptr;
+ 1364              		.loc 1 784 5 is_stmt 1 view .LVU404
+ 1365              	.LVL154:
+ 785:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 786:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry size = *ptr;
+ 1366              		.loc 1 786 5 view .LVU405
+ 787:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 788:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (idx < size)
+ 1367              		.loc 1 788 5 view .LVU406
+ 1368              		.loc 1 788 8 is_stmt 0 view .LVU407
+ 1369 0002 0268     		ldr	r2, [r0]
+ 1370 0004 8A42     		cmp	r2, r1
+ 1371 0006 04D9     		bls	.L125
+ 789:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 790:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ptr = patch_table_ptr + 5 * idx + 2;
+ 1372              		.loc 1 790 7 is_stmt 1 view .LVU408
+ 1373              	.LVL155:
+ 791:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 792:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return (int32_t)*ptr;
+ 1374              		.loc 1 792 7 view .LVU409
+ 1375              		.loc 1 792 23 is_stmt 0 view .LVU410
+ 1376 0008 1422     		movs	r2, #20
+ 1377 000a 02FB0103 		mla	r3, r2, r1, r0
+ 1378              		.loc 1 792 14 view .LVU411
+ 1379 000e 9868     		ldr	r0, [r3, #8]
+ 1380              	.LVL156:
+ 1381              		.loc 1 792 14 view .LVU412
+ 1382 0010 7047     		bx	lr
+ 1383              	.LVL157:
+ 1384              	.L125:
+ 1385              		.loc 1 792 14 view .LVU413
+ 1386              	.LBE24:
+ 793:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 794:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 795:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 796:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return 0;
+ 1387              		.loc 1 796 10 view .LVU414
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 46
+
+
+ 1388 0012 0020     		movs	r0, #0
+ 1389              	.LVL158:
+ 1390              	.L122:
+ 797:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1391              		.loc 1 797 1 view .LVU415
+ 1392 0014 7047     		bx	lr
+ 1393              		.cfi_endproc
+ 1394              	.LFE15:
+ 1396              		.section	.text.ec_get_patch_mask,"ax",%progbits
+ 1397              		.align	1
+ 1398              		.global	ec_get_patch_mask
+ 1399              		.syntax unified
+ 1400              		.thumb
+ 1401              		.thumb_func
+ 1403              	ec_get_patch_mask:
+ 1404              	.LVL159:
+ 1405              	.LFB16:
+ 798:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 799:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 800:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Return the mask associated with a patch contained in an Epoch Controller binary.
+ 801:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 802:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] patch_table_ptr is the pointer to the patch table (contained in an Epoch Controller b
+ 803:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 804:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in] idx      is the index of the patch whose mask must be retrieved
+ 805:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 806:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \return the mask associated with patch having index \e idx among the patches contained in the pa
+ 807:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * contained in the memory area starting at \e patch_table_ptr, or 0 if that patch does not exist
+ 808:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 809:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 810:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** uint32_t ec_get_patch_mask(const ECFileEntry *patch_table_ptr, unsigned int idx)
+ 811:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 1406              		.loc 1 811 1 is_stmt 1 view -0
+ 1407              		.cfi_startproc
+ 1408              		@ args = 0, pretend = 0, frame = 0
+ 1409              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1410              		@ link register save eliminated.
+ 812:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   // read the patch table, if any
+ 813:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr != NULL)
+ 1411              		.loc 1 813 3 view .LVU417
+ 1412              		.loc 1 813 6 is_stmt 0 view .LVU418
+ 1413 0000 40B1     		cbz	r0, .L126
+ 1414              	.LBB25:
+ 814:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 815:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     const ECFileEntry *ptr = patch_table_ptr;
+ 1415              		.loc 1 815 5 is_stmt 1 view .LVU419
+ 1416              	.LVL160:
+ 816:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 817:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry size = *ptr;
+ 1417              		.loc 1 817 5 view .LVU420
+ 818:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 819:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (idx < size)
+ 1418              		.loc 1 819 5 view .LVU421
+ 1419              		.loc 1 819 8 is_stmt 0 view .LVU422
+ 1420 0002 0268     		ldr	r2, [r0]
+ 1421 0004 8A42     		cmp	r2, r1
+ 1422 0006 04D9     		bls	.L129
+ 820:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 47
+
+
+ 821:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ptr = patch_table_ptr + 5 * idx + 3;
+ 1423              		.loc 1 821 7 is_stmt 1 view .LVU423
+ 1424              	.LVL161:
+ 822:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 823:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return *ptr;
+ 1425              		.loc 1 823 7 view .LVU424
+ 1426              		.loc 1 823 14 is_stmt 0 view .LVU425
+ 1427 0008 1422     		movs	r2, #20
+ 1428 000a 02FB0103 		mla	r3, r2, r1, r0
+ 1429 000e D868     		ldr	r0, [r3, #12]
+ 1430              	.LVL162:
+ 1431              		.loc 1 823 14 view .LVU426
+ 1432 0010 7047     		bx	lr
+ 1433              	.LVL163:
+ 1434              	.L129:
+ 1435              		.loc 1 823 14 view .LVU427
+ 1436              	.LBE25:
+ 824:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 825:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 826:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 827:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return 0;
+ 1437              		.loc 1 827 10 view .LVU428
+ 1438 0012 0020     		movs	r0, #0
+ 1439              	.LVL164:
+ 1440              	.L126:
+ 828:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1441              		.loc 1 828 1 view .LVU429
+ 1442 0014 7047     		bx	lr
+ 1443              		.cfi_endproc
+ 1444              	.LFE16:
+ 1446              		.section	.rodata.ec_patch.str1.1,"aMS",%progbits,1
+ 1447              	.LC19:
+ 1448 0000 4572726F 		.ascii	"Error: Cannot patch because the pointer to the Epoc"
+ 1448      723A2043 
+ 1448      616E6E6F 
+ 1448      74207061 
+ 1448      74636820 
+ 1449 0033 6820436F 		.ascii	"h Controller patch table is invalid\000"
+ 1449      6E74726F 
+ 1449      6C6C6572 
+ 1449      20706174 
+ 1449      63682074 
+ 1450              		.section	.text.ec_patch,"ax",%progbits
+ 1451              		.align	1
+ 1452              		.global	ec_patch
+ 1453              		.syntax unified
+ 1454              		.thumb
+ 1455              		.thumb_func
+ 1457              	ec_patch:
+ 1458              	.LVL165:
+ 1459              	.LFB17:
+ 829:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 830:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 831:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Patch the value associated with a patch specified by using an index.
+ 832:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 833:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[out]    blob         is the pointer to the memory area containing the Epoch Controller
+ 834:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * blob (that will be patched)
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 48
+
+
+ 835:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     patch_table_ptr is the pointer to the patch table (contained in an Epoch Controll
+ 836:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 837:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     idx             is the index of the patch whose values must be
+ 838:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * patched
+ 839:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     value           is the 64-bit value that must be applied to the patch
+ 840:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 841:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e true  on success
+ 842:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e false otherwise
+ 843:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 844:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 845:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** bool ec_patch(ECInstr *blob, const ECFileEntry *patch_table_ptr, unsigned int idx, uint64_t value)
+ 846:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 1460              		.loc 1 846 1 is_stmt 1 view -0
+ 1461              		.cfi_startproc
+ 1462              		@ args = 8, pretend = 0, frame = 0
+ 1463              		@ frame_needed = 0, uses_anonymous_args = 0
+ 847:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr == NULL)
+ 1464              		.loc 1 847 3 view .LVU431
+ 846:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr == NULL)
+ 1465              		.loc 1 846 1 is_stmt 0 view .LVU432
+ 1466 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 1467              		.cfi_def_cfa_offset 32
+ 1468              		.cfi_offset 4, -32
+ 1469              		.cfi_offset 5, -28
+ 1470              		.cfi_offset 6, -24
+ 1471              		.cfi_offset 7, -20
+ 1472              		.cfi_offset 8, -16
+ 1473              		.cfi_offset 9, -12
+ 1474              		.cfi_offset 10, -8
+ 1475              		.cfi_offset 14, -4
+ 1476              		.loc 1 847 6 view .LVU433
+ 1477 0004 0C46     		mov	r4, r1
+ 846:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr == NULL)
+ 1478              		.loc 1 846 1 view .LVU434
+ 1479 0006 DDE9088E 		ldrd	r8, lr, [sp, #32]
+ 1480              		.loc 1 847 6 view .LVU435
+ 1481 000a 21B9     		cbnz	r1, .L131
+ 848:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 849:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Cannot patch because the pointer to the Epoch Controller patch table is 
+ 1482              		.loc 1 849 5 is_stmt 1 view .LVU436
+ 1483 000c 2148     		ldr	r0, .L141
+ 1484              	.LVL166:
+ 1485              		.loc 1 849 5 is_stmt 0 view .LVU437
+ 1486 000e FFF7FEFF 		bl	puts
+ 1487              	.LVL167:
+ 850:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 851:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 1488              		.loc 1 851 5 is_stmt 1 view .LVU438
+ 1489              	.L132:
+ 1490              		.loc 1 851 12 is_stmt 0 view .LVU439
+ 1491 0012 0020     		movs	r0, #0
+ 1492 0014 03E0     		b	.L134
+ 1493              	.LVL168:
+ 1494              	.L131:
+ 852:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 853:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 854:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = patch_table_ptr;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 49
+
+
+ 1495              		.loc 1 854 3 is_stmt 1 view .LVU440
+ 855:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 856:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry size = *ptr;
+ 1496              		.loc 1 856 3 view .LVU441
+ 857:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 858:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (idx < size)
+ 1497              		.loc 1 858 3 view .LVU442
+ 1498              		.loc 1 858 6 is_stmt 0 view .LVU443
+ 1499 0016 0B68     		ldr	r3, [r1]
+ 1500 0018 9342     		cmp	r3, r2
+ 1501 001a 02D8     		bhi	.L133
+ 1502              	.LVL169:
+ 1503              	.L140:
+ 859:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 860:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ptr = patch_table_ptr + 5 * idx + 2;
+ 861:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 862:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     int32_t shr = *ptr++;
+ 863:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     uint32_t mask = *ptr++;
+ 864:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry num = *ptr++;
+ 865:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 866:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry offset = *ptr;
+ 867:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 868:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if ((offset % sizeof(ECFileEntry)) != 0)
+ 869:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 870:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       LL_ATON_PRINTF("Error: Offset %lu in Epoch Controller binary is invalid\n", (unsigned long)of
+ 871:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 872:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       return false;
+ 873:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 874:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 875:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (shr >= 0)
+ 876:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       value >>= shr;
+ 877:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     else
+ 878:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 879:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       mask <<= (-shr);
+ 880:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       value <<= (-shr);
+ 881:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 882:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 883:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     value &= mask;
+ 884:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 885:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ptr = (const ECFileEntry *)((const uint8_t *)patch_table_ptr + offset);
+ 886:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 887:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     for (unsigned int i = 0; i < num; i++)
+ 888:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 889:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       // offset is from the real beginning of the EC blob, that is, from the first real instruction
+ 890:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       // following the magic number of the EC blob and its size)
+ 891:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry offset = *ptr++;
+ 892:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] &= ~mask;
+ 894:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ 895:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 896:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 897:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 898:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return true;
+ 1504              		.loc 1 898 10 view .LVU444
+ 1505 001c 0120     		movs	r0, #1
+ 1506              	.LVL170:
+ 1507              	.L134:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 50
+
+
+ 899:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1508              		.loc 1 899 1 view .LVU445
+ 1509 001e BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1510              	.LVL171:
+ 1511              	.L133:
+ 1512              	.LBB26:
+ 860:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1513              		.loc 1 860 5 is_stmt 1 view .LVU446
+ 860:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1514              		.loc 1 860 37 is_stmt 0 view .LVU447
+ 1515 0022 1423     		movs	r3, #20
+ 1516              	.LVL172:
+ 860:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1517              		.loc 1 860 37 view .LVU448
+ 1518 0024 5A43     		muls	r2, r3, r2
+ 1519              	.LVL173:
+ 860:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1520              		.loc 1 860 37 view .LVU449
+ 1521 0026 0832     		adds	r2, r2, #8
+ 860:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1522              		.loc 1 860 9 view .LVU450
+ 1523 0028 8B18     		adds	r3, r1, r2
+ 1524              	.LVL174:
+ 862:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     uint32_t mask = *ptr++;
+ 1525              		.loc 1 862 5 is_stmt 1 view .LVU451
+ 862:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     uint32_t mask = *ptr++;
+ 1526              		.loc 1 862 13 is_stmt 0 view .LVU452
+ 1527 002a 8D58     		ldr	r5, [r1, r2]
+ 1528              	.LVL175:
+ 863:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry num = *ptr++;
+ 1529              		.loc 1 863 5 is_stmt 1 view .LVU453
+ 866:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1530              		.loc 1 866 17 is_stmt 0 view .LVU454
+ 1531 002c D968     		ldr	r1, [r3, #12]
+ 1532              	.LVL176:
+ 864:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1533              		.loc 1 864 17 view .LVU455
+ 1534 002e D3E90167 		ldrd	r6, r7, [r3, #4]
+ 1535              	.LVL177:
+ 866:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1536              		.loc 1 866 5 is_stmt 1 view .LVU456
+ 868:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1537              		.loc 1 868 5 view .LVU457
+ 868:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1538              		.loc 1 868 8 is_stmt 0 view .LVU458
+ 1539 0032 11F0030C 		ands	ip, r1, #3
+ 1540 0036 03D0     		beq	.L135
+ 870:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1541              		.loc 1 870 7 is_stmt 1 view .LVU459
+ 1542 0038 1748     		ldr	r0, .L141+4
+ 1543              	.LVL178:
+ 870:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1544              		.loc 1 870 7 is_stmt 0 view .LVU460
+ 1545 003a FFF7FEFF 		bl	printf
+ 1546              	.LVL179:
+ 872:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1547              		.loc 1 872 7 is_stmt 1 view .LVU461
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 51
+
+
+ 872:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1548              		.loc 1 872 14 is_stmt 0 view .LVU462
+ 1549 003e E8E7     		b	.L132
+ 1550              	.LVL180:
+ 1551              	.L135:
+ 875:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       value >>= shr;
+ 1552              		.loc 1 875 5 is_stmt 1 view .LVU463
+ 875:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       value >>= shr;
+ 1553              		.loc 1 875 8 is_stmt 0 view .LVU464
+ 1554 0040 002D     		cmp	r5, #0
+ 1555 0042 1FDB     		blt	.L136
+ 876:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     else
+ 1556              		.loc 1 876 7 is_stmt 1 view .LVU465
+ 876:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     else
+ 1557              		.loc 1 876 13 is_stmt 0 view .LVU466
+ 1558 0044 C5F1200A 		rsb	r10, r5, #32
+ 1559 0048 A5F12009 		sub	r9, r5, #32
+ 1560 004c 28FA05F2 		lsr	r2, r8, r5
+ 1561 0050 0EFA0AFA 		lsl	r10, lr, r10
+ 1562 0054 42EA0A02 		orr	r2, r2, r10
+ 1563 0058 2EFA09F9 		lsr	r9, lr, r9
+ 1564 005c 42EA0902 		orr	r2, r2, r9
+ 1565              	.LVL181:
+ 1566              	.L137:
+ 883:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1567              		.loc 1 883 5 is_stmt 1 view .LVU467
+ 883:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1568              		.loc 1 883 11 is_stmt 0 view .LVU468
+ 1569 0060 3240     		ands	r2, r2, r6
+ 885:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1570              		.loc 1 885 5 is_stmt 1 view .LVU469
+ 1571              	.LBB27:
+ 1572              	.LBB28:
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ 1573              		.loc 1 893 27 is_stmt 0 view .LVU470
+ 1574 0062 F643     		mvns	r6, r6
+ 1575              	.LVL182:
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ 1576              		.loc 1 893 27 view .LVU471
+ 1577              	.LBE28:
+ 1578              	.LBE27:
+ 885:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1579              		.loc 1 885 9 view .LVU472
+ 1580 0064 0C44     		add	r4, r4, r1
+ 1581              	.LVL183:
+ 887:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1582              		.loc 1 887 5 is_stmt 1 view .LVU473
+ 1583              	.LBB32:
+ 887:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1584              		.loc 1 887 10 view .LVU474
+ 1585              	.LBB29:
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ 1586              		.loc 1 893 27 is_stmt 0 view .LVU475
+ 1587 0066 7B1C     		adds	r3, r7, #1
+ 1588              	.LVL184:
+ 1589              	.L138:
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 52
+
+
+ 1590              		.loc 1 893 27 view .LVU476
+ 1591              	.LBE29:
+ 887:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1592              		.loc 1 887 32 is_stmt 1 discriminator 1 view .LVU477
+ 1593 0068 013B     		subs	r3, r3, #1
+ 1594 006a D7D0     		beq	.L140
+ 1595              	.LBB30:
+ 891:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1596              		.loc 1 891 7 view .LVU478
+ 1597              	.LVL185:
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ 1598              		.loc 1 893 7 view .LVU479
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ 1599              		.loc 1 893 11 is_stmt 0 view .LVU480
+ 1600 006c 54F82C50 		ldr	r5, [r4, ip, lsl #2]
+ 1601              	.LBE30:
+ 887:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1602              		.loc 1 887 40 discriminator 3 view .LVU481
+ 1603 0070 0CF1010C 		add	ip, ip, #1
+ 1604              	.LVL186:
+ 1605              	.LBB31:
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ 1606              		.loc 1 893 11 view .LVU482
+ 1607 0074 0235     		adds	r5, r5, #2
+ 894:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1608              		.loc 1 894 7 is_stmt 1 view .LVU483
+ 893:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       blob[offset + 2] |= value;
+ 1609              		.loc 1 893 24 is_stmt 0 view .LVU484
+ 1610 0076 50F82510 		ldr	r1, [r0, r5, lsl #2]
+ 1611 007a 3140     		ands	r1, r1, r6
+ 894:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1612              		.loc 1 894 24 view .LVU485
+ 1613 007c 1143     		orrs	r1, r1, r2
+ 1614 007e 40F82510 		str	r1, [r0, r5, lsl #2]
+ 1615              	.LVL187:
+ 894:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1616              		.loc 1 894 24 view .LVU486
+ 1617              	.LBE31:
+ 887:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1618              		.loc 1 887 40 is_stmt 1 discriminator 3 view .LVU487
+ 887:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1619              		.loc 1 887 40 is_stmt 0 discriminator 3 view .LVU488
+ 1620 0082 F1E7     		b	.L138
+ 1621              	.LVL188:
+ 1622              	.L136:
+ 887:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1623              		.loc 1 887 40 discriminator 3 view .LVU489
+ 1624              	.LBE32:
+ 879:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       value <<= (-shr);
+ 1625              		.loc 1 879 7 is_stmt 1 view .LVU490
+ 880:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1626              		.loc 1 880 13 is_stmt 0 view .LVU491
+ 1627 0084 4246     		mov	r2, r8
+ 1628 0086 7346     		mov	r3, lr
+ 1629              	.LVL189:
+ 879:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       value <<= (-shr);
+ 1630              		.loc 1 879 17 view .LVU492
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 53
+
+
+ 1631 0088 6D42     		rsbs	r5, r5, #0
+ 1632              	.LVL190:
+ 880:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1633              		.loc 1 880 13 view .LVU493
+ 1634 008a 52EA0D53 		lsll	r2, r3, r5
+ 879:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       value <<= (-shr);
+ 1635              		.loc 1 879 12 view .LVU494
+ 1636 008e AE40     		lsls	r6, r6, r5
+ 1637              	.LVL191:
+ 880:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1638              		.loc 1 880 7 is_stmt 1 view .LVU495
+ 880:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1639              		.loc 1 880 7 is_stmt 0 view .LVU496
+ 1640 0090 E6E7     		b	.L137
+ 1641              	.L142:
+ 1642 0092 00BF     		.align	2
+ 1643              	.L141:
+ 1644 0094 00000000 		.word	.LC19
+ 1645 0098 5F000000 		.word	.LC12
+ 1646              	.LBE26:
+ 1647              		.cfi_endproc
+ 1648              	.LFE17:
+ 1650              		.section	.rodata.ec_patch_by_id.str1.1,"aMS",%progbits,1
+ 1651              	.LC20:
+ 1652 0000 4572726F 		.ascii	"Error: Patch '%s' not found in Epoch Controller pat"
+ 1652      723A2050 
+ 1652      61746368 
+ 1652      20272573 
+ 1652      27206E6F 
+ 1653 0033 63682074 		.ascii	"ch table\012\000"
+ 1653      61626C65 
+ 1653      0A00
+ 1654              		.section	.text.ec_patch_by_id,"ax",%progbits
+ 1655              		.align	1
+ 1656              		.global	ec_patch_by_id
+ 1657              		.syntax unified
+ 1658              		.thumb
+ 1659              		.thumb_func
+ 1661              	ec_patch_by_id:
+ 1662              	.LVL192:
+ 1663              	.LFB18:
+ 900:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 901:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** /**
+ 902:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * Patch all the values associated with a patch specified by using an identifier.
+ 903:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 904:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[out]    blob         is the pointer to the memory area containing the Epoch Controller
+ 905:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * blob (that will be patched)
+ 906:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     patch_table_ptr is the pointer to the patch table (contained in an Epoch Controll
+ 907:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * copied from it)
+ 908:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     id       is the identifier of the patch whose values must be patched
+ 909:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \param[in]     value           is the 64-bit value that must be applied to the patch
+ 910:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  *
+ 911:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e true  on success
+ 912:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  * \retval \e false otherwise
+ 913:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****  */
+ 914:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 915:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** bool ec_patch_by_id(ECInstr *blob, const ECFileEntry *patch_table_ptr, const char *id, uint64_t val
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 54
+
+
+ 916:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** {
+ 1664              		.loc 1 916 1 is_stmt 1 view -0
+ 1665              		.cfi_startproc
+ 1666              		@ args = 8, pretend = 0, frame = 16
+ 1667              		@ frame_needed = 0, uses_anonymous_args = 0
+ 917:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr == NULL)
+ 1668              		.loc 1 917 3 view .LVU498
+ 916:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr == NULL)
+ 1669              		.loc 1 916 1 is_stmt 0 view .LVU499
+ 1670 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1671              		.cfi_def_cfa_offset 36
+ 1672              		.cfi_offset 4, -36
+ 1673              		.cfi_offset 5, -32
+ 1674              		.cfi_offset 6, -28
+ 1675              		.cfi_offset 7, -24
+ 1676              		.cfi_offset 8, -20
+ 1677              		.cfi_offset 9, -16
+ 1678              		.cfi_offset 10, -12
+ 1679              		.cfi_offset 11, -8
+ 1680              		.cfi_offset 14, -4
+ 1681 0004 85B0     		sub	sp, sp, #20
+ 1682              		.cfi_def_cfa_offset 56
+ 916:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr == NULL)
+ 1683              		.loc 1 916 1 view .LVU500
+ 1684 0006 0E9B     		ldr	r3, [sp, #56]
+ 1685 0008 8146     		mov	r9, r0
+ 1686              		.loc 1 917 6 view .LVU501
+ 1687 000a 0F46     		mov	r7, r1
+ 916:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (patch_table_ptr == NULL)
+ 1688              		.loc 1 916 1 view .LVU502
+ 1689 000c DDF83CA0 		ldr	r10, [sp, #60]
+ 1690 0010 0092     		str	r2, [sp]
+ 1691 0012 0193     		str	r3, [sp, #4]
+ 1692              		.loc 1 917 6 view .LVU503
+ 1693 0014 41B9     		cbnz	r1, .L144
+ 918:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 919:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     LL_ATON_PRINTF("Error: Cannot patch because the pointer to the Epoch Controller patch table is 
+ 1694              		.loc 1 919 5 is_stmt 1 view .LVU504
+ 1695 0016 2F48     		ldr	r0, .L156
+ 1696              	.LVL193:
+ 1697              		.loc 1 919 5 is_stmt 0 view .LVU505
+ 1698 0018 FFF7FEFF 		bl	puts
+ 1699              	.LVL194:
+ 920:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 921:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return false;
+ 1700              		.loc 1 921 5 is_stmt 1 view .LVU506
+ 1701              	.L145:
+ 1702              		.loc 1 921 12 is_stmt 0 view .LVU507
+ 1703 001c 4FF0000B 		mov	fp, #0
+ 1704              	.L149:
+ 922:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 923:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 924:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   const ECFileEntry *ptr = patch_table_ptr;
+ 925:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 926:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   ECFileEntry size = *ptr;
+ 927:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 928:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   bool found = false;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 55
+
+
+ 929:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 930:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   uint64_t orig_value = value;
+ 931:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 932:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   for (unsigned int n = 0; n < size; n++)
+ 933:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 934:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ptr = patch_table_ptr + 5 * n + 1;
+ 935:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 936:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     ECFileEntry offset = *ptr;
+ 937:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 938:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     const char *tmp_id = (const char *)((const uint8_t *)patch_table_ptr + offset);
+ 939:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 940:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     if (strcmp(id, tmp_id) == 0)
+ 941:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 942:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ptr++;
+ 943:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 944:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       int32_t shr = *ptr++;
+ 945:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       uint32_t mask = *ptr++;
+ 946:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry num = *ptr++;
+ 947:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 948:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry offset = *ptr;
+ 949:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 950:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       if ((offset % sizeof(ECFileEntry)) != 0)
+ 951:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 952:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         LL_ATON_PRINTF("Error: Offset %lu in Epoch Controller binary is invalid\n", (unsigned long)
+ 953:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 954:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         return false;
+ 955:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 956:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 957:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       if (shr >= 0)
+ 958:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         value = orig_value >> shr;
+ 959:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       else
+ 960:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 961:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         mask <<= (-shr);
+ 962:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         value = orig_value << (-shr);
+ 963:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 964:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 965:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       value &= mask;
+ 966:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 967:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ptr = (const ECFileEntry *)((const uint8_t *)patch_table_ptr + offset);
+ 968:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 969:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       for (unsigned int i = 0; i < num; i++)
+ 970:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 971:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         // offset is from the real beginning of the EC blob, that is, from the first real instructi
+ 972:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         // following the magic number of the EC blob and its size)
+ 973:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         ECFileEntry offset = *ptr++;
+ 974:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] &= ~mask;
+ 976:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 977:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 978:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 979:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       found = true;
+ 980:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 981:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   }
+ 982:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 983:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   if (found)
+ 984:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return true;
+ 985:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 56
+
+
+ 986:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   LL_ATON_PRINTF("Error: Patch '%s' not found in Epoch Controller patch table\n", id);
+ 987:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 988:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   return false;
+ 989:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** }
+ 1705              		.loc 1 989 1 view .LVU508
+ 1706 0020 5846     		mov	r0, fp
+ 1707 0022 05B0     		add	sp, sp, #20
+ 1708              		.cfi_remember_state
+ 1709              		.cfi_def_cfa_offset 36
+ 1710              	.LVL195:
+ 1711              		.loc 1 989 1 view .LVU509
+ 1712              		@ sp needed
+ 1713 0024 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1714              	.LVL196:
+ 1715              	.L144:
+ 1716              		.cfi_restore_state
+ 924:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1717              		.loc 1 924 3 is_stmt 1 view .LVU510
+ 926:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1718              		.loc 1 926 3 view .LVU511
+ 1719              	.LBB33:
+ 932:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1720              		.loc 1 932 21 is_stmt 0 view .LVU512
+ 1721 0028 4FF00008 		mov	r8, #0
+ 1722 002c 0E46     		mov	r6, r1
+ 1723              	.LBE33:
+ 928:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1724              		.loc 1 928 8 view .LVU513
+ 1725 002e C346     		mov	fp, r8
+ 926:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1726              		.loc 1 926 15 view .LVU514
+ 1727 0030 0B68     		ldr	r3, [r1]
+ 1728 0032 0293     		str	r3, [sp, #8]
+ 1729              	.LVL197:
+ 928:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1730              		.loc 1 928 3 is_stmt 1 view .LVU515
+ 930:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1731              		.loc 1 930 3 view .LVU516
+ 932:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1732              		.loc 1 932 3 view .LVU517
+ 1733              	.LBB45:
+ 932:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1734              		.loc 1 932 8 view .LVU518
+ 1735              	.L146:
+ 932:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1736              		.loc 1 932 30 discriminator 1 view .LVU519
+ 1737 0034 029B     		ldr	r3, [sp, #8]
+ 1738 0036 9845     		cmp	r8, r3
+ 1739 0038 05D1     		bne	.L154
+ 1740              	.LBE45:
+ 983:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return true;
+ 1741              		.loc 1 983 3 view .LVU520
+ 983:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     return true;
+ 1742              		.loc 1 983 6 is_stmt 0 view .LVU521
+ 1743 003a BBF1000F 		cmp	fp, #0
+ 1744 003e EFD1     		bne	.L149
+ 986:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 57
+
+
+ 1745              		.loc 1 986 3 is_stmt 1 view .LVU522
+ 1746 0040 0099     		ldr	r1, [sp]
+ 1747 0042 2548     		ldr	r0, .L156+4
+ 1748 0044 0EE0     		b	.L155
+ 1749              	.L154:
+ 1750              	.LBB46:
+ 1751              	.LBB34:
+ 934:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1752              		.loc 1 934 5 view .LVU523
+ 1753              	.LVL198:
+ 936:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1754              		.loc 1 936 5 view .LVU524
+ 938:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1755              		.loc 1 938 5 view .LVU525
+ 940:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1756              		.loc 1 940 5 view .LVU526
+ 938:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1757              		.loc 1 938 17 is_stmt 0 view .LVU527
+ 1758 0046 7168     		ldr	r1, [r6, #4]
+ 940:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1759              		.loc 1 940 9 view .LVU528
+ 1760 0048 0098     		ldr	r0, [sp]
+ 1761 004a 3944     		add	r1, r1, r7
+ 1762              	.LVL199:
+ 940:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1763              		.loc 1 940 9 view .LVU529
+ 1764 004c FFF7FEFF 		bl	strcmp
+ 1765              	.LVL200:
+ 940:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     {
+ 1766              		.loc 1 940 8 discriminator 1 view .LVU530
+ 1767 0050 30BB     		cbnz	r0, .L147
+ 1768              	.LBB35:
+ 942:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1769              		.loc 1 942 7 is_stmt 1 view .LVU531
+ 1770              	.LVL201:
+ 944:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       uint32_t mask = *ptr++;
+ 1771              		.loc 1 944 7 view .LVU532
+ 945:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       ECFileEntry num = *ptr++;
+ 1772              		.loc 1 945 16 is_stmt 0 view .LVU533
+ 1773 0052 D6E90232 		ldrd	r3, r2, [r6, #8]
+ 1774              	.LVL202:
+ 946:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1775              		.loc 1 946 7 is_stmt 1 view .LVU534
+ 946:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1776              		.loc 1 946 19 is_stmt 0 view .LVU535
+ 1777 0056 3169     		ldr	r1, [r6, #16]
+ 1778 0058 0391     		str	r1, [sp, #12]
+ 1779              	.LVL203:
+ 948:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1780              		.loc 1 948 7 is_stmt 1 view .LVU536
+ 948:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1781              		.loc 1 948 19 is_stmt 0 view .LVU537
+ 1782 005a 7169     		ldr	r1, [r6, #20]
+ 1783              	.LVL204:
+ 950:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 1784              		.loc 1 950 7 is_stmt 1 view .LVU538
+ 950:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 58
+
+
+ 1785              		.loc 1 950 10 is_stmt 0 view .LVU539
+ 1786 005c 11F0030C 		ands	ip, r1, #3
+ 1787 0060 03D0     		beq	.L148
+ 952:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1788              		.loc 1 952 9 is_stmt 1 view .LVU540
+ 1789 0062 1E48     		ldr	r0, .L156+8
+ 1790              	.LVL205:
+ 1791              	.L155:
+ 952:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1792              		.loc 1 952 9 is_stmt 0 view .LVU541
+ 1793 0064 FFF7FEFF 		bl	printf
+ 1794              	.LVL206:
+ 954:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 1795              		.loc 1 954 9 is_stmt 1 view .LVU542
+ 954:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 1796              		.loc 1 954 16 is_stmt 0 view .LVU543
+ 1797 0068 D8E7     		b	.L145
+ 1798              	.LVL207:
+ 1799              	.L148:
+ 957:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         value = orig_value >> shr;
+ 1800              		.loc 1 957 7 is_stmt 1 view .LVU544
+ 957:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         value = orig_value >> shr;
+ 1801              		.loc 1 957 10 is_stmt 0 view .LVU545
+ 1802 006a 002B     		cmp	r3, #0
+ 1803 006c 1CDB     		blt	.L150
+ 958:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       else
+ 1804              		.loc 1 958 9 is_stmt 1 view .LVU546
+ 958:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       else
+ 1805              		.loc 1 958 15 is_stmt 0 view .LVU547
+ 1806 006e 0198     		ldr	r0, [sp, #4]
+ 1807 0070 C3F1200B 		rsb	fp, r3, #32
+ 1808 0074 A3F1200E 		sub	lr, r3, #32
+ 1809 0078 20FA03F4 		lsr	r4, r0, r3
+ 1810 007c 0AFA0BFB 		lsl	fp, r10, fp
+ 1811 0080 44EA0B04 		orr	r4, r4, fp
+ 1812 0084 2AFA0EFE 		lsr	lr, r10, lr
+ 1813 0088 44EA0E04 		orr	r4, r4, lr
+ 1814              	.L151:
+ 965:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1815              		.loc 1 965 7 is_stmt 1 view .LVU548
+ 965:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1816              		.loc 1 965 13 is_stmt 0 view .LVU549
+ 1817 008c 02EA040E 		and	lr, r2, r4
+ 1818              	.LVL208:
+ 967:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1819              		.loc 1 967 7 is_stmt 1 view .LVU550
+ 1820              	.LBB36:
+ 1821              	.LBB37:
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 1822              		.loc 1 975 29 is_stmt 0 view .LVU551
+ 1823 0090 D243     		mvns	r2, r2
+ 1824              	.LVL209:
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 1825              		.loc 1 975 29 view .LVU552
+ 1826 0092 0398     		ldr	r0, [sp, #12]
+ 1827              	.LBE37:
+ 1828              	.LBE36:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 59
+
+
+ 967:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1829              		.loc 1 967 11 view .LVU553
+ 1830 0094 3944     		add	r1, r1, r7
+ 1831              	.LVL210:
+ 969:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 1832              		.loc 1 969 7 is_stmt 1 view .LVU554
+ 1833              	.LBB41:
+ 969:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 1834              		.loc 1 969 12 view .LVU555
+ 1835              	.LBB38:
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 1836              		.loc 1 975 29 is_stmt 0 view .LVU556
+ 1837 0096 0130     		adds	r0, r0, #1
+ 1838              	.LVL211:
+ 1839              	.L152:
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 1840              		.loc 1 975 29 view .LVU557
+ 1841              	.LBE38:
+ 969:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 1842              		.loc 1 969 34 is_stmt 1 discriminator 1 view .LVU558
+ 1843 0098 0138     		subs	r0, r0, #1
+ 1844 009a 0CD1     		bne	.L153
+ 1845              	.LBE41:
+ 979:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1846              		.loc 1 979 13 is_stmt 0 view .LVU559
+ 1847 009c 4FF0010B 		mov	fp, #1
+ 1848              	.LVL212:
+ 1849              	.L147:
+ 979:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****     }
+ 1850              		.loc 1 979 13 view .LVU560
+ 1851              	.LBE35:
+ 1852              	.LBE34:
+ 932:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1853              		.loc 1 932 39 is_stmt 1 discriminator 2 view .LVU561
+ 1854 00a0 08F10108 		add	r8, r8, #1
+ 1855              	.LVL213:
+ 932:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****   {
+ 1856              		.loc 1 932 39 is_stmt 0 discriminator 2 view .LVU562
+ 1857 00a4 1436     		adds	r6, r6, #20
+ 1858 00a6 C5E7     		b	.L146
+ 1859              	.LVL214:
+ 1860              	.L150:
+ 1861              	.LBB44:
+ 1862              	.LBB43:
+ 961:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         value = orig_value << (-shr);
+ 1863              		.loc 1 961 9 is_stmt 1 view .LVU563
+ 962:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 1864              		.loc 1 962 15 is_stmt 0 view .LVU564
+ 1865 00a8 5546     		mov	r5, r10
+ 1866 00aa 019C     		ldr	r4, [sp, #4]
+ 961:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         value = orig_value << (-shr);
+ 1867              		.loc 1 961 19 view .LVU565
+ 1868 00ac 5B42     		rsbs	r3, r3, #0
+ 962:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 1869              		.loc 1 962 15 view .LVU566
+ 1870 00ae 54EA0D35 		lsll	r4, r5, r3
+ 961:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         value = orig_value << (-shr);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 60
+
+
+ 1871              		.loc 1 961 14 view .LVU567
+ 1872 00b2 9A40     		lsls	r2, r2, r3
+ 1873              	.LVL215:
+ 962:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 1874              		.loc 1 962 9 is_stmt 1 view .LVU568
+ 1875 00b4 EAE7     		b	.L151
+ 1876              	.LVL216:
+ 1877              	.L153:
+ 1878              	.LBB42:
+ 1879              	.LBB39:
+ 973:Lib/AI_Runtime/Npu/ll_aton/ecloader.c **** 
+ 1880              		.loc 1 973 9 view .LVU569
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 1881              		.loc 1 975 9 view .LVU570
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 1882              		.loc 1 975 13 is_stmt 0 view .LVU571
+ 1883 00b6 51F82C30 		ldr	r3, [r1, ip, lsl #2]
+ 1884              	.LBE39:
+ 969:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 1885              		.loc 1 969 42 discriminator 3 view .LVU572
+ 1886 00ba 0CF1010C 		add	ip, ip, #1
+ 1887              	.LVL217:
+ 1888              	.LBB40:
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 1889              		.loc 1 975 13 view .LVU573
+ 1890 00be 03F1020B 		add	fp, r3, #2
+ 976:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 1891              		.loc 1 976 9 is_stmt 1 view .LVU574
+ 975:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****         blob[offset + 2] |= value;
+ 1892              		.loc 1 975 26 is_stmt 0 view .LVU575
+ 1893 00c2 59F82B30 		ldr	r3, [r9, fp, lsl #2]
+ 1894 00c6 1340     		ands	r3, r3, r2
+ 976:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 1895              		.loc 1 976 26 view .LVU576
+ 1896 00c8 43EA0E03 		orr	r3, r3, lr
+ 1897 00cc 49F82B30 		str	r3, [r9, fp, lsl #2]
+ 1898              	.LVL218:
+ 976:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       }
+ 1899              		.loc 1 976 26 view .LVU577
+ 1900              	.LBE40:
+ 969:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 1901              		.loc 1 969 42 is_stmt 1 discriminator 3 view .LVU578
+ 969:Lib/AI_Runtime/Npu/ll_aton/ecloader.c ****       {
+ 1902              		.loc 1 969 42 is_stmt 0 discriminator 3 view .LVU579
+ 1903 00d0 E2E7     		b	.L152
+ 1904              	.L157:
+ 1905 00d2 00BF     		.align	2
+ 1906              	.L156:
+ 1907 00d4 00000000 		.word	.LC19
+ 1908 00d8 00000000 		.word	.LC20
+ 1909 00dc 5F000000 		.word	.LC12
+ 1910              	.LBE42:
+ 1911              	.LBE43:
+ 1912              	.LBE44:
+ 1913              	.LBE46:
+ 1914              		.cfi_endproc
+ 1915              	.LFE18:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 61
+
+
+ 1917              		.text
+ 1918              	.Letext0:
+ 1919              		.file 2 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1920              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1921              		.file 4 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1922              		.file 5 "Lib/AI_Runtime/Npu/ll_aton/ec.h"
+ 1923              		.file 6 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1924              		.file 7 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1925              		.file 8 "<built-in>"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 62
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 ecloader.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:32     .text.ec_get_blob_ptr:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:38     .text.ec_get_blob_ptr:00000000 ec_get_blob_ptr
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:95     .text.ec_get_blob_ptr:00000020 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:117    .text.ec_copy_blob:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:123    .text.ec_copy_blob:00000000 ec_copy_blob
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:259    .text.ec_copy_blob:00000060 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:286    .text.ec_copy_reloc_table:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:292    .text.ec_copy_reloc_table:00000000 ec_copy_reloc_table
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:458    .text.ec_copy_reloc_table:00000070 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:469    .text.ec_get_reloc_table_ptr:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:475    .text.ec_get_reloc_table_ptr:00000000 ec_get_reloc_table_ptr
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:529    .text.ec_get_reloc_table_ptr:00000020 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:535    .text.ec_get_num_relocs:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:541    .text.ec_get_num_relocs:00000000 ec_get_num_relocs
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:564    .text.ec_get_reloc_id:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:570    .text.ec_get_reloc_id:00000000 ec_get_reloc_id
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:627    .text.ec_reloc:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:633    .text.ec_reloc:00000000 ec_reloc
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:783    .text.ec_reloc:00000060 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:795    .text.ec_reloc_by_id:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:801    .text.ec_reloc_by_id:00000000 ec_reloc_by_id
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1003   .text.ec_reloc_by_id:00000094 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1027   .text.ec_copy_patch_table:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1033   .text.ec_copy_patch_table:00000000 ec_copy_patch_table
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1191   .text.ec_copy_patch_table:00000068 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1202   .text.ec_get_patch_table_ptr:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1208   .text.ec_get_patch_table_ptr:00000000 ec_get_patch_table_ptr
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1263   .text.ec_get_patch_table_ptr:00000020 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1269   .text.ec_get_num_patches:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1275   .text.ec_get_num_patches:00000000 ec_get_num_patches
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1290   .text.ec_get_patch_id:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1296   .text.ec_get_patch_id:00000000 ec_get_patch_id
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1346   .text.ec_get_patch_shr:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1352   .text.ec_get_patch_shr:00000000 ec_get_patch_shr
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1397   .text.ec_get_patch_mask:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1403   .text.ec_get_patch_mask:00000000 ec_get_patch_mask
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1451   .text.ec_patch:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1457   .text.ec_patch:00000000 ec_patch
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1644   .text.ec_patch:00000094 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1655   .text.ec_patch_by_id:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1661   .text.ec_patch_by_id:00000000 ec_patch_by_id
+C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s:1907   .text.ec_patch_by_id:000000d4 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.newlib.h.27.a82728f74da661df333d09507bfef510
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.features.h.22.9dfb1293666eb4caf24cccb81c86a551
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._ansi.h.8.aeadd4934928258a76627d21910677e3
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.stddef.h.267.6dda48f8b0edf141523347999dd9ec79
+                           .group:00000000 wm4.inttypes.h.28.684aa7736e7ecc9a6ffc44acc61c7a90
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccllEG0g.s 			page 63
+
+
+                           .group:00000000 wm4.stddef.h.39.9af043fe601e315768567300ad642a8e
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.string.h.15.dab3980bf35408a4c507182805e2de3a
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+                           .group:00000000 wm4.string.h.177.59a005921fa78485abc80a0267de5752
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.ec.h.20.3e59fa6c817eacfbe34da4213497d30e
+                           .group:00000000 wm4.assert.h.11.db24e541f16414db224bf986d21017e2
+                           .group:00000000 wm4.errno.h.2.ba016d646105af6cad23be83630b6a3f
+                           .group:00000000 wm4.errno.h.9.ae5ea2b0ff9ea6e39e585807e35200d3
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4.stdio.h.47.dc31ec4674d7bcb103c9f08809549f45
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.ll_aton_util.h.34.9098eaa90d3d72b819973556e3e5fe44
+
+UNDEFINED SYMBOLS
+puts
+printf
+memcpy
+strcmp

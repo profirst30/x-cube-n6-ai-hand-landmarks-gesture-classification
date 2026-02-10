@@ -1,0 +1,3291 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"scrl_lcd.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Lib/screenl/Src/scrl_lcd.c"
+  25              		.section	.text.LTDC_FillRectRgb888,"ax",%progbits
+  26              		.align	1
+  27              		.syntax unified
+  28              		.thumb
+  29              		.thumb_func
+  31              	LTDC_FillRectRgb888:
+  32              	.LVL0:
+  33              	.LFB870:
+   1:Lib/screenl/Src/scrl_lcd.c **** /**
+   2:Lib/screenl/Src/scrl_lcd.c ****  ******************************************************************************
+   3:Lib/screenl/Src/scrl_lcd.c ****  * @file    scrl_lcd.c
+   4:Lib/screenl/Src/scrl_lcd.c ****  * @author  MDG Application Team
+   5:Lib/screenl/Src/scrl_lcd.c ****  ******************************************************************************
+   6:Lib/screenl/Src/scrl_lcd.c ****  * @attention
+   7:Lib/screenl/Src/scrl_lcd.c ****  *
+   8:Lib/screenl/Src/scrl_lcd.c ****  * Copyright (c) 2024 STMicroelectronics.
+   9:Lib/screenl/Src/scrl_lcd.c ****  * All rights reserved.
+  10:Lib/screenl/Src/scrl_lcd.c ****  *
+  11:Lib/screenl/Src/scrl_lcd.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  12:Lib/screenl/Src/scrl_lcd.c ****  * in the root directory of this software component.
+  13:Lib/screenl/Src/scrl_lcd.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  14:Lib/screenl/Src/scrl_lcd.c ****  *
+  15:Lib/screenl/Src/scrl_lcd.c ****  ******************************************************************************
+  16:Lib/screenl/Src/scrl_lcd.c ****  */
+  17:Lib/screenl/Src/scrl_lcd.c **** 
+  18:Lib/screenl/Src/scrl_lcd.c **** #include "scrl.h"
+  19:Lib/screenl/Src/scrl_lcd.c **** 
+  20:Lib/screenl/Src/scrl_lcd.c **** #include <assert.h>
+  21:Lib/screenl/Src/scrl_lcd.c **** 
+  22:Lib/screenl/Src/scrl_lcd.c **** #include "stm32n6570_discovery_lcd.h"
+  23:Lib/screenl/Src/scrl_lcd.c **** #include "stm32_lcd.h"
+  24:Lib/screenl/Src/scrl_lcd.c **** 
+  25:Lib/screenl/Src/scrl_lcd.c **** static SCRL_Layer current_layer;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 2
+
+
+  26:Lib/screenl/Src/scrl_lcd.c **** static int is_layer_rgb888[SCRL_LAYER_NB];
+  27:Lib/screenl/Src/scrl_lcd.c **** static int is_layer_argb8888[SCRL_LAYER_NB];
+  28:Lib/screenl/Src/scrl_lcd.c **** 
+  29:Lib/screenl/Src/scrl_lcd.c **** static HAL_StatusTypeDef SCRL_ConfigLayer_Layer_default(LTDC_HandleTypeDef *hltdc, uint32_t LayerIn
+  30:Lib/screenl/Src/scrl_lcd.c **** {
+  31:Lib/screenl/Src/scrl_lcd.c ****   LTDC_LayerCfgTypeDef pLayerCfg ={0};
+  32:Lib/screenl/Src/scrl_lcd.c **** 
+  33:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.WindowX0 = Config->X0;
+  34:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.WindowX1 = Config->X1;
+  35:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.WindowY0 = Config->Y0;
+  36:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.WindowY1 = Config->Y1;
+  37:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.PixelFormat = Config->PixelFormat;
+  38:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Alpha = LTDC_LxCACR_CONSTA;
+  39:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Alpha0 = 0;
+  40:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
+  41:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
+  42:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FBStartAdress = Config->Address;
+  43:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.ImageWidth = (Config->X1 - Config->X0);
+  44:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.ImageHeight = (Config->Y1 - Config->Y0);
+  45:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Backcolor.Blue = 0;
+  46:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Backcolor.Green = 0;
+  47:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Backcolor.Red = 0;
+  48:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_ConfigLayer(hltdc, &pLayerCfg, LayerIndex);
+  49:Lib/screenl/Src/scrl_lcd.c **** }
+  50:Lib/screenl/Src/scrl_lcd.c **** 
+  51:Lib/screenl/Src/scrl_lcd.c **** static HAL_StatusTypeDef SCRL_ConfigLayer_Layer_rgb888(LTDC_HandleTypeDef *hltdc, uint32_t LayerInd
+  52:Lib/screenl/Src/scrl_lcd.c **** {
+  53:Lib/screenl/Src/scrl_lcd.c ****   LTDC_LayerFlexARGBTypeDef pLayerCfg ={0};
+  54:Lib/screenl/Src/scrl_lcd.c **** 
+  55:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowX0 = Config->X0;
+  56:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowX1 = Config->X1;
+  57:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY0 = Config->Y0;
+  58:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY1 = Config->Y1;
+  59:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha = LTDC_LxCACR_CONSTA;
+  60:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha0 = 0;
+  61:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
+  62:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
+  63:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageWidth = (Config->X1 - Config->X0);
+  64:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageHeight = (Config->Y1 - Config->Y0);
+  65:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Blue = 0;
+  66:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Green = 0;
+  67:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Red = 0;
+  68:Lib/screenl/Src/scrl_lcd.c **** 
+  69:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.PixelSize = 3;/*LTDC_ARGB_PIXEL_SIZE_3_BYTES;*/
+  70:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+  71:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.RedPos = 0;
+  72:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.GreenPos = 8;
+  73:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.BluePos = 16;
+  74:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaWidth = 0;
+  75:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.RedWidth = 8;
+  76:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.GreenWidth = 8;
+  77:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.BlueWidth = 8;
+  78:Lib/screenl/Src/scrl_lcd.c **** 
+  79:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.ARGBAddress = Config->Address;
+  80:Lib/screenl/Src/scrl_lcd.c **** 
+  81:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_ConfigLayerFlexARGB(hltdc, &pLayerCfg, LayerIndex);
+  82:Lib/screenl/Src/scrl_lcd.c **** }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 3
+
+
+  83:Lib/screenl/Src/scrl_lcd.c **** 
+  84:Lib/screenl/Src/scrl_lcd.c **** static HAL_StatusTypeDef SCRL_ConfigLayer_Layer_argb888(LTDC_HandleTypeDef *hltdc, uint32_t LayerIn
+  85:Lib/screenl/Src/scrl_lcd.c **** {
+  86:Lib/screenl/Src/scrl_lcd.c ****   LTDC_LayerFlexARGBTypeDef pLayerCfg ={0};
+  87:Lib/screenl/Src/scrl_lcd.c **** 
+  88:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowX0 = Config->X0;
+  89:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowX1 = Config->X1;
+  90:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY0 = Config->Y0;
+  91:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY1 = Config->Y1;
+  92:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha = LTDC_LxCACR_CONSTA;
+  93:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha0 = 0;
+  94:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
+  95:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
+  96:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageWidth = (Config->X1 - Config->X0);
+  97:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageHeight = (Config->Y1 - Config->Y0);
+  98:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Blue = 0;
+  99:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Green = 0;
+ 100:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Red = 0;
+ 101:Lib/screenl/Src/scrl_lcd.c **** 
+ 102:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.PixelSize = 4;/*LTDC_ARGB_PIXEL_SIZE_4_BYTES;*/
+ 103:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+ 104:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.RedPos = 0;
+ 105:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.GreenPos = 8;
+ 106:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.BluePos = 16;
+ 107:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaWidth = 0;
+ 108:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.RedWidth = 8;
+ 109:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.GreenWidth = 8;
+ 110:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.BlueWidth = 8;
+ 111:Lib/screenl/Src/scrl_lcd.c **** 
+ 112:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.ARGBAddress = Config->Address;
+ 113:Lib/screenl/Src/scrl_lcd.c **** 
+ 114:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_ConfigLayerFlexARGB(hltdc, &pLayerCfg, LayerIndex);
+ 115:Lib/screenl/Src/scrl_lcd.c **** }
+ 116:Lib/screenl/Src/scrl_lcd.c **** 
+ 117:Lib/screenl/Src/scrl_lcd.c **** static uint32_t pixel_format_from_scrl_format(SCRL_Format fmt)
+ 118:Lib/screenl/Src/scrl_lcd.c **** {
+ 119:Lib/screenl/Src/scrl_lcd.c ****   uint32_t res = LCD_PIXEL_FORMAT_RGB565;
+ 120:Lib/screenl/Src/scrl_lcd.c **** 
+ 121:Lib/screenl/Src/scrl_lcd.c ****   switch (fmt) {
+ 122:Lib/screenl/Src/scrl_lcd.c ****   case SCRL_RGB565:
+ 123:Lib/screenl/Src/scrl_lcd.c ****     res = LCD_PIXEL_FORMAT_RGB565;
+ 124:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 125:Lib/screenl/Src/scrl_lcd.c ****   case SCRL_ARGB4444:
+ 126:Lib/screenl/Src/scrl_lcd.c ****     res = LCD_PIXEL_FORMAT_ARGB4444;
+ 127:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 128:Lib/screenl/Src/scrl_lcd.c ****   case SCRL_BGR888:
+ 129:Lib/screenl/Src/scrl_lcd.c ****     res = LCD_PIXEL_FORMAT_RGB888;
+ 130:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 131:Lib/screenl/Src/scrl_lcd.c ****   case SCRL_RGB888:
+ 132:Lib/screenl/Src/scrl_lcd.c ****     res = LCD_PIXEL_FORMAT_RGB888;
+ 133:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 134:Lib/screenl/Src/scrl_lcd.c ****   case SCRL_ARGB8888:
+ 135:Lib/screenl/Src/scrl_lcd.c ****     res = LCD_PIXEL_FORMAT_ARGB8888;
+ 136:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 137:Lib/screenl/Src/scrl_lcd.c ****   default:
+ 138:Lib/screenl/Src/scrl_lcd.c ****     assert(0);
+ 139:Lib/screenl/Src/scrl_lcd.c ****   }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 4
+
+
+ 140:Lib/screenl/Src/scrl_lcd.c **** 
+ 141:Lib/screenl/Src/scrl_lcd.c ****   return res;
+ 142:Lib/screenl/Src/scrl_lcd.c **** }
+ 143:Lib/screenl/Src/scrl_lcd.c **** 
+ 144:Lib/screenl/Src/scrl_lcd.c **** static void fill_lcd_layer_config_from_scrl_layer_config(SCRL_LayerConfig *l, BSP_LCD_LayerConfig_t
+ 145:Lib/screenl/Src/scrl_lcd.c **** {
+ 146:Lib/screenl/Src/scrl_lcd.c ****   layer_config->X0 = l->origin.x;
+ 147:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y0 = l->origin.y;
+ 148:Lib/screenl/Src/scrl_lcd.c ****   layer_config->X1 = layer_config->X0 + l->size.width;
+ 149:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y1 = layer_config->Y0 + l->size.height;
+ 150:Lib/screenl/Src/scrl_lcd.c ****   layer_config->PixelFormat = pixel_format_from_scrl_format(l->format);
+ 151:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Address = (uint32_t) l->address;
+ 152:Lib/screenl/Src/scrl_lcd.c **** }
+ 153:Lib/screenl/Src/scrl_lcd.c **** 
+ 154:Lib/screenl/Src/scrl_lcd.c **** static int SCRL_validate_parameters(SCRL_LayerConfig *layers_config[SCRL_LAYER_NB], SCRL_ScreenConf
+ 155:Lib/screenl/Src/scrl_lcd.c **** {
+ 156:Lib/screenl/Src/scrl_lcd.c ****   int i;
+ 157:Lib/screenl/Src/scrl_lcd.c **** 
+ 158:Lib/screenl/Src/scrl_lcd.c ****   /* First check for null pointer */
+ 159:Lib/screenl/Src/scrl_lcd.c ****   for (i = 0; i < SCRL_LAYER_NB; i++)
+ 160:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i])
+ 161:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 162:Lib/screenl/Src/scrl_lcd.c **** 
+ 163:Lib/screenl/Src/scrl_lcd.c ****   /* Also for adresses */
+ 164:Lib/screenl/Src/scrl_lcd.c ****   for (i = 0; i < SCRL_LAYER_NB; i++)
+ 165:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i]->address)
+ 166:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 167:Lib/screenl/Src/scrl_lcd.c **** 
+ 168:Lib/screenl/Src/scrl_lcd.c ****   /* SCRL_YUV422 format is not supported */
+ 169:Lib/screenl/Src/scrl_lcd.c ****   for (i = 0; i < SCRL_LAYER_NB; i++)
+ 170:Lib/screenl/Src/scrl_lcd.c ****     if (layers_config[i]->format == SCRL_YUV422)
+ 171:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 172:Lib/screenl/Src/scrl_lcd.c **** 
+ 173:Lib/screenl/Src/scrl_lcd.c ****   return 0;
+ 174:Lib/screenl/Src/scrl_lcd.c **** }
+ 175:Lib/screenl/Src/scrl_lcd.c **** 
+ 176:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_FillRGBRectRgb888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *pDa
+ 177:Lib/screenl/Src/scrl_lcd.c ****                                       uint32_t Height)
+ 178:Lib/screenl/Src/scrl_lcd.c **** {
+ 179:Lib/screenl/Src/scrl_lcd.c ****   int layer_width;
+ 180:Lib/screenl/Src/scrl_lcd.c ****   uint8_t *pel;
+ 181:Lib/screenl/Src/scrl_lcd.c ****   int w, h;
+ 182:Lib/screenl/Src/scrl_lcd.c **** 
+ 183:Lib/screenl/Src/scrl_lcd.c ****   layer_width = Lcd_Ctx[Instance].XSize;
+ 184:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 185:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+ 186:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 187:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 188:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 0] = *pData++;
+ 189:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 1] = *pData++;
+ 190:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 2] = *pData++;
+ 191:Lib/screenl/Src/scrl_lcd.c ****     }
+ 192:Lib/screenl/Src/scrl_lcd.c ****     pel += layer_width + 3;
+ 193:Lib/screenl/Src/scrl_lcd.c ****   }
+ 194:Lib/screenl/Src/scrl_lcd.c **** 
+ 195:Lib/screenl/Src/scrl_lcd.c ****   return 0;
+ 196:Lib/screenl/Src/scrl_lcd.c **** }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 5
+
+
+ 197:Lib/screenl/Src/scrl_lcd.c **** 
+ 198:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_FillRGBRectArgb8888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *p
+ 199:Lib/screenl/Src/scrl_lcd.c ****                                       uint32_t Height)
+ 200:Lib/screenl/Src/scrl_lcd.c **** {
+ 201:Lib/screenl/Src/scrl_lcd.c ****   int layer_width;
+ 202:Lib/screenl/Src/scrl_lcd.c ****   uint8_t *pel;
+ 203:Lib/screenl/Src/scrl_lcd.c ****   int w, h;
+ 204:Lib/screenl/Src/scrl_lcd.c **** 
+ 205:Lib/screenl/Src/scrl_lcd.c ****   layer_width = Lcd_Ctx[Instance].XSize;
+ 206:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 207:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 208:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 209:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 210:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 2] = *pData++;
+ 211:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 1] = *pData++;
+ 212:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 0] = *pData++;
+ 213:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 3] = *pData++;
+ 214:Lib/screenl/Src/scrl_lcd.c ****     }
+ 215:Lib/screenl/Src/scrl_lcd.c ****     pel += layer_width + 4;
+ 216:Lib/screenl/Src/scrl_lcd.c ****   }
+ 217:Lib/screenl/Src/scrl_lcd.c **** 
+ 218:Lib/screenl/Src/scrl_lcd.c ****   return 0;
+ 219:Lib/screenl/Src/scrl_lcd.c **** }
+ 220:Lib/screenl/Src/scrl_lcd.c **** 
+ 221:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_FillRectRgb888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Width,
+ 222:Lib/screenl/Src/scrl_lcd.c ****                                    uint32_t Color)
+ 223:Lib/screenl/Src/scrl_lcd.c **** {
+  34              		.loc 1 223 1 view -0
+  35              		.cfi_startproc
+  36              		@ args = 8, pretend = 0, frame = 0
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+ 224:Lib/screenl/Src/scrl_lcd.c ****   int layer_width;
+  38              		.loc 1 224 3 view .LVU1
+ 225:Lib/screenl/Src/scrl_lcd.c ****   uint8_t r, g, b;
+  39              		.loc 1 225 3 view .LVU2
+ 226:Lib/screenl/Src/scrl_lcd.c ****   uint8_t *pel;
+  40              		.loc 1 226 3 view .LVU3
+ 227:Lib/screenl/Src/scrl_lcd.c ****   int w, h;
+  41              		.loc 1 227 3 view .LVU4
+ 228:Lib/screenl/Src/scrl_lcd.c **** 
+ 229:Lib/screenl/Src/scrl_lcd.c ****   r = (Color >> 16) & 0xff;
+  42              		.loc 1 229 3 view .LVU5
+ 223:Lib/screenl/Src/scrl_lcd.c ****   int layer_width;
+  43              		.loc 1 223 1 is_stmt 0 view .LVU6
+  44 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+  45              		.cfi_def_cfa_offset 24
+  46              		.cfi_offset 4, -24
+  47              		.cfi_offset 5, -20
+  48              		.cfi_offset 6, -16
+  49              		.cfi_offset 7, -12
+  50              		.cfi_offset 8, -8
+  51              		.cfi_offset 14, -4
+ 230:Lib/screenl/Src/scrl_lcd.c ****   g = (Color >> 8) & 0xff;
+ 231:Lib/screenl/Src/scrl_lcd.c ****   b = (Color >> 0) & 0xff;
+ 232:Lib/screenl/Src/scrl_lcd.c **** 
+ 233:Lib/screenl/Src/scrl_lcd.c ****   layer_width = Lcd_Ctx[Instance].XSize;
+ 234:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 6
+
+
+  52              		.loc 1 234 71 view .LVU7
+  53 0004 4FF03408 		mov	r8, #52
+ 233:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+  54              		.loc 1 233 34 view .LVU8
+  55 0008 184E     		ldr	r6, .L6
+  56 000a 4FEA401E 		lsl	lr, r0, #5
+  57 000e 06EB4010 		add	r0, r6, r0, lsl #5
+  58              	.LVL1:
+ 233:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+  59              		.loc 1 233 34 view .LVU9
+  60 0012 56F80E60 		ldr	r6, [r6, lr]
+ 235:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+ 236:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+  61              		.loc 1 236 10 view .LVU10
+  62 0016 4FF0000E 		mov	lr, #0
+ 234:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+  63              		.loc 1 234 71 view .LVU11
+  64 001a 8568     		ldr	r5, [r0, #8]
+  65 001c 1448     		ldr	r0, .L6+4
+ 235:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+  66              		.loc 1 235 35 view .LVU12
+  67 001e 02FB0612 		mla	r2, r2, r6, r1
+  68              	.LVL2:
+ 234:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+  69              		.loc 1 234 71 view .LVU13
+  70 0022 08FB0500 		mla	r0, r8, r5, r0
+ 223:Lib/screenl/Src/scrl_lcd.c ****   int layer_width;
+  71              		.loc 1 223 1 view .LVU14
+  72 0026 079C     		ldr	r4, [sp, #28]
+ 234:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+  73              		.loc 1 234 7 view .LVU15
+  74 0028 C06D     		ldr	r0, [r0, #92]
+ 235:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+  75              		.loc 1 235 35 view .LVU16
+  76 002a 02EB4202 		add	r2, r2, r2, lsl #1
+ 229:Lib/screenl/Src/scrl_lcd.c ****   g = (Color >> 8) & 0xff;
+  77              		.loc 1 229 5 view .LVU17
+  78 002e C4F30747 		ubfx	r7, r4, #16, #8
+  79              	.LVL3:
+ 230:Lib/screenl/Src/scrl_lcd.c ****   b = (Color >> 0) & 0xff;
+  80              		.loc 1 230 3 is_stmt 1 view .LVU18
+ 230:Lib/screenl/Src/scrl_lcd.c ****   b = (Color >> 0) & 0xff;
+  81              		.loc 1 230 5 is_stmt 0 view .LVU19
+  82 0032 C4F3072C 		ubfx	ip, r4, #8, #8
+  83              	.LVL4:
+ 231:Lib/screenl/Src/scrl_lcd.c **** 
+  84              		.loc 1 231 3 is_stmt 1 view .LVU20
+ 235:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+  85              		.loc 1 235 7 is_stmt 0 view .LVU21
+  86 0036 8118     		adds	r1, r0, r2
+  87              	.LVL5:
+ 231:Lib/screenl/Src/scrl_lcd.c **** 
+  88              		.loc 1 231 5 view .LVU22
+  89 0038 E4B2     		uxtb	r4, r4
+  90              	.LVL6:
+ 233:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+  91              		.loc 1 233 3 is_stmt 1 view .LVU23
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 7
+
+
+ 234:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+  92              		.loc 1 234 3 view .LVU24
+ 235:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+  93              		.loc 1 235 3 view .LVU25
+  94              		.loc 1 236 3 view .LVU26
+ 237:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 238:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 0] = b;
+ 239:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 1] = g;
+ 240:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 2] = r;
+ 241:Lib/screenl/Src/scrl_lcd.c ****     }
+ 242:Lib/screenl/Src/scrl_lcd.c ****     pel += layer_width * 3;
+  95              		.loc 1 242 24 is_stmt 0 view .LVU27
+  96 003a 06EB4606 		add	r6, r6, r6, lsl #1
+  97              	.LVL7:
+  98              	.L2:
+ 236:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+  99              		.loc 1 236 17 is_stmt 1 discriminator 1 view .LVU28
+ 100 003e 069A     		ldr	r2, [sp, #24]
+ 101 0040 9645     		cmp	lr, r2
+ 102 0042 10D0     		beq	.L4
+ 236:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 103              		.loc 1 236 17 is_stmt 0 discriminator 1 view .LVU29
+ 104 0044 0A46     		mov	r2, r1
+ 237:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 105              		.loc 1 237 12 view .LVU30
+ 106 0046 581C     		adds	r0, r3, #1
+ 107 0048 05E0     		b	.L5
+ 108              	.L3:
+ 238:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 1] = g;
+ 109              		.loc 1 238 7 is_stmt 1 view .LVU31
+ 238:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 1] = g;
+ 110              		.loc 1 238 22 is_stmt 0 view .LVU32
+ 111 004a 02F8034C 		strb	r4, [r2, #-3]
+ 239:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 2] = r;
+ 112              		.loc 1 239 7 is_stmt 1 view .LVU33
+ 239:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 2] = r;
+ 113              		.loc 1 239 22 is_stmt 0 view .LVU34
+ 114 004e 02F802CC 		strb	ip, [r2, #-2]
+ 240:Lib/screenl/Src/scrl_lcd.c ****     }
+ 115              		.loc 1 240 7 is_stmt 1 view .LVU35
+ 240:Lib/screenl/Src/scrl_lcd.c ****     }
+ 116              		.loc 1 240 22 is_stmt 0 view .LVU36
+ 117 0052 02F8017C 		strb	r7, [r2, #-1]
+ 237:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 0] = b;
+ 118              		.loc 1 237 29 is_stmt 1 discriminator 3 view .LVU37
+ 119              	.L5:
+ 237:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 0] = b;
+ 120              		.loc 1 237 19 discriminator 1 view .LVU38
+ 121 0056 0138     		subs	r0, r0, #1
+ 122 0058 02F10302 		add	r2, r2, #3
+ 123 005c F5D1     		bne	.L3
+ 124              		.loc 1 242 5 view .LVU39
+ 125              		.loc 1 242 9 is_stmt 0 view .LVU40
+ 126 005e 3144     		add	r1, r1, r6
+ 127              	.LVL8:
+ 236:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 128              		.loc 1 236 28 is_stmt 1 discriminator 2 view .LVU41
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 8
+
+
+ 129 0060 0EF1010E 		add	lr, lr, #1
+ 130              	.LVL9:
+ 236:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 131              		.loc 1 236 28 is_stmt 0 discriminator 2 view .LVU42
+ 132 0064 EBE7     		b	.L2
+ 133              	.L4:
+ 243:Lib/screenl/Src/scrl_lcd.c ****   }
+ 244:Lib/screenl/Src/scrl_lcd.c **** 
+ 245:Lib/screenl/Src/scrl_lcd.c ****   return 0;
+ 134              		.loc 1 245 3 is_stmt 1 view .LVU43
+ 246:Lib/screenl/Src/scrl_lcd.c **** }
+ 135              		.loc 1 246 1 is_stmt 0 view .LVU44
+ 136 0066 0020     		movs	r0, #0
+ 137 0068 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 138              	.LVL10:
+ 139              	.L7:
+ 140              		.loc 1 246 1 view .LVU45
+ 141              		.align	2
+ 142              	.L6:
+ 143 006c 00000000 		.word	Lcd_Ctx
+ 144 0070 00000000 		.word	hlcd_ltdc
+ 145              		.cfi_endproc
+ 146              	.LFE870:
+ 148              		.section	.text.LTDC_FillRectArgb8888,"ax",%progbits
+ 149              		.align	1
+ 150              		.syntax unified
+ 151              		.thumb
+ 152              		.thumb_func
+ 154              	LTDC_FillRectArgb8888:
+ 155              	.LVL11:
+ 156              	.LFB871:
+ 247:Lib/screenl/Src/scrl_lcd.c **** 
+ 248:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_FillRectArgb8888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Widt
+ 249:Lib/screenl/Src/scrl_lcd.c ****                                      uint32_t Color)
+ 250:Lib/screenl/Src/scrl_lcd.c **** {
+ 157              		.loc 1 250 1 is_stmt 1 view -0
+ 158              		.cfi_startproc
+ 159              		@ args = 8, pretend = 0, frame = 0
+ 160              		@ frame_needed = 0, uses_anonymous_args = 0
+ 251:Lib/screenl/Src/scrl_lcd.c ****   int layer_width;
+ 161              		.loc 1 251 3 view .LVU47
+ 252:Lib/screenl/Src/scrl_lcd.c ****   uint8_t r, g, b;
+ 162              		.loc 1 252 3 view .LVU48
+ 253:Lib/screenl/Src/scrl_lcd.c ****   uint8_t *pel;
+ 163              		.loc 1 253 3 view .LVU49
+ 254:Lib/screenl/Src/scrl_lcd.c ****   int w, h;
+ 164              		.loc 1 254 3 view .LVU50
+ 255:Lib/screenl/Src/scrl_lcd.c **** 
+ 256:Lib/screenl/Src/scrl_lcd.c ****   r = (Color >> 16) & 0xff;
+ 165              		.loc 1 256 3 view .LVU51
+ 250:Lib/screenl/Src/scrl_lcd.c ****   int layer_width;
+ 166              		.loc 1 250 1 is_stmt 0 view .LVU52
+ 167 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 168              		.cfi_def_cfa_offset 24
+ 169              		.cfi_offset 4, -24
+ 170              		.cfi_offset 5, -20
+ 171              		.cfi_offset 6, -16
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 9
+
+
+ 172              		.cfi_offset 7, -12
+ 173              		.cfi_offset 8, -8
+ 174              		.cfi_offset 14, -4
+ 257:Lib/screenl/Src/scrl_lcd.c ****   g = (Color >> 8) & 0xff;
+ 258:Lib/screenl/Src/scrl_lcd.c ****   b = (Color >> 0) & 0xff;
+ 259:Lib/screenl/Src/scrl_lcd.c **** 
+ 260:Lib/screenl/Src/scrl_lcd.c ****   layer_width = Lcd_Ctx[Instance].XSize;
+ 261:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 175              		.loc 1 261 71 view .LVU53
+ 176 0004 4FF03408 		mov	r8, #52
+ 260:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 177              		.loc 1 260 34 view .LVU54
+ 178 0008 194C     		ldr	r4, .L13
+ 179 000a 4FEA401E 		lsl	lr, r0, #5
+ 180 000e 04EB4010 		add	r0, r4, r0, lsl #5
+ 181              	.LVL12:
+ 182              		.loc 1 261 71 view .LVU55
+ 183 0012 8668     		ldr	r6, [r0, #8]
+ 184 0014 1748     		ldr	r0, .L13+4
+ 260:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 185              		.loc 1 260 34 view .LVU56
+ 186 0016 54F80E40 		ldr	r4, [r4, lr]
+ 187              		.loc 1 261 71 view .LVU57
+ 188 001a 08FB0600 		mla	r0, r8, r6, r0
+ 262:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 263:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 189              		.loc 1 263 10 view .LVU58
+ 190 001e 4FF0000E 		mov	lr, #0
+ 264:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 265:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 0] = r;
+ 266:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 1] = g;
+ 267:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 2] = b;
+ 268:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 3] = 0xff;
+ 191              		.loc 1 268 22 view .LVU59
+ 192 0022 4FF0FF08 		mov	r8, #255
+ 262:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 193              		.loc 1 262 35 view .LVU60
+ 194 0026 02FB0411 		mla	r1, r2, r4, r1
+ 195              	.LVL13:
+ 250:Lib/screenl/Src/scrl_lcd.c ****   int layer_width;
+ 196              		.loc 1 250 1 view .LVU61
+ 197 002a 079D     		ldr	r5, [sp, #28]
+ 261:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 198              		.loc 1 261 7 view .LVU62
+ 199 002c C06D     		ldr	r0, [r0, #92]
+ 256:Lib/screenl/Src/scrl_lcd.c ****   g = (Color >> 8) & 0xff;
+ 200              		.loc 1 256 5 view .LVU63
+ 201 002e C5F30747 		ubfx	r7, r5, #16, #8
+ 202              	.LVL14:
+ 257:Lib/screenl/Src/scrl_lcd.c ****   b = (Color >> 0) & 0xff;
+ 203              		.loc 1 257 3 is_stmt 1 view .LVU64
+ 257:Lib/screenl/Src/scrl_lcd.c ****   b = (Color >> 0) & 0xff;
+ 204              		.loc 1 257 5 is_stmt 0 view .LVU65
+ 205 0032 C5F3072C 		ubfx	ip, r5, #8, #8
+ 206              	.LVL15:
+ 258:Lib/screenl/Src/scrl_lcd.c **** 
+ 207              		.loc 1 258 3 is_stmt 1 view .LVU66
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 10
+
+
+ 262:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 208              		.loc 1 262 7 is_stmt 0 view .LVU67
+ 209 0036 00EB8102 		add	r2, r0, r1, lsl #2
+ 210              	.LVL16:
+ 258:Lib/screenl/Src/scrl_lcd.c **** 
+ 211              		.loc 1 258 5 view .LVU68
+ 212 003a EDB2     		uxtb	r5, r5
+ 213              	.LVL17:
+ 260:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 214              		.loc 1 260 3 is_stmt 1 view .LVU69
+ 261:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 215              		.loc 1 261 3 view .LVU70
+ 262:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 216              		.loc 1 262 3 view .LVU71
+ 263:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 217              		.loc 1 263 3 view .LVU72
+ 269:Lib/screenl/Src/scrl_lcd.c ****     }
+ 270:Lib/screenl/Src/scrl_lcd.c ****     pel += layer_width * 4;
+ 218              		.loc 1 270 24 is_stmt 0 view .LVU73
+ 219 003c A100     		lsls	r1, r4, #2
+ 220 003e 9B00     		lsls	r3, r3, #2
+ 221              	.LVL18:
+ 222              	.L9:
+ 263:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 223              		.loc 1 263 17 is_stmt 1 discriminator 1 view .LVU74
+ 224 0040 0698     		ldr	r0, [sp, #24]
+ 225 0042 8645     		cmp	lr, r0
+ 226 0044 10D0     		beq	.L11
+ 268:Lib/screenl/Src/scrl_lcd.c ****     }
+ 227              		.loc 1 268 22 is_stmt 0 view .LVU75
+ 228 0046 9C08     		lsrs	r4, r3, #2
+ 229 0048 1046     		mov	r0, r2
+ 230 004a 0134     		adds	r4, r4, #1
+ 231 004c 06E0     		b	.L12
+ 232              	.L10:
+ 265:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 1] = g;
+ 233              		.loc 1 265 7 is_stmt 1 view .LVU76
+ 265:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 1] = g;
+ 234              		.loc 1 265 22 is_stmt 0 view .LVU77
+ 235 004e 0770     		strb	r7, [r0]
+ 266:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 2] = b;
+ 236              		.loc 1 266 7 is_stmt 1 view .LVU78
+ 266:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 2] = b;
+ 237              		.loc 1 266 22 is_stmt 0 view .LVU79
+ 238 0050 80F801C0 		strb	ip, [r0, #1]
+ 267:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 3] = 0xff;
+ 239              		.loc 1 267 7 is_stmt 1 view .LVU80
+ 267:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 3] = 0xff;
+ 240              		.loc 1 267 22 is_stmt 0 view .LVU81
+ 241 0054 8570     		strb	r5, [r0, #2]
+ 268:Lib/screenl/Src/scrl_lcd.c ****     }
+ 242              		.loc 1 268 7 is_stmt 1 view .LVU82
+ 268:Lib/screenl/Src/scrl_lcd.c ****     }
+ 243              		.loc 1 268 22 is_stmt 0 view .LVU83
+ 244 0056 80F80380 		strb	r8, [r0, #3]
+ 264:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 0] = r;
+ 245              		.loc 1 264 29 is_stmt 1 discriminator 3 view .LVU84
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 11
+
+
+ 246 005a 0430     		adds	r0, r0, #4
+ 247              	.L12:
+ 264:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 0] = r;
+ 248              		.loc 1 264 19 discriminator 1 view .LVU85
+ 249 005c 013C     		subs	r4, r4, #1
+ 250 005e F6D1     		bne	.L10
+ 251              		.loc 1 270 5 view .LVU86
+ 252              		.loc 1 270 9 is_stmt 0 view .LVU87
+ 253 0060 0A44     		add	r2, r2, r1
+ 254              	.LVL19:
+ 263:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 255              		.loc 1 263 28 is_stmt 1 discriminator 2 view .LVU88
+ 256 0062 0EF1010E 		add	lr, lr, #1
+ 257              	.LVL20:
+ 263:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 258              		.loc 1 263 28 is_stmt 0 discriminator 2 view .LVU89
+ 259 0066 EBE7     		b	.L9
+ 260              	.L11:
+ 271:Lib/screenl/Src/scrl_lcd.c ****   }
+ 272:Lib/screenl/Src/scrl_lcd.c **** 
+ 273:Lib/screenl/Src/scrl_lcd.c ****   return 0;
+ 261              		.loc 1 273 3 is_stmt 1 view .LVU90
+ 274:Lib/screenl/Src/scrl_lcd.c **** }
+ 262              		.loc 1 274 1 is_stmt 0 view .LVU91
+ 263 0068 0020     		movs	r0, #0
+ 264 006a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 265              	.LVL21:
+ 266              	.L14:
+ 267              		.loc 1 274 1 view .LVU92
+ 268 006e 00BF     		.align	2
+ 269              	.L13:
+ 270 0070 00000000 		.word	Lcd_Ctx
+ 271 0074 00000000 		.word	hlcd_ltdc
+ 272              		.cfi_endproc
+ 273              	.LFE871:
+ 275              		.section	.text.LTDC_GetFormat,"ax",%progbits
+ 276              		.align	1
+ 277              		.syntax unified
+ 278              		.thumb
+ 279              		.thumb_func
+ 281              	LTDC_GetFormat:
+ 282              	.LVL22:
+ 283              	.LFB888:
+ 275:Lib/screenl/Src/scrl_lcd.c **** 
+ 276:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_DrawHLineRgb888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Lengt
+ 277:Lib/screenl/Src/scrl_lcd.c **** {
+ 278:Lib/screenl/Src/scrl_lcd.c ****   return LTDC_FillRectRgb888(0, Xpos, Ypos, Length , 1, Color);
+ 279:Lib/screenl/Src/scrl_lcd.c **** }
+ 280:Lib/screenl/Src/scrl_lcd.c **** 
+ 281:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_DrawHLineArgb8888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Len
+ 282:Lib/screenl/Src/scrl_lcd.c **** {
+ 283:Lib/screenl/Src/scrl_lcd.c ****   return LTDC_FillRectArgb8888(0, Xpos, Ypos, Length , 1, Color);
+ 284:Lib/screenl/Src/scrl_lcd.c **** }
+ 285:Lib/screenl/Src/scrl_lcd.c **** 
+ 286:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_DrawVLineRgb888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Lengt
+ 287:Lib/screenl/Src/scrl_lcd.c **** {
+ 288:Lib/screenl/Src/scrl_lcd.c ****   return LTDC_FillRectRgb888(0, Xpos, Ypos, 1 , Length, Color);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 12
+
+
+ 289:Lib/screenl/Src/scrl_lcd.c **** }
+ 290:Lib/screenl/Src/scrl_lcd.c **** 
+ 291:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_DrawVLineArgb8888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Len
+ 292:Lib/screenl/Src/scrl_lcd.c **** {
+ 293:Lib/screenl/Src/scrl_lcd.c ****   return LTDC_FillRectArgb8888(0, Xpos, Ypos, 1 , Length, Color);
+ 294:Lib/screenl/Src/scrl_lcd.c **** }
+ 295:Lib/screenl/Src/scrl_lcd.c **** 
+ 296:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_SetPixelRgb888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Color)
+ 297:Lib/screenl/Src/scrl_lcd.c **** {
+ 298:Lib/screenl/Src/scrl_lcd.c ****   return LTDC_FillRectRgb888(0, Xpos, Ypos, 1 , 1, Color);
+ 299:Lib/screenl/Src/scrl_lcd.c **** }
+ 300:Lib/screenl/Src/scrl_lcd.c **** 
+ 301:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_SetPixelArgb8888(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Colo
+ 302:Lib/screenl/Src/scrl_lcd.c **** {
+ 303:Lib/screenl/Src/scrl_lcd.c ****   return LTDC_FillRectArgb8888(0, Xpos, Ypos, 1 , 1, Color);
+ 304:Lib/screenl/Src/scrl_lcd.c **** }
+ 305:Lib/screenl/Src/scrl_lcd.c **** 
+ 306:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_DrawBitmap(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *pBmp)
+ 307:Lib/screenl/Src/scrl_lcd.c **** {
+ 308:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_DrawBitmap(Instance, Xpos, Ypos, pBmp);
+ 309:Lib/screenl/Src/scrl_lcd.c **** }
+ 310:Lib/screenl/Src/scrl_lcd.c **** 
+ 311:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_FillRGBRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint8_t *pData, ui
+ 312:Lib/screenl/Src/scrl_lcd.c ****                                 uint32_t Height)
+ 313:Lib/screenl/Src/scrl_lcd.c **** {
+ 314:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 315:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectRgb888(Instance, Xpos, Ypos, pData, Width, Height);
+ 316:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 317:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectArgb8888(Instance, Xpos, Ypos, pData, Width, Height);
+ 318:Lib/screenl/Src/scrl_lcd.c **** 
+ 319:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_FillRGBRect(Instance, Xpos, Ypos, pData, Width, Height);
+ 320:Lib/screenl/Src/scrl_lcd.c **** }
+ 321:Lib/screenl/Src/scrl_lcd.c **** 
+ 322:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_DrawHLine(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Length, uin
+ 323:Lib/screenl/Src/scrl_lcd.c **** {
+ 324:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 325:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 326:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 327:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineArgb8888(Instance, Xpos, Ypos, Length, Color);
+ 328:Lib/screenl/Src/scrl_lcd.c **** 
+ 329:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_DrawHLine(Instance, Xpos, Ypos, Length, Color);
+ 330:Lib/screenl/Src/scrl_lcd.c **** }
+ 331:Lib/screenl/Src/scrl_lcd.c **** 
+ 332:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_DrawVLine(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Length, uin
+ 333:Lib/screenl/Src/scrl_lcd.c **** {
+ 334:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 335:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 336:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 337:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineArgb8888(Instance, Xpos, Ypos, Length, Color);
+ 338:Lib/screenl/Src/scrl_lcd.c **** 
+ 339:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_DrawVLine(Instance, Xpos, Ypos, Length, Color);
+ 340:Lib/screenl/Src/scrl_lcd.c **** }
+ 341:Lib/screenl/Src/scrl_lcd.c **** 
+ 342:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_FillRect(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Width, uint3
+ 343:Lib/screenl/Src/scrl_lcd.c ****                             uint32_t Color)
+ 344:Lib/screenl/Src/scrl_lcd.c **** {
+ 345:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 13
+
+
+ 346:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectRgb888(Instance, Xpos, Ypos, Width, Height, Color);
+ 347:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 348:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectArgb8888(Instance, Xpos, Ypos, Width, Height, Color);
+ 349:Lib/screenl/Src/scrl_lcd.c **** 
+ 350:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_FillRect(Instance, Xpos, Ypos, Width, Height, Color);
+ 351:Lib/screenl/Src/scrl_lcd.c **** }
+ 352:Lib/screenl/Src/scrl_lcd.c **** 
+ 353:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_GetPixel(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t *Color)
+ 354:Lib/screenl/Src/scrl_lcd.c **** {
+ 355:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_ReadPixel(Instance, Xpos, Ypos, Color);
+ 356:Lib/screenl/Src/scrl_lcd.c **** }
+ 357:Lib/screenl/Src/scrl_lcd.c **** 
+ 358:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_SetPixel(uint32_t Instance, uint32_t Xpos, uint32_t Ypos, uint32_t Color)
+ 359:Lib/screenl/Src/scrl_lcd.c **** {
+ 360:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 361:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_SetPixelRgb888(Instance, Xpos, Ypos, Color);
+ 362:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 363:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_SetPixelArgb8888(Instance, Xpos, Ypos, Color);
+ 364:Lib/screenl/Src/scrl_lcd.c **** 
+ 365:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_WritePixel(Instance, Xpos, Ypos, Color);
+ 366:Lib/screenl/Src/scrl_lcd.c **** }
+ 367:Lib/screenl/Src/scrl_lcd.c **** 
+ 368:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_GetXSize(uint32_t Instance, uint32_t *YSize)
+ 369:Lib/screenl/Src/scrl_lcd.c **** {
+ 370:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_GetXSize(Instance, YSize);
+ 371:Lib/screenl/Src/scrl_lcd.c **** }
+ 372:Lib/screenl/Src/scrl_lcd.c **** 
+ 373:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_GetYSize(uint32_t Instance, uint32_t *YSize)
+ 374:Lib/screenl/Src/scrl_lcd.c **** {
+ 375:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_GetYSize(Instance, YSize);
+ 376:Lib/screenl/Src/scrl_lcd.c **** }
+ 377:Lib/screenl/Src/scrl_lcd.c **** 
+ 378:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_SetLayer(uint32_t Instance, uint32_t LayerIndex)
+ 379:Lib/screenl/Src/scrl_lcd.c **** {
+ 380:Lib/screenl/Src/scrl_lcd.c ****   int32_t res;
+ 381:Lib/screenl/Src/scrl_lcd.c **** 
+ 382:Lib/screenl/Src/scrl_lcd.c ****   current_layer = (SCRL_Layer) LayerIndex;
+ 383:Lib/screenl/Src/scrl_lcd.c ****   res = BSP_LCD_SetActiveLayer(Instance, LayerIndex);
+ 384:Lib/screenl/Src/scrl_lcd.c **** 
+ 385:Lib/screenl/Src/scrl_lcd.c ****   /* Fix wrong BppFactor/PixelFormat decision when in flexible format */
+ 386:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[LayerIndex]) {
+ 387:Lib/screenl/Src/scrl_lcd.c ****     Lcd_Ctx[Instance].BppFactor = 3;
+ 388:Lib/screenl/Src/scrl_lcd.c ****     Lcd_Ctx[Instance].PixelFormat = LCD_PIXEL_FORMAT_RGB888;
+ 389:Lib/screenl/Src/scrl_lcd.c ****   }
+ 390:Lib/screenl/Src/scrl_lcd.c **** 
+ 391:Lib/screenl/Src/scrl_lcd.c ****   return res;
+ 392:Lib/screenl/Src/scrl_lcd.c **** }
+ 393:Lib/screenl/Src/scrl_lcd.c **** 
+ 394:Lib/screenl/Src/scrl_lcd.c **** static int32_t LTDC_GetFormat(uint32_t Instance, uint32_t *PixelFormat)
+ 395:Lib/screenl/Src/scrl_lcd.c **** {
+ 284              		.loc 1 395 1 is_stmt 1 view -0
+ 285              		.cfi_startproc
+ 286              		@ args = 0, pretend = 0, frame = 0
+ 287              		@ frame_needed = 0, uses_anonymous_args = 0
+ 288              		@ link register save eliminated.
+ 396:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_GetPixelFormat(Instance, PixelFormat);
+ 289              		.loc 1 396 3 view .LVU94
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 14
+
+
+ 290              		.loc 1 396 10 is_stmt 0 view .LVU95
+ 291 0000 FFF7FEBF 		b	BSP_LCD_GetPixelFormat
+ 292              	.LVL23:
+ 293              		.loc 1 396 10 view .LVU96
+ 294              		.cfi_endproc
+ 295              	.LFE888:
+ 297              		.section	.text.LTDC_SetLayer,"ax",%progbits
+ 298              		.align	1
+ 299              		.syntax unified
+ 300              		.thumb
+ 301              		.thumb_func
+ 303              	LTDC_SetLayer:
+ 304              	.LVL24:
+ 305              	.LFB887:
+ 379:Lib/screenl/Src/scrl_lcd.c ****   int32_t res;
+ 306              		.loc 1 379 1 is_stmt 1 view -0
+ 307              		.cfi_startproc
+ 308              		@ args = 0, pretend = 0, frame = 0
+ 309              		@ frame_needed = 0, uses_anonymous_args = 0
+ 380:Lib/screenl/Src/scrl_lcd.c **** 
+ 310              		.loc 1 380 3 view .LVU98
+ 382:Lib/screenl/Src/scrl_lcd.c ****   res = BSP_LCD_SetActiveLayer(Instance, LayerIndex);
+ 311              		.loc 1 382 3 view .LVU99
+ 379:Lib/screenl/Src/scrl_lcd.c ****   int32_t res;
+ 312              		.loc 1 379 1 is_stmt 0 view .LVU100
+ 313 0000 38B5     		push	{r3, r4, r5, lr}
+ 314              		.cfi_def_cfa_offset 16
+ 315              		.cfi_offset 3, -16
+ 316              		.cfi_offset 4, -12
+ 317              		.cfi_offset 5, -8
+ 318              		.cfi_offset 14, -4
+ 379:Lib/screenl/Src/scrl_lcd.c ****   int32_t res;
+ 319              		.loc 1 379 1 view .LVU101
+ 320 0002 0C46     		mov	r4, r1
+ 382:Lib/screenl/Src/scrl_lcd.c ****   res = BSP_LCD_SetActiveLayer(Instance, LayerIndex);
+ 321              		.loc 1 382 17 view .LVU102
+ 322 0004 084B     		ldr	r3, .L21
+ 379:Lib/screenl/Src/scrl_lcd.c ****   int32_t res;
+ 323              		.loc 1 379 1 view .LVU103
+ 324 0006 0546     		mov	r5, r0
+ 382:Lib/screenl/Src/scrl_lcd.c ****   res = BSP_LCD_SetActiveLayer(Instance, LayerIndex);
+ 325              		.loc 1 382 19 view .LVU104
+ 326 0008 1970     		strb	r1, [r3]
+ 383:Lib/screenl/Src/scrl_lcd.c **** 
+ 327              		.loc 1 383 3 is_stmt 1 view .LVU105
+ 383:Lib/screenl/Src/scrl_lcd.c **** 
+ 328              		.loc 1 383 9 is_stmt 0 view .LVU106
+ 329 000a FFF7FEFF 		bl	BSP_LCD_SetActiveLayer
+ 330              	.LVL25:
+ 386:Lib/screenl/Src/scrl_lcd.c ****     Lcd_Ctx[Instance].BppFactor = 3;
+ 331              		.loc 1 386 3 is_stmt 1 view .LVU107
+ 386:Lib/screenl/Src/scrl_lcd.c ****     Lcd_Ctx[Instance].BppFactor = 3;
+ 332              		.loc 1 386 22 is_stmt 0 view .LVU108
+ 333 000e 074B     		ldr	r3, .L21+4
+ 386:Lib/screenl/Src/scrl_lcd.c ****     Lcd_Ctx[Instance].BppFactor = 3;
+ 334              		.loc 1 386 6 view .LVU109
+ 335 0010 53F82430 		ldr	r3, [r3, r4, lsl #2]
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 15
+
+
+ 336 0014 33B1     		cbz	r3, .L16
+ 387:Lib/screenl/Src/scrl_lcd.c ****     Lcd_Ctx[Instance].PixelFormat = LCD_PIXEL_FORMAT_RGB888;
+ 337              		.loc 1 387 5 is_stmt 1 view .LVU110
+ 388:Lib/screenl/Src/scrl_lcd.c ****   }
+ 338              		.loc 1 388 35 is_stmt 0 view .LVU111
+ 339 0016 0122     		movs	r2, #1
+ 340 0018 0321     		movs	r1, #3
+ 387:Lib/screenl/Src/scrl_lcd.c ****     Lcd_Ctx[Instance].PixelFormat = LCD_PIXEL_FORMAT_RGB888;
+ 341              		.loc 1 387 33 view .LVU112
+ 342 001a 054B     		ldr	r3, .L21+8
+ 343 001c 03EB4513 		add	r3, r3, r5, lsl #5
+ 388:Lib/screenl/Src/scrl_lcd.c ****   }
+ 344              		.loc 1 388 35 view .LVU113
+ 345 0020 C3E90321 		strd	r2, r1, [r3, #12]
+ 391:Lib/screenl/Src/scrl_lcd.c **** }
+ 346              		.loc 1 391 3 is_stmt 1 view .LVU114
+ 347              	.L16:
+ 392:Lib/screenl/Src/scrl_lcd.c **** 
+ 348              		.loc 1 392 1 is_stmt 0 view .LVU115
+ 349 0024 38BD     		pop	{r3, r4, r5, pc}
+ 350              	.LVL26:
+ 351              	.L22:
+ 392:Lib/screenl/Src/scrl_lcd.c **** 
+ 352              		.loc 1 392 1 view .LVU116
+ 353 0026 00BF     		.align	2
+ 354              	.L21:
+ 355 0028 00000000 		.word	current_layer
+ 356 002c 00000000 		.word	is_layer_rgb888
+ 357 0030 00000000 		.word	Lcd_Ctx
+ 358              		.cfi_endproc
+ 359              	.LFE887:
+ 361              		.section	.text.LTDC_GetYSize,"ax",%progbits
+ 362              		.align	1
+ 363              		.syntax unified
+ 364              		.thumb
+ 365              		.thumb_func
+ 367              	LTDC_GetYSize:
+ 368              	.LVL27:
+ 369              	.LFB886:
+ 374:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_GetYSize(Instance, YSize);
+ 370              		.loc 1 374 1 is_stmt 1 view -0
+ 371              		.cfi_startproc
+ 372              		@ args = 0, pretend = 0, frame = 0
+ 373              		@ frame_needed = 0, uses_anonymous_args = 0
+ 374              		@ link register save eliminated.
+ 375:Lib/screenl/Src/scrl_lcd.c **** }
+ 375              		.loc 1 375 3 view .LVU118
+ 375:Lib/screenl/Src/scrl_lcd.c **** }
+ 376              		.loc 1 375 10 is_stmt 0 view .LVU119
+ 377 0000 FFF7FEBF 		b	BSP_LCD_GetYSize
+ 378              	.LVL28:
+ 375:Lib/screenl/Src/scrl_lcd.c **** }
+ 379              		.loc 1 375 10 view .LVU120
+ 380              		.cfi_endproc
+ 381              	.LFE886:
+ 383              		.section	.text.LTDC_GetXSize,"ax",%progbits
+ 384              		.align	1
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 16
+
+
+ 385              		.syntax unified
+ 386              		.thumb
+ 387              		.thumb_func
+ 389              	LTDC_GetXSize:
+ 390              	.LVL29:
+ 391              	.LFB885:
+ 369:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_GetXSize(Instance, YSize);
+ 392              		.loc 1 369 1 is_stmt 1 view -0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 0
+ 395              		@ frame_needed = 0, uses_anonymous_args = 0
+ 396              		@ link register save eliminated.
+ 370:Lib/screenl/Src/scrl_lcd.c **** }
+ 397              		.loc 1 370 3 view .LVU122
+ 370:Lib/screenl/Src/scrl_lcd.c **** }
+ 398              		.loc 1 370 10 is_stmt 0 view .LVU123
+ 399 0000 FFF7FEBF 		b	BSP_LCD_GetXSize
+ 400              	.LVL30:
+ 370:Lib/screenl/Src/scrl_lcd.c **** }
+ 401              		.loc 1 370 10 view .LVU124
+ 402              		.cfi_endproc
+ 403              	.LFE885:
+ 405              		.section	.text.LTDC_GetPixel,"ax",%progbits
+ 406              		.align	1
+ 407              		.syntax unified
+ 408              		.thumb
+ 409              		.thumb_func
+ 411              	LTDC_GetPixel:
+ 412              	.LVL31:
+ 413              	.LFB883:
+ 354:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_ReadPixel(Instance, Xpos, Ypos, Color);
+ 414              		.loc 1 354 1 is_stmt 1 view -0
+ 415              		.cfi_startproc
+ 416              		@ args = 0, pretend = 0, frame = 0
+ 417              		@ frame_needed = 0, uses_anonymous_args = 0
+ 418              		@ link register save eliminated.
+ 355:Lib/screenl/Src/scrl_lcd.c **** }
+ 419              		.loc 1 355 3 view .LVU126
+ 355:Lib/screenl/Src/scrl_lcd.c **** }
+ 420              		.loc 1 355 10 is_stmt 0 view .LVU127
+ 421 0000 FFF7FEBF 		b	BSP_LCD_ReadPixel
+ 422              	.LVL32:
+ 355:Lib/screenl/Src/scrl_lcd.c **** }
+ 423              		.loc 1 355 10 view .LVU128
+ 424              		.cfi_endproc
+ 425              	.LFE883:
+ 427              		.section	.text.LTDC_FillRect,"ax",%progbits
+ 428              		.align	1
+ 429              		.syntax unified
+ 430              		.thumb
+ 431              		.thumb_func
+ 433              	LTDC_FillRect:
+ 434              	.LVL33:
+ 435              	.LFB882:
+ 344:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 436              		.loc 1 344 1 is_stmt 1 view -0
+ 437              		.cfi_startproc
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 17
+
+
+ 438              		@ args = 8, pretend = 0, frame = 0
+ 439              		@ frame_needed = 0, uses_anonymous_args = 0
+ 440              		@ link register save eliminated.
+ 345:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectRgb888(Instance, Xpos, Ypos, Width, Height, Color);
+ 441              		.loc 1 345 3 view .LVU130
+ 344:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 442              		.loc 1 344 1 is_stmt 0 view .LVU131
+ 443 0000 F0B4     		push	{r4, r5, r6, r7}
+ 444              		.cfi_def_cfa_offset 16
+ 445              		.cfi_offset 4, -16
+ 446              		.cfi_offset 5, -12
+ 447              		.cfi_offset 6, -8
+ 448              		.cfi_offset 7, -4
+ 345:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectRgb888(Instance, Xpos, Ypos, Width, Height, Color);
+ 449              		.loc 1 345 22 view .LVU132
+ 450 0002 0C4E     		ldr	r6, .L29
+ 451 0004 0C4F     		ldr	r7, .L29+4
+ 452 0006 3678     		ldrb	r6, [r6]	@ zero_extendqisi2
+ 344:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 453              		.loc 1 344 1 view .LVU133
+ 454 0008 DDE90445 		ldrd	r4, r5, [sp, #16]
+ 345:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectRgb888(Instance, Xpos, Ypos, Width, Height, Color);
+ 455              		.loc 1 345 6 view .LVU134
+ 456 000c 57F82670 		ldr	r7, [r7, r6, lsl #2]
+ 457 0010 27B1     		cbz	r7, .L27
+ 346:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 458              		.loc 1 346 5 is_stmt 1 view .LVU135
+ 346:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 459              		.loc 1 346 12 is_stmt 0 view .LVU136
+ 460 0012 CDE90445 		strd	r4, r5, [sp, #16]
+ 461              	.LVL34:
+ 351:Lib/screenl/Src/scrl_lcd.c **** 
+ 462              		.loc 1 351 1 view .LVU137
+ 463 0016 F0BC     		pop	{r4, r5, r6, r7}
+ 464              		.cfi_remember_state
+ 465              		.cfi_restore 7
+ 466              		.cfi_restore 6
+ 467              		.cfi_restore 5
+ 468              		.cfi_restore 4
+ 469              		.cfi_def_cfa_offset 0
+ 346:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 470              		.loc 1 346 12 view .LVU138
+ 471 0018 FFF7FEBF 		b	LTDC_FillRectRgb888
+ 472              	.LVL35:
+ 473              	.L27:
+ 474              		.cfi_restore_state
+ 347:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectArgb8888(Instance, Xpos, Ypos, Width, Height, Color);
+ 475              		.loc 1 347 3 is_stmt 1 view .LVU139
+ 347:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectArgb8888(Instance, Xpos, Ypos, Width, Height, Color);
+ 476              		.loc 1 347 24 is_stmt 0 view .LVU140
+ 477 001c 074F     		ldr	r7, .L29+8
+ 347:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectArgb8888(Instance, Xpos, Ypos, Width, Height, Color);
+ 478              		.loc 1 347 6 view .LVU141
+ 479 001e 57F82660 		ldr	r6, [r7, r6, lsl #2]
+ 348:Lib/screenl/Src/scrl_lcd.c **** 
+ 480              		.loc 1 348 12 view .LVU142
+ 481 0022 CDE90445 		strd	r4, r5, [sp, #16]
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 18
+
+
+ 482              	.LVL36:
+ 347:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRectArgb8888(Instance, Xpos, Ypos, Width, Height, Color);
+ 483              		.loc 1 347 6 view .LVU143
+ 484 0026 16B1     		cbz	r6, .L28
+ 348:Lib/screenl/Src/scrl_lcd.c **** 
+ 485              		.loc 1 348 5 is_stmt 1 view .LVU144
+ 351:Lib/screenl/Src/scrl_lcd.c **** 
+ 486              		.loc 1 351 1 is_stmt 0 view .LVU145
+ 487 0028 F0BC     		pop	{r4, r5, r6, r7}
+ 488              		.cfi_remember_state
+ 489              		.cfi_restore 7
+ 490              		.cfi_restore 6
+ 491              		.cfi_restore 5
+ 492              		.cfi_restore 4
+ 493              		.cfi_def_cfa_offset 0
+ 348:Lib/screenl/Src/scrl_lcd.c **** 
+ 494              		.loc 1 348 12 view .LVU146
+ 495 002a FFF7FEBF 		b	LTDC_FillRectArgb8888
+ 496              	.LVL37:
+ 497              	.L28:
+ 498              		.cfi_restore_state
+ 350:Lib/screenl/Src/scrl_lcd.c **** }
+ 499              		.loc 1 350 3 is_stmt 1 view .LVU147
+ 351:Lib/screenl/Src/scrl_lcd.c **** 
+ 500              		.loc 1 351 1 is_stmt 0 view .LVU148
+ 501 002e F0BC     		pop	{r4, r5, r6, r7}
+ 502              		.cfi_restore 7
+ 503              		.cfi_restore 6
+ 504              		.cfi_restore 5
+ 505              		.cfi_restore 4
+ 506              		.cfi_def_cfa_offset 0
+ 350:Lib/screenl/Src/scrl_lcd.c **** }
+ 507              		.loc 1 350 10 view .LVU149
+ 508 0030 FFF7FEBF 		b	BSP_LCD_FillRect
+ 509              	.LVL38:
+ 510              	.L30:
+ 350:Lib/screenl/Src/scrl_lcd.c **** }
+ 511              		.loc 1 350 10 view .LVU150
+ 512              		.align	2
+ 513              	.L29:
+ 514 0034 00000000 		.word	current_layer
+ 515 0038 00000000 		.word	is_layer_rgb888
+ 516 003c 00000000 		.word	is_layer_argb8888
+ 517              		.cfi_endproc
+ 518              	.LFE882:
+ 520              		.section	.text.LTDC_FillRGBRect,"ax",%progbits
+ 521              		.align	1
+ 522              		.syntax unified
+ 523              		.thumb
+ 524              		.thumb_func
+ 526              	LTDC_FillRGBRect:
+ 527              	.LVL39:
+ 528              	.LFB879:
+ 313:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 529              		.loc 1 313 1 is_stmt 1 view -0
+ 530              		.cfi_startproc
+ 531              		@ args = 8, pretend = 0, frame = 0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 19
+
+
+ 532              		@ frame_needed = 0, uses_anonymous_args = 0
+ 314:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectRgb888(Instance, Xpos, Ypos, pData, Width, Height);
+ 533              		.loc 1 314 3 view .LVU152
+ 313:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 534              		.loc 1 313 1 is_stmt 0 view .LVU153
+ 535 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 536              		.cfi_def_cfa_offset 32
+ 537              		.cfi_offset 4, -32
+ 538              		.cfi_offset 5, -28
+ 539              		.cfi_offset 6, -24
+ 540              		.cfi_offset 7, -20
+ 541              		.cfi_offset 8, -16
+ 542              		.cfi_offset 9, -12
+ 543              		.cfi_offset 10, -8
+ 544              		.cfi_offset 14, -4
+ 314:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectRgb888(Instance, Xpos, Ypos, pData, Width, Height);
+ 545              		.loc 1 314 22 view .LVU154
+ 546 0004 3F4F     		ldr	r7, .L43
+ 313:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 547              		.loc 1 313 1 view .LVU155
+ 548 0006 8846     		mov	r8, r1
+ 549 0008 DDE9086C 		ldrd	r6, ip, [sp, #32]
+ 314:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectRgb888(Instance, Xpos, Ypos, pData, Width, Height);
+ 550              		.loc 1 314 22 view .LVU156
+ 551 000c 97F80090 		ldrb	r9, [r7]	@ zero_extendqisi2
+ 552 0010 3D4F     		ldr	r7, .L43+4
+ 313:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 553              		.loc 1 313 1 view .LVU157
+ 554 0012 1546     		mov	r5, r2
+ 314:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectRgb888(Instance, Xpos, Ypos, pData, Width, Height);
+ 555              		.loc 1 314 22 view .LVU158
+ 556 0014 57F82970 		ldr	r7, [r7, r9, lsl #2]
+ 313:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 557              		.loc 1 313 1 view .LVU159
+ 558 0018 9E46     		mov	lr, r3
+ 314:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectRgb888(Instance, Xpos, Ypos, pData, Width, Height);
+ 559              		.loc 1 314 6 view .LVU160
+ 560 001a 7FB3     		cbz	r7, .L32
+ 315:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 561              		.loc 1 315 5 is_stmt 1 view .LVU161
+ 562              	.LVL40:
+ 563              	.LBB6:
+ 564              	.LBI6:
+ 176:Lib/screenl/Src/scrl_lcd.c ****                                       uint32_t Height)
+ 565              		.loc 1 176 16 view .LVU162
+ 566              	.LBB7:
+ 179:Lib/screenl/Src/scrl_lcd.c ****   uint8_t *pel;
+ 567              		.loc 1 179 3 view .LVU163
+ 180:Lib/screenl/Src/scrl_lcd.c ****   int w, h;
+ 568              		.loc 1 180 3 view .LVU164
+ 181:Lib/screenl/Src/scrl_lcd.c **** 
+ 569              		.loc 1 181 3 view .LVU165
+ 183:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 570              		.loc 1 183 3 view .LVU166
+ 183:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 571              		.loc 1 183 34 is_stmt 0 view .LVU167
+ 572 001c 3B4B     		ldr	r3, .L43+8
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 20
+
+
+ 573              	.LVL41:
+ 183:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 574              		.loc 1 183 34 view .LVU168
+ 575 001e 4201     		lsls	r2, r0, #5
+ 576              	.LVL42:
+ 183:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 577              		.loc 1 183 34 view .LVU169
+ 578 0020 03EB4014 		add	r4, r3, r0, lsl #5
+ 184:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+ 579              		.loc 1 184 71 view .LVU170
+ 580 0024 3420     		movs	r0, #52
+ 581              	.LVL43:
+ 183:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 582              		.loc 1 183 34 view .LVU171
+ 583 0026 9A58     		ldr	r2, [r3, r2]
+ 584              	.LVL44:
+ 184:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+ 585              		.loc 1 184 3 is_stmt 1 view .LVU172
+ 184:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+ 586              		.loc 1 184 71 is_stmt 0 view .LVU173
+ 587 0028 A168     		ldr	r1, [r4, #8]
+ 588              	.LVL45:
+ 184:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+ 589              		.loc 1 184 71 view .LVU174
+ 590 002a 394B     		ldr	r3, .L43+12
+ 185:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 591              		.loc 1 185 35 view .LVU175
+ 592 002c 02FB0585 		mla	r5, r2, r5, r8
+ 593              	.LVL46:
+ 184:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+ 594              		.loc 1 184 71 view .LVU176
+ 595 0030 00FB0133 		mla	r3, r0, r1, r3
+ 184:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 3) + Xpos * 3;
+ 596              		.loc 1 184 7 view .LVU177
+ 597 0034 D96D     		ldr	r1, [r3, #92]
+ 598              	.LVL47:
+ 185:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 599              		.loc 1 185 3 is_stmt 1 view .LVU178
+ 185:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 600              		.loc 1 185 35 is_stmt 0 view .LVU179
+ 601 0036 05EB4505 		add	r5, r5, r5, lsl #1
+ 185:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 602              		.loc 1 185 7 view .LVU180
+ 603 003a 2944     		add	r1, r1, r5
+ 604              	.LVL48:
+ 186:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 605              		.loc 1 186 3 is_stmt 1 view .LVU181
+ 186:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 606              		.loc 1 186 10 is_stmt 0 view .LVU182
+ 607 003c 0025     		movs	r5, #0
+ 608 003e 06EB4607 		add	r7, r6, r6, lsl #1
+ 192:Lib/screenl/Src/scrl_lcd.c ****   }
+ 609              		.loc 1 192 9 view .LVU183
+ 610 0042 D01C     		adds	r0, r2, #3
+ 611              	.LVL49:
+ 612              	.L33:
+ 186:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 21
+
+
+ 613              		.loc 1 186 17 is_stmt 1 discriminator 1 view .LVU184
+ 614 0044 6545     		cmp	r5, ip
+ 615 0046 5AD0     		beq	.L36
+ 186:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 616              		.loc 1 186 17 is_stmt 0 discriminator 1 view .LVU185
+ 617 0048 7246     		mov	r2, lr
+ 618 004a 0B46     		mov	r3, r1
+ 187:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 0] = *pData++;
+ 619              		.loc 1 187 12 view .LVU186
+ 620 004c 741C     		adds	r4, r6, #1
+ 621 004e 0BE0     		b	.L37
+ 622              	.LVL50:
+ 623              	.L34:
+ 188:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 1] = *pData++;
+ 624              		.loc 1 188 7 is_stmt 1 view .LVU187
+ 188:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 1] = *pData++;
+ 625              		.loc 1 188 24 is_stmt 0 view .LVU188
+ 626 0050 12F8038C 		ldrb	r8, [r2, #-3]	@ zero_extendqisi2
+ 188:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 1] = *pData++;
+ 627              		.loc 1 188 22 view .LVU189
+ 628 0054 03F8038C 		strb	r8, [r3, #-3]
+ 189:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 2] = *pData++;
+ 629              		.loc 1 189 7 is_stmt 1 view .LVU190
+ 630              	.LVL51:
+ 189:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 2] = *pData++;
+ 631              		.loc 1 189 24 is_stmt 0 view .LVU191
+ 632 0058 12F8028C 		ldrb	r8, [r2, #-2]	@ zero_extendqisi2
+ 189:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 2] = *pData++;
+ 633              		.loc 1 189 22 view .LVU192
+ 634 005c 03F8028C 		strb	r8, [r3, #-2]
+ 190:Lib/screenl/Src/scrl_lcd.c ****     }
+ 635              		.loc 1 190 7 is_stmt 1 view .LVU193
+ 636              	.LVL52:
+ 190:Lib/screenl/Src/scrl_lcd.c ****     }
+ 637              		.loc 1 190 24 is_stmt 0 view .LVU194
+ 638 0060 12F8018C 		ldrb	r8, [r2, #-1]	@ zero_extendqisi2
+ 190:Lib/screenl/Src/scrl_lcd.c ****     }
+ 639              		.loc 1 190 22 view .LVU195
+ 640 0064 03F8018C 		strb	r8, [r3, #-1]
+ 187:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 0] = *pData++;
+ 641              		.loc 1 187 29 is_stmt 1 discriminator 3 view .LVU196
+ 642              	.L37:
+ 187:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 0] = *pData++;
+ 643              		.loc 1 187 19 discriminator 1 view .LVU197
+ 644 0068 013C     		subs	r4, r4, #1
+ 645 006a 02F10302 		add	r2, r2, #3
+ 646              	.LVL53:
+ 187:Lib/screenl/Src/scrl_lcd.c ****       pel[3 * w + 0] = *pData++;
+ 647              		.loc 1 187 19 is_stmt 0 discriminator 1 view .LVU198
+ 648 006e 03F10303 		add	r3, r3, #3
+ 649 0072 EDD1     		bne	.L34
+ 650 0074 BE44     		add	lr, lr, r7
+ 192:Lib/screenl/Src/scrl_lcd.c ****   }
+ 651              		.loc 1 192 5 is_stmt 1 view .LVU199
+ 192:Lib/screenl/Src/scrl_lcd.c ****   }
+ 652              		.loc 1 192 9 is_stmt 0 view .LVU200
+ 653 0076 0144     		add	r1, r1, r0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 22
+
+
+ 654              	.LVL54:
+ 186:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 655              		.loc 1 186 28 is_stmt 1 discriminator 2 view .LVU201
+ 656 0078 0135     		adds	r5, r5, #1
+ 657              	.LVL55:
+ 186:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 658              		.loc 1 186 28 is_stmt 0 discriminator 2 view .LVU202
+ 659 007a E3E7     		b	.L33
+ 660              	.LVL56:
+ 661              	.L32:
+ 186:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 662              		.loc 1 186 28 discriminator 2 view .LVU203
+ 663              	.LBE7:
+ 664              	.LBE6:
+ 316:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectArgb8888(Instance, Xpos, Ypos, pData, Width, Height);
+ 665              		.loc 1 316 3 is_stmt 1 view .LVU204
+ 316:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectArgb8888(Instance, Xpos, Ypos, pData, Width, Height);
+ 666              		.loc 1 316 24 is_stmt 0 view .LVU205
+ 667 007c DFF894A0 		ldr	r10, .L43+16
+ 316:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_FillRGBRectArgb8888(Instance, Xpos, Ypos, pData, Width, Height);
+ 668              		.loc 1 316 6 view .LVU206
+ 669 0080 5AF82990 		ldr	r9, [r10, r9, lsl #2]
+ 670 0084 B9F1000F 		cmp	r9, #0
+ 671 0088 33D0     		beq	.L38
+ 317:Lib/screenl/Src/scrl_lcd.c **** 
+ 672              		.loc 1 317 5 is_stmt 1 view .LVU207
+ 673              	.LVL57:
+ 674              	.LBB8:
+ 675              	.LBI8:
+ 198:Lib/screenl/Src/scrl_lcd.c ****                                       uint32_t Height)
+ 676              		.loc 1 198 16 view .LVU208
+ 677              	.LBB9:
+ 201:Lib/screenl/Src/scrl_lcd.c ****   uint8_t *pel;
+ 678              		.loc 1 201 3 view .LVU209
+ 202:Lib/screenl/Src/scrl_lcd.c ****   int w, h;
+ 679              		.loc 1 202 3 view .LVU210
+ 203:Lib/screenl/Src/scrl_lcd.c **** 
+ 680              		.loc 1 203 3 view .LVU211
+ 205:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 681              		.loc 1 205 3 view .LVU212
+ 205:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 682              		.loc 1 205 34 is_stmt 0 view .LVU213
+ 683 008a 204B     		ldr	r3, .L43+8
+ 684              	.LVL58:
+ 205:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 685              		.loc 1 205 34 view .LVU214
+ 686 008c 4201     		lsls	r2, r0, #5
+ 687              	.LVL59:
+ 205:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 688              		.loc 1 205 34 view .LVU215
+ 689 008e 03EB4014 		add	r4, r3, r0, lsl #5
+ 206:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 690              		.loc 1 206 71 view .LVU216
+ 691 0092 3420     		movs	r0, #52
+ 692              	.LVL60:
+ 205:Lib/screenl/Src/scrl_lcd.c ****   pel = (uint8_t *) (hlcd_ltdc.LayerCfg[Lcd_Ctx[Instance].ActiveLayer].FBStartAdress);
+ 693              		.loc 1 205 34 view .LVU217
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 23
+
+
+ 694 0094 9A58     		ldr	r2, [r3, r2]
+ 695              	.LVL61:
+ 206:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 696              		.loc 1 206 3 is_stmt 1 view .LVU218
+ 206:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 697              		.loc 1 206 71 is_stmt 0 view .LVU219
+ 698 0096 A168     		ldr	r1, [r4, #8]
+ 699              	.LVL62:
+ 206:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 700              		.loc 1 206 71 view .LVU220
+ 701 0098 1D4B     		ldr	r3, .L43+12
+ 702 009a B600     		lsls	r6, r6, #2
+ 703              	.LVL63:
+ 206:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 704              		.loc 1 206 71 view .LVU221
+ 705 009c 00FB0133 		mla	r3, r0, r1, r3
+ 206:Lib/screenl/Src/scrl_lcd.c ****   pel += (Ypos * layer_width * 4) + Xpos * 4;
+ 706              		.loc 1 206 7 view .LVU222
+ 707 00a0 D96D     		ldr	r1, [r3, #92]
+ 708              	.LVL64:
+ 207:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 709              		.loc 1 207 3 is_stmt 1 view .LVU223
+ 207:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 710              		.loc 1 207 35 is_stmt 0 view .LVU224
+ 711 00a2 02FB0583 		mla	r3, r2, r5, r8
+ 215:Lib/screenl/Src/scrl_lcd.c ****   }
+ 712              		.loc 1 215 9 view .LVU225
+ 713 00a6 151D     		adds	r5, r2, #4
+ 714              	.LVL65:
+ 207:Lib/screenl/Src/scrl_lcd.c ****   for (h = 0; h < Height; h++) {
+ 715              		.loc 1 207 7 view .LVU226
+ 716 00a8 01EB8301 		add	r1, r1, r3, lsl #2
+ 717              	.LVL66:
+ 208:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 718              		.loc 1 208 3 is_stmt 1 view .LVU227
+ 719              	.L39:
+ 208:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 720              		.loc 1 208 17 discriminator 1 view .LVU228
+ 721 00ac 6745     		cmp	r7, ip
+ 722 00ae 26D0     		beq	.L36
+ 208:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 723              		.loc 1 208 17 is_stmt 0 discriminator 1 view .LVU229
+ 724 00b0 7346     		mov	r3, lr
+ 725 00b2 0EEB0604 		add	r4, lr, r6
+ 726 00b6 E01A     		subs	r0, r4, r3
+ 727 00b8 8008     		lsrs	r0, r0, #2
+ 728 00ba 0A46     		mov	r2, r1
+ 729 00bc 0130     		adds	r0, r0, #1
+ 730 00be 10E0     		b	.L42
+ 731              	.LVL67:
+ 732              	.L40:
+ 210:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 1] = *pData++;
+ 733              		.loc 1 210 7 is_stmt 1 view .LVU230
+ 210:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 1] = *pData++;
+ 734              		.loc 1 210 24 is_stmt 0 view .LVU231
+ 735 00c0 93F800E0 		ldrb	lr, [r3]	@ zero_extendqisi2
+ 213:Lib/screenl/Src/scrl_lcd.c ****     }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 24
+
+
+ 736              		.loc 1 213 30 view .LVU232
+ 737 00c4 0433     		adds	r3, r3, #4
+ 738              	.LVL68:
+ 210:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 1] = *pData++;
+ 739              		.loc 1 210 22 view .LVU233
+ 740 00c6 02F802EC 		strb	lr, [r2, #-2]
+ 211:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 0] = *pData++;
+ 741              		.loc 1 211 7 is_stmt 1 view .LVU234
+ 742              	.LVL69:
+ 211:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 0] = *pData++;
+ 743              		.loc 1 211 24 is_stmt 0 view .LVU235
+ 744 00ca 13F803EC 		ldrb	lr, [r3, #-3]	@ zero_extendqisi2
+ 211:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 0] = *pData++;
+ 745              		.loc 1 211 22 view .LVU236
+ 746 00ce 02F803EC 		strb	lr, [r2, #-3]
+ 212:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 3] = *pData++;
+ 747              		.loc 1 212 7 is_stmt 1 view .LVU237
+ 748              	.LVL70:
+ 212:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 3] = *pData++;
+ 749              		.loc 1 212 24 is_stmt 0 view .LVU238
+ 750 00d2 13F802EC 		ldrb	lr, [r3, #-2]	@ zero_extendqisi2
+ 212:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 3] = *pData++;
+ 751              		.loc 1 212 22 view .LVU239
+ 752 00d6 02F804EC 		strb	lr, [r2, #-4]
+ 213:Lib/screenl/Src/scrl_lcd.c ****     }
+ 753              		.loc 1 213 7 is_stmt 1 view .LVU240
+ 754              	.LVL71:
+ 213:Lib/screenl/Src/scrl_lcd.c ****     }
+ 755              		.loc 1 213 24 is_stmt 0 view .LVU241
+ 756 00da 13F801EC 		ldrb	lr, [r3, #-1]	@ zero_extendqisi2
+ 213:Lib/screenl/Src/scrl_lcd.c ****     }
+ 757              		.loc 1 213 22 view .LVU242
+ 758 00de 02F801EC 		strb	lr, [r2, #-1]
+ 209:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 2] = *pData++;
+ 759              		.loc 1 209 29 is_stmt 1 discriminator 3 view .LVU243
+ 760              	.L42:
+ 209:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 2] = *pData++;
+ 761              		.loc 1 209 19 discriminator 1 view .LVU244
+ 762 00e2 0138     		subs	r0, r0, #1
+ 763 00e4 02F10402 		add	r2, r2, #4
+ 764 00e8 EAD1     		bne	.L40
+ 209:Lib/screenl/Src/scrl_lcd.c ****       pel[4 * w + 2] = *pData++;
+ 765              		.loc 1 209 19 is_stmt 0 discriminator 1 view .LVU245
+ 766 00ea A646     		mov	lr, r4
+ 215:Lib/screenl/Src/scrl_lcd.c ****   }
+ 767              		.loc 1 215 5 is_stmt 1 view .LVU246
+ 215:Lib/screenl/Src/scrl_lcd.c ****   }
+ 768              		.loc 1 215 9 is_stmt 0 view .LVU247
+ 769 00ec 2944     		add	r1, r1, r5
+ 770              	.LVL72:
+ 208:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 771              		.loc 1 208 28 is_stmt 1 discriminator 2 view .LVU248
+ 772 00ee 0137     		adds	r7, r7, #1
+ 773              	.LVL73:
+ 208:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 774              		.loc 1 208 28 is_stmt 0 discriminator 2 view .LVU249
+ 775 00f0 DCE7     		b	.L39
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 25
+
+
+ 776              	.LVL74:
+ 777              	.L38:
+ 208:Lib/screenl/Src/scrl_lcd.c ****     for (w = 0; w < Width; w++) {
+ 778              		.loc 1 208 28 discriminator 2 view .LVU250
+ 779              	.LBE9:
+ 780              	.LBE8:
+ 319:Lib/screenl/Src/scrl_lcd.c **** }
+ 781              		.loc 1 319 3 is_stmt 1 view .LVU251
+ 319:Lib/screenl/Src/scrl_lcd.c **** }
+ 782              		.loc 1 319 10 is_stmt 0 view .LVU252
+ 783 00f2 CDE9086C 		strd	r6, ip, [sp, #32]
+ 784              	.LVL75:
+ 320:Lib/screenl/Src/scrl_lcd.c **** 
+ 785              		.loc 1 320 1 view .LVU253
+ 786 00f6 BDE8F047 		pop	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 787              		.cfi_remember_state
+ 788              		.cfi_restore 14
+ 789              		.cfi_restore 10
+ 790              		.cfi_restore 9
+ 791              		.cfi_restore 8
+ 792              		.cfi_restore 7
+ 793              		.cfi_restore 6
+ 794              		.cfi_restore 5
+ 795              		.cfi_restore 4
+ 796              		.cfi_def_cfa_offset 0
+ 319:Lib/screenl/Src/scrl_lcd.c **** }
+ 797              		.loc 1 319 10 view .LVU254
+ 798 00fa FFF7FEBF 		b	BSP_LCD_FillRGBRect
+ 799              	.LVL76:
+ 800              	.L36:
+ 801              		.cfi_restore_state
+ 320:Lib/screenl/Src/scrl_lcd.c **** 
+ 802              		.loc 1 320 1 view .LVU255
+ 803 00fe 0020     		movs	r0, #0
+ 804 0100 BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 805              	.LVL77:
+ 806              	.L44:
+ 320:Lib/screenl/Src/scrl_lcd.c **** 
+ 807              		.loc 1 320 1 view .LVU256
+ 808              		.align	2
+ 809              	.L43:
+ 810 0104 00000000 		.word	current_layer
+ 811 0108 00000000 		.word	is_layer_rgb888
+ 812 010c 00000000 		.word	Lcd_Ctx
+ 813 0110 00000000 		.word	hlcd_ltdc
+ 814 0114 00000000 		.word	is_layer_argb8888
+ 815              		.cfi_endproc
+ 816              	.LFE879:
+ 818              		.section	.text.LTDC_DrawBitmap,"ax",%progbits
+ 819              		.align	1
+ 820              		.syntax unified
+ 821              		.thumb
+ 822              		.thumb_func
+ 824              	LTDC_DrawBitmap:
+ 825              	.LVL78:
+ 826              	.LFB878:
+ 307:Lib/screenl/Src/scrl_lcd.c ****   return BSP_LCD_DrawBitmap(Instance, Xpos, Ypos, pBmp);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 26
+
+
+ 827              		.loc 1 307 1 is_stmt 1 view -0
+ 828              		.cfi_startproc
+ 829              		@ args = 0, pretend = 0, frame = 0
+ 830              		@ frame_needed = 0, uses_anonymous_args = 0
+ 831              		@ link register save eliminated.
+ 308:Lib/screenl/Src/scrl_lcd.c **** }
+ 832              		.loc 1 308 3 view .LVU258
+ 308:Lib/screenl/Src/scrl_lcd.c **** }
+ 833              		.loc 1 308 10 is_stmt 0 view .LVU259
+ 834 0000 FFF7FEBF 		b	BSP_LCD_DrawBitmap
+ 835              	.LVL79:
+ 308:Lib/screenl/Src/scrl_lcd.c **** }
+ 836              		.loc 1 308 10 view .LVU260
+ 837              		.cfi_endproc
+ 838              	.LFE878:
+ 840              		.section	.rodata.fill_lcd_layer_config_from_scrl_layer_config.str1.1,"aMS",%progbits,1
+ 841              	.LC0:
+ 842 0000 3000     		.ascii	"0\000"
+ 843              	.LC1:
+ 844 0002 4C69622F 		.ascii	"Lib/screenl/Src/scrl_lcd.c\000"
+ 844      73637265 
+ 844      656E6C2F 
+ 844      5372632F 
+ 844      7363726C 
+ 845              		.section	.text.fill_lcd_layer_config_from_scrl_layer_config,"ax",%progbits
+ 846              		.align	1
+ 847              		.syntax unified
+ 848              		.thumb
+ 849              		.thumb_func
+ 851              	fill_lcd_layer_config_from_scrl_layer_config:
+ 852              	.LVL80:
+ 853              	.LFB866:
+ 145:Lib/screenl/Src/scrl_lcd.c ****   layer_config->X0 = l->origin.x;
+ 854              		.loc 1 145 1 is_stmt 1 view -0
+ 855              		.cfi_startproc
+ 856              		@ args = 0, pretend = 0, frame = 0
+ 857              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y0 = l->origin.y;
+ 858              		.loc 1 146 3 view .LVU262
+ 145:Lib/screenl/Src/scrl_lcd.c ****   layer_config->X0 = l->origin.x;
+ 859              		.loc 1 145 1 is_stmt 0 view .LVU263
+ 860 0000 10B5     		push	{r4, lr}
+ 861              		.cfi_def_cfa_offset 8
+ 862              		.cfi_offset 4, -8
+ 863              		.cfi_offset 14, -4
+ 148:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y1 = layer_config->Y0 + l->size.height;
+ 864              		.loc 1 148 48 view .LVU264
+ 865 0002 8388     		ldrh	r3, [r0, #4]
+ 146:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y0 = l->origin.y;
+ 866              		.loc 1 146 31 view .LVU265
+ 867 0004 0488     		ldrh	r4, [r0]
+ 147:Lib/screenl/Src/scrl_lcd.c ****   layer_config->X1 = layer_config->X0 + l->size.width;
+ 868              		.loc 1 147 31 view .LVU266
+ 869 0006 4288     		ldrh	r2, [r0, #2]
+ 148:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y1 = layer_config->Y0 + l->size.height;
+ 870              		.loc 1 148 39 view .LVU267
+ 871 0008 2344     		add	r3, r3, r4
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 27
+
+
+ 148:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y1 = layer_config->Y0 + l->size.height;
+ 872              		.loc 1 148 20 view .LVU268
+ 873 000a 4B60     		str	r3, [r1, #4]
+ 149:Lib/screenl/Src/scrl_lcd.c ****   layer_config->PixelFormat = pixel_format_from_scrl_format(l->format);
+ 874              		.loc 1 149 48 view .LVU269
+ 875 000c C388     		ldrh	r3, [r0, #6]
+ 146:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y0 = l->origin.y;
+ 876              		.loc 1 146 20 view .LVU270
+ 877 000e 0C60     		str	r4, [r1]
+ 147:Lib/screenl/Src/scrl_lcd.c ****   layer_config->X1 = layer_config->X0 + l->size.width;
+ 878              		.loc 1 147 3 is_stmt 1 view .LVU271
+ 149:Lib/screenl/Src/scrl_lcd.c ****   layer_config->PixelFormat = pixel_format_from_scrl_format(l->format);
+ 879              		.loc 1 149 39 is_stmt 0 view .LVU272
+ 880 0010 1344     		add	r3, r3, r2
+ 147:Lib/screenl/Src/scrl_lcd.c ****   layer_config->X1 = layer_config->X0 + l->size.width;
+ 881              		.loc 1 147 20 view .LVU273
+ 882 0012 8A60     		str	r2, [r1, #8]
+ 148:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Y1 = layer_config->Y0 + l->size.height;
+ 883              		.loc 1 148 3 is_stmt 1 view .LVU274
+ 149:Lib/screenl/Src/scrl_lcd.c ****   layer_config->PixelFormat = pixel_format_from_scrl_format(l->format);
+ 884              		.loc 1 149 3 view .LVU275
+ 149:Lib/screenl/Src/scrl_lcd.c ****   layer_config->PixelFormat = pixel_format_from_scrl_format(l->format);
+ 885              		.loc 1 149 20 is_stmt 0 view .LVU276
+ 886 0014 CB60     		str	r3, [r1, #12]
+ 150:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Address = (uint32_t) l->address;
+ 887              		.loc 1 150 3 is_stmt 1 view .LVU277
+ 888              	.LVL81:
+ 889              	.LBB12:
+ 890              	.LBI12:
+ 117:Lib/screenl/Src/scrl_lcd.c **** {
+ 891              		.loc 1 117 17 view .LVU278
+ 892              	.LBB13:
+ 119:Lib/screenl/Src/scrl_lcd.c **** 
+ 893              		.loc 1 119 3 view .LVU279
+ 121:Lib/screenl/Src/scrl_lcd.c ****   case SCRL_RGB565:
+ 894              		.loc 1 121 3 view .LVU280
+ 895 0016 037A     		ldrb	r3, [r0, #8]	@ zero_extendqisi2
+ 896 0018 052B     		cmp	r3, #5
+ 897 001a 0BD8     		bhi	.L47
+ 898 001c DFE803F0 		tbb	[pc, r3]
+ 899              	.L49:
+ 900 0020 03       		.byte	(.L52-.L49)/2
+ 901 0021 12       		.byte	(.L53-.L49)/2
+ 902 0022 0A       		.byte	(.L47-.L49)/2
+ 903 0023 08       		.byte	(.L50-.L49)/2
+ 904 0024 10       		.byte	(.L48-.L49)/2
+ 905 0025 10       		.byte	(.L48-.L49)/2
+ 906              		.p2align 1
+ 907              	.L52:
+ 123:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 908              		.loc 1 123 9 is_stmt 0 view .LVU281
+ 909 0026 0223     		movs	r3, #2
+ 910              	.LVL82:
+ 911              	.L51:
+ 141:Lib/screenl/Src/scrl_lcd.c **** }
+ 912              		.loc 1 141 3 is_stmt 1 view .LVU282
+ 141:Lib/screenl/Src/scrl_lcd.c **** }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 28
+
+
+ 913              		.loc 1 141 3 is_stmt 0 view .LVU283
+ 914              	.LBE13:
+ 915              	.LBE12:
+ 150:Lib/screenl/Src/scrl_lcd.c ****   layer_config->Address = (uint32_t) l->address;
+ 916              		.loc 1 150 29 discriminator 1 view .LVU284
+ 917 0028 0B61     		str	r3, [r1, #16]
+ 151:Lib/screenl/Src/scrl_lcd.c **** }
+ 918              		.loc 1 151 3 is_stmt 1 view .LVU285
+ 151:Lib/screenl/Src/scrl_lcd.c **** }
+ 919              		.loc 1 151 25 is_stmt 0 view .LVU286
+ 920 002a C368     		ldr	r3, [r0, #12]
+ 921 002c 4B61     		str	r3, [r1, #20]
+ 152:Lib/screenl/Src/scrl_lcd.c **** 
+ 922              		.loc 1 152 1 view .LVU287
+ 923 002e 10BD     		pop	{r4, pc}
+ 924              	.LVL83:
+ 925              	.L50:
+ 926              	.LBB15:
+ 927              	.LBB14:
+ 135:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 928              		.loc 1 135 5 is_stmt 1 view .LVU288
+ 136:Lib/screenl/Src/scrl_lcd.c ****   default:
+ 929              		.loc 1 136 5 view .LVU289
+ 135:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 930              		.loc 1 135 9 is_stmt 0 view .LVU290
+ 931 0030 0023     		movs	r3, #0
+ 136:Lib/screenl/Src/scrl_lcd.c ****   default:
+ 932              		.loc 1 136 5 view .LVU291
+ 933 0032 F9E7     		b	.L51
+ 934              	.LVL84:
+ 935              	.L47:
+ 138:Lib/screenl/Src/scrl_lcd.c ****   }
+ 936              		.loc 1 138 5 is_stmt 1 view .LVU292
+ 937 0034 8A21     		movs	r1, #138
+ 938              	.LVL85:
+ 138:Lib/screenl/Src/scrl_lcd.c ****   }
+ 939              		.loc 1 138 5 is_stmt 0 view .LVU293
+ 940 0036 044B     		ldr	r3, .L54
+ 941 0038 044A     		ldr	r2, .L54+4
+ 942 003a 0548     		ldr	r0, .L54+8
+ 943              	.LVL86:
+ 138:Lib/screenl/Src/scrl_lcd.c ****   }
+ 944              		.loc 1 138 5 view .LVU294
+ 945 003c FFF7FEFF 		bl	__assert_func
+ 946              	.LVL87:
+ 947              	.L48:
+ 129:Lib/screenl/Src/scrl_lcd.c ****     break;
+ 948              		.loc 1 129 9 view .LVU295
+ 949 0040 0123     		movs	r3, #1
+ 950 0042 F1E7     		b	.L51
+ 951              	.LVL88:
+ 952              	.L53:
+ 121:Lib/screenl/Src/scrl_lcd.c ****   case SCRL_RGB565:
+ 953              		.loc 1 121 3 view .LVU296
+ 954 0044 0423     		movs	r3, #4
+ 955 0046 EFE7     		b	.L51
+ 956              	.L55:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 29
+
+
+ 957              		.align	2
+ 958              	.L54:
+ 959 0048 00000000 		.word	.LC0
+ 960 004c 00000000 		.word	__func__.1
+ 961 0050 02000000 		.word	.LC1
+ 962              	.LBE14:
+ 963              	.LBE15:
+ 964              		.cfi_endproc
+ 965              	.LFE866:
+ 967              		.section	.text.LTDC_SetPixel,"ax",%progbits
+ 968              		.align	1
+ 969              		.syntax unified
+ 970              		.thumb
+ 971              		.thumb_func
+ 973              	LTDC_SetPixel:
+ 974              	.LVL89:
+ 975              	.LFB884:
+ 359:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 976              		.loc 1 359 1 is_stmt 1 view -0
+ 977              		.cfi_startproc
+ 978              		@ args = 0, pretend = 0, frame = 0
+ 979              		@ frame_needed = 0, uses_anonymous_args = 0
+ 360:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_SetPixelRgb888(Instance, Xpos, Ypos, Color);
+ 980              		.loc 1 360 3 view .LVU298
+ 359:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 981              		.loc 1 359 1 is_stmt 0 view .LVU299
+ 982 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 983              		.cfi_def_cfa_offset 32
+ 984              		.cfi_offset 4, -20
+ 985              		.cfi_offset 5, -16
+ 986              		.cfi_offset 6, -12
+ 987              		.cfi_offset 7, -8
+ 988              		.cfi_offset 14, -4
+ 360:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_SetPixelRgb888(Instance, Xpos, Ypos, Color);
+ 989              		.loc 1 360 22 view .LVU300
+ 990 0002 0F4D     		ldr	r5, .L60
+ 991 0004 2E78     		ldrb	r6, [r5]	@ zero_extendqisi2
+ 992 0006 0F4D     		ldr	r5, .L60+4
+ 360:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_SetPixelRgb888(Instance, Xpos, Ypos, Color);
+ 993              		.loc 1 360 6 view .LVU301
+ 994 0008 55F82650 		ldr	r5, [r5, r6, lsl #2]
+ 995 000c 3DB1     		cbz	r5, .L57
+ 361:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 996              		.loc 1 361 5 is_stmt 1 view .LVU302
+ 997              	.LVL90:
+ 998              	.LBB20:
+ 999              	.LBI20:
+ 296:Lib/screenl/Src/scrl_lcd.c **** {
+ 1000              		.loc 1 296 16 view .LVU303
+ 1001              	.LBB21:
+ 298:Lib/screenl/Src/scrl_lcd.c **** }
+ 1002              		.loc 1 298 3 view .LVU304
+ 298:Lib/screenl/Src/scrl_lcd.c **** }
+ 1003              		.loc 1 298 10 is_stmt 0 view .LVU305
+ 1004 000e 0193     		str	r3, [sp, #4]
+ 1005 0010 0123     		movs	r3, #1
+ 1006              	.LVL91:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 30
+
+
+ 298:Lib/screenl/Src/scrl_lcd.c **** }
+ 1007              		.loc 1 298 10 view .LVU306
+ 1008 0012 0020     		movs	r0, #0
+ 1009              	.LVL92:
+ 298:Lib/screenl/Src/scrl_lcd.c **** }
+ 1010              		.loc 1 298 10 view .LVU307
+ 1011 0014 0093     		str	r3, [sp]
+ 1012 0016 FFF7FEFF 		bl	LTDC_FillRectRgb888
+ 1013              	.LVL93:
+ 1014              	.L56:
+ 298:Lib/screenl/Src/scrl_lcd.c **** }
+ 1015              		.loc 1 298 10 view .LVU308
+ 1016              	.LBE21:
+ 1017              	.LBE20:
+ 366:Lib/screenl/Src/scrl_lcd.c **** 
+ 1018              		.loc 1 366 1 view .LVU309
+ 1019 001a 03B0     		add	sp, sp, #12
+ 1020              		.cfi_remember_state
+ 1021              		.cfi_def_cfa_offset 20
+ 1022              		@ sp needed
+ 1023 001c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1024              	.LVL94:
+ 1025              	.L57:
+ 1026              		.cfi_restore_state
+ 362:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_SetPixelArgb8888(Instance, Xpos, Ypos, Color);
+ 1027              		.loc 1 362 3 is_stmt 1 view .LVU310
+ 362:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_SetPixelArgb8888(Instance, Xpos, Ypos, Color);
+ 1028              		.loc 1 362 24 is_stmt 0 view .LVU311
+ 1029 001e 0A4F     		ldr	r7, .L60+8
+ 362:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_SetPixelArgb8888(Instance, Xpos, Ypos, Color);
+ 1030              		.loc 1 362 6 view .LVU312
+ 1031 0020 57F82660 		ldr	r6, [r7, r6, lsl #2]
+ 1032 0024 36B1     		cbz	r6, .L59
+ 363:Lib/screenl/Src/scrl_lcd.c **** 
+ 1033              		.loc 1 363 5 is_stmt 1 view .LVU313
+ 1034              	.LVL95:
+ 1035              	.LBB22:
+ 1036              	.LBI22:
+ 301:Lib/screenl/Src/scrl_lcd.c **** {
+ 1037              		.loc 1 301 16 view .LVU314
+ 1038              	.LBB23:
+ 303:Lib/screenl/Src/scrl_lcd.c **** }
+ 1039              		.loc 1 303 3 view .LVU315
+ 303:Lib/screenl/Src/scrl_lcd.c **** }
+ 1040              		.loc 1 303 10 is_stmt 0 view .LVU316
+ 1041 0026 0193     		str	r3, [sp, #4]
+ 1042 0028 0123     		movs	r3, #1
+ 1043              	.LVL96:
+ 303:Lib/screenl/Src/scrl_lcd.c **** }
+ 1044              		.loc 1 303 10 view .LVU317
+ 1045 002a 2846     		mov	r0, r5
+ 1046              	.LVL97:
+ 303:Lib/screenl/Src/scrl_lcd.c **** }
+ 1047              		.loc 1 303 10 view .LVU318
+ 1048 002c 0093     		str	r3, [sp]
+ 1049 002e FFF7FEFF 		bl	LTDC_FillRectArgb8888
+ 1050              	.LVL98:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 31
+
+
+ 303:Lib/screenl/Src/scrl_lcd.c **** }
+ 1051              		.loc 1 303 10 view .LVU319
+ 1052              	.LBE23:
+ 1053              	.LBE22:
+ 363:Lib/screenl/Src/scrl_lcd.c **** 
+ 1054              		.loc 1 363 12 view .LVU320
+ 1055 0032 F2E7     		b	.L56
+ 1056              	.LVL99:
+ 1057              	.L59:
+ 365:Lib/screenl/Src/scrl_lcd.c **** }
+ 1058              		.loc 1 365 3 is_stmt 1 view .LVU321
+ 366:Lib/screenl/Src/scrl_lcd.c **** 
+ 1059              		.loc 1 366 1 is_stmt 0 view .LVU322
+ 1060 0034 03B0     		add	sp, sp, #12
+ 1061              		.cfi_def_cfa_offset 20
+ 1062              		@ sp needed
+ 1063 0036 BDE8F040 		pop	{r4, r5, r6, r7, lr}
+ 1064              		.cfi_restore 14
+ 1065              		.cfi_restore 7
+ 1066              		.cfi_restore 6
+ 1067              		.cfi_restore 5
+ 1068              		.cfi_restore 4
+ 1069              		.cfi_def_cfa_offset 0
+ 365:Lib/screenl/Src/scrl_lcd.c **** }
+ 1070              		.loc 1 365 10 view .LVU323
+ 1071 003a FFF7FEBF 		b	BSP_LCD_WritePixel
+ 1072              	.LVL100:
+ 1073              	.L61:
+ 365:Lib/screenl/Src/scrl_lcd.c **** }
+ 1074              		.loc 1 365 10 view .LVU324
+ 1075 003e 00BF     		.align	2
+ 1076              	.L60:
+ 1077 0040 00000000 		.word	current_layer
+ 1078 0044 00000000 		.word	is_layer_rgb888
+ 1079 0048 00000000 		.word	is_layer_argb8888
+ 1080              		.cfi_endproc
+ 1081              	.LFE884:
+ 1083              		.section	.text.LTDC_DrawVLine,"ax",%progbits
+ 1084              		.align	1
+ 1085              		.syntax unified
+ 1086              		.thumb
+ 1087              		.thumb_func
+ 1089              	LTDC_DrawVLine:
+ 1090              	.LVL101:
+ 1091              	.LFB881:
+ 333:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 1092              		.loc 1 333 1 is_stmt 1 view -0
+ 1093              		.cfi_startproc
+ 1094              		@ args = 4, pretend = 0, frame = 0
+ 1095              		@ frame_needed = 0, uses_anonymous_args = 0
+ 334:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 1096              		.loc 1 334 3 view .LVU326
+ 333:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 1097              		.loc 1 333 1 is_stmt 0 view .LVU327
+ 1098 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 1099              		.cfi_def_cfa_offset 32
+ 1100              		.cfi_offset 4, -20
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 32
+
+
+ 1101              		.cfi_offset 5, -16
+ 1102              		.cfi_offset 6, -12
+ 1103              		.cfi_offset 7, -8
+ 1104              		.cfi_offset 14, -4
+ 334:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 1105              		.loc 1 334 22 view .LVU328
+ 1106 0002 104E     		ldr	r6, .L66
+ 333:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 1107              		.loc 1 333 1 view .LVU329
+ 1108 0004 089D     		ldr	r5, [sp, #32]
+ 334:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 1109              		.loc 1 334 22 view .LVU330
+ 1110 0006 3778     		ldrb	r7, [r6]	@ zero_extendqisi2
+ 1111 0008 0F4E     		ldr	r6, .L66+4
+ 334:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 1112              		.loc 1 334 6 view .LVU331
+ 1113 000a 56F82760 		ldr	r6, [r6, r7, lsl #2]
+ 1114 000e 3EB1     		cbz	r6, .L63
+ 335:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 1115              		.loc 1 335 5 is_stmt 1 view .LVU332
+ 1116              	.LVL102:
+ 1117              	.LBB28:
+ 1118              	.LBI28:
+ 286:Lib/screenl/Src/scrl_lcd.c **** {
+ 1119              		.loc 1 286 16 view .LVU333
+ 1120              	.LBB29:
+ 288:Lib/screenl/Src/scrl_lcd.c **** }
+ 1121              		.loc 1 288 3 view .LVU334
+ 288:Lib/screenl/Src/scrl_lcd.c **** }
+ 1122              		.loc 1 288 10 is_stmt 0 view .LVU335
+ 1123 0010 CDE90035 		strd	r3, r5, [sp]
+ 1124 0014 0020     		movs	r0, #0
+ 1125              	.LVL103:
+ 288:Lib/screenl/Src/scrl_lcd.c **** }
+ 1126              		.loc 1 288 10 view .LVU336
+ 1127 0016 0123     		movs	r3, #1
+ 1128              	.LVL104:
+ 288:Lib/screenl/Src/scrl_lcd.c **** }
+ 1129              		.loc 1 288 10 view .LVU337
+ 1130 0018 FFF7FEFF 		bl	LTDC_FillRectRgb888
+ 1131              	.LVL105:
+ 1132              	.L62:
+ 288:Lib/screenl/Src/scrl_lcd.c **** }
+ 1133              		.loc 1 288 10 view .LVU338
+ 1134              	.LBE29:
+ 1135              	.LBE28:
+ 340:Lib/screenl/Src/scrl_lcd.c **** 
+ 1136              		.loc 1 340 1 view .LVU339
+ 1137 001c 03B0     		add	sp, sp, #12
+ 1138              		.cfi_remember_state
+ 1139              		.cfi_def_cfa_offset 20
+ 1140              		@ sp needed
+ 1141 001e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1142              	.LVL106:
+ 1143              	.L63:
+ 1144              		.cfi_restore_state
+ 336:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineArgb8888(Instance, Xpos, Ypos, Length, Color);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 33
+
+
+ 1145              		.loc 1 336 3 is_stmt 1 view .LVU340
+ 336:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineArgb8888(Instance, Xpos, Ypos, Length, Color);
+ 1146              		.loc 1 336 24 is_stmt 0 view .LVU341
+ 1147 0020 DFF828C0 		ldr	ip, .L66+8
+ 336:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawVLineArgb8888(Instance, Xpos, Ypos, Length, Color);
+ 1148              		.loc 1 336 6 view .LVU342
+ 1149 0024 5CF82770 		ldr	r7, [ip, r7, lsl #2]
+ 1150 0028 37B1     		cbz	r7, .L65
+ 337:Lib/screenl/Src/scrl_lcd.c **** 
+ 1151              		.loc 1 337 5 is_stmt 1 view .LVU343
+ 1152              	.LVL107:
+ 1153              	.LBB30:
+ 1154              	.LBI30:
+ 291:Lib/screenl/Src/scrl_lcd.c **** {
+ 1155              		.loc 1 291 16 view .LVU344
+ 1156              	.LBB31:
+ 293:Lib/screenl/Src/scrl_lcd.c **** }
+ 1157              		.loc 1 293 3 view .LVU345
+ 293:Lib/screenl/Src/scrl_lcd.c **** }
+ 1158              		.loc 1 293 10 is_stmt 0 view .LVU346
+ 1159 002a CDE90035 		strd	r3, r5, [sp]
+ 1160 002e 3046     		mov	r0, r6
+ 1161              	.LVL108:
+ 293:Lib/screenl/Src/scrl_lcd.c **** }
+ 1162              		.loc 1 293 10 view .LVU347
+ 1163 0030 0123     		movs	r3, #1
+ 1164              	.LVL109:
+ 293:Lib/screenl/Src/scrl_lcd.c **** }
+ 1165              		.loc 1 293 10 view .LVU348
+ 1166 0032 FFF7FEFF 		bl	LTDC_FillRectArgb8888
+ 1167              	.LVL110:
+ 293:Lib/screenl/Src/scrl_lcd.c **** }
+ 1168              		.loc 1 293 10 view .LVU349
+ 1169              	.LBE31:
+ 1170              	.LBE30:
+ 337:Lib/screenl/Src/scrl_lcd.c **** 
+ 1171              		.loc 1 337 12 view .LVU350
+ 1172 0036 F1E7     		b	.L62
+ 1173              	.LVL111:
+ 1174              	.L65:
+ 339:Lib/screenl/Src/scrl_lcd.c **** }
+ 1175              		.loc 1 339 3 is_stmt 1 view .LVU351
+ 339:Lib/screenl/Src/scrl_lcd.c **** }
+ 1176              		.loc 1 339 10 is_stmt 0 view .LVU352
+ 1177 0038 0895     		str	r5, [sp, #32]
+ 1178              	.LVL112:
+ 340:Lib/screenl/Src/scrl_lcd.c **** 
+ 1179              		.loc 1 340 1 view .LVU353
+ 1180 003a 03B0     		add	sp, sp, #12
+ 1181              		.cfi_def_cfa_offset 20
+ 1182              		@ sp needed
+ 1183 003c BDE8F040 		pop	{r4, r5, r6, r7, lr}
+ 1184              		.cfi_restore 14
+ 1185              		.cfi_restore 7
+ 1186              		.cfi_restore 6
+ 1187              		.cfi_restore 5
+ 1188              		.cfi_restore 4
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 34
+
+
+ 1189              		.cfi_def_cfa_offset 0
+ 339:Lib/screenl/Src/scrl_lcd.c **** }
+ 1190              		.loc 1 339 10 view .LVU354
+ 1191 0040 FFF7FEBF 		b	BSP_LCD_DrawVLine
+ 1192              	.LVL113:
+ 1193              	.L67:
+ 339:Lib/screenl/Src/scrl_lcd.c **** }
+ 1194              		.loc 1 339 10 view .LVU355
+ 1195              		.align	2
+ 1196              	.L66:
+ 1197 0044 00000000 		.word	current_layer
+ 1198 0048 00000000 		.word	is_layer_rgb888
+ 1199 004c 00000000 		.word	is_layer_argb8888
+ 1200              		.cfi_endproc
+ 1201              	.LFE881:
+ 1203              		.section	.text.LTDC_DrawHLine,"ax",%progbits
+ 1204              		.align	1
+ 1205              		.syntax unified
+ 1206              		.thumb
+ 1207              		.thumb_func
+ 1209              	LTDC_DrawHLine:
+ 1210              	.LVL114:
+ 1211              	.LFB880:
+ 323:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 1212              		.loc 1 323 1 is_stmt 1 view -0
+ 1213              		.cfi_startproc
+ 1214              		@ args = 4, pretend = 0, frame = 0
+ 1215              		@ frame_needed = 0, uses_anonymous_args = 0
+ 324:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 1216              		.loc 1 324 3 view .LVU357
+ 323:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 1217              		.loc 1 323 1 is_stmt 0 view .LVU358
+ 1218 0000 F7B5     		push	{r0, r1, r2, r4, r5, r6, r7, lr}
+ 1219              		.cfi_def_cfa_offset 32
+ 1220              		.cfi_offset 4, -20
+ 1221              		.cfi_offset 5, -16
+ 1222              		.cfi_offset 6, -12
+ 1223              		.cfi_offset 7, -8
+ 1224              		.cfi_offset 14, -4
+ 324:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 1225              		.loc 1 324 22 view .LVU359
+ 1226 0002 104D     		ldr	r5, .L72
+ 323:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[current_layer])
+ 1227              		.loc 1 323 1 view .LVU360
+ 1228 0004 089C     		ldr	r4, [sp, #32]
+ 324:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 1229              		.loc 1 324 22 view .LVU361
+ 1230 0006 2E78     		ldrb	r6, [r5]	@ zero_extendqisi2
+ 1231 0008 0F4D     		ldr	r5, .L72+4
+ 324:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineRgb888(Instance, Xpos, Ypos, Length, Color);
+ 1232              		.loc 1 324 6 view .LVU362
+ 1233 000a 55F82650 		ldr	r5, [r5, r6, lsl #2]
+ 1234 000e 3DB1     		cbz	r5, .L69
+ 325:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_argb8888[current_layer])
+ 1235              		.loc 1 325 5 is_stmt 1 view .LVU363
+ 1236              	.LVL115:
+ 1237              	.LBB36:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 35
+
+
+ 1238              	.LBI36:
+ 276:Lib/screenl/Src/scrl_lcd.c **** {
+ 1239              		.loc 1 276 16 view .LVU364
+ 1240              	.LBB37:
+ 278:Lib/screenl/Src/scrl_lcd.c **** }
+ 1241              		.loc 1 278 3 view .LVU365
+ 278:Lib/screenl/Src/scrl_lcd.c **** }
+ 1242              		.loc 1 278 10 is_stmt 0 view .LVU366
+ 1243 0010 0120     		movs	r0, #1
+ 1244              	.LVL116:
+ 278:Lib/screenl/Src/scrl_lcd.c **** }
+ 1245              		.loc 1 278 10 view .LVU367
+ 1246 0012 0194     		str	r4, [sp, #4]
+ 1247 0014 0090     		str	r0, [sp]
+ 1248 0016 0020     		movs	r0, #0
+ 1249 0018 FFF7FEFF 		bl	LTDC_FillRectRgb888
+ 1250              	.LVL117:
+ 1251              	.L68:
+ 278:Lib/screenl/Src/scrl_lcd.c **** }
+ 1252              		.loc 1 278 10 view .LVU368
+ 1253              	.LBE37:
+ 1254              	.LBE36:
+ 330:Lib/screenl/Src/scrl_lcd.c **** 
+ 1255              		.loc 1 330 1 view .LVU369
+ 1256 001c 03B0     		add	sp, sp, #12
+ 1257              		.cfi_remember_state
+ 1258              		.cfi_def_cfa_offset 20
+ 1259              		@ sp needed
+ 1260 001e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1261              	.LVL118:
+ 1262              	.L69:
+ 1263              		.cfi_restore_state
+ 326:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineArgb8888(Instance, Xpos, Ypos, Length, Color);
+ 1264              		.loc 1 326 3 is_stmt 1 view .LVU370
+ 326:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineArgb8888(Instance, Xpos, Ypos, Length, Color);
+ 1265              		.loc 1 326 24 is_stmt 0 view .LVU371
+ 1266 0020 0A4F     		ldr	r7, .L72+8
+ 326:Lib/screenl/Src/scrl_lcd.c ****     return LTDC_DrawHLineArgb8888(Instance, Xpos, Ypos, Length, Color);
+ 1267              		.loc 1 326 6 view .LVU372
+ 1268 0022 57F82660 		ldr	r6, [r7, r6, lsl #2]
+ 1269 0026 36B1     		cbz	r6, .L71
+ 327:Lib/screenl/Src/scrl_lcd.c **** 
+ 1270              		.loc 1 327 5 is_stmt 1 view .LVU373
+ 1271              	.LVL119:
+ 1272              	.LBB38:
+ 1273              	.LBI38:
+ 281:Lib/screenl/Src/scrl_lcd.c **** {
+ 1274              		.loc 1 281 16 view .LVU374
+ 1275              	.LBB39:
+ 283:Lib/screenl/Src/scrl_lcd.c **** }
+ 1276              		.loc 1 283 3 view .LVU375
+ 283:Lib/screenl/Src/scrl_lcd.c **** }
+ 1277              		.loc 1 283 10 is_stmt 0 view .LVU376
+ 1278 0028 0120     		movs	r0, #1
+ 1279              	.LVL120:
+ 283:Lib/screenl/Src/scrl_lcd.c **** }
+ 1280              		.loc 1 283 10 view .LVU377
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 36
+
+
+ 1281 002a 0194     		str	r4, [sp, #4]
+ 1282 002c 0090     		str	r0, [sp]
+ 1283 002e 2846     		mov	r0, r5
+ 1284 0030 FFF7FEFF 		bl	LTDC_FillRectArgb8888
+ 1285              	.LVL121:
+ 283:Lib/screenl/Src/scrl_lcd.c **** }
+ 1286              		.loc 1 283 10 view .LVU378
+ 1287              	.LBE39:
+ 1288              	.LBE38:
+ 327:Lib/screenl/Src/scrl_lcd.c **** 
+ 1289              		.loc 1 327 12 view .LVU379
+ 1290 0034 F2E7     		b	.L68
+ 1291              	.LVL122:
+ 1292              	.L71:
+ 329:Lib/screenl/Src/scrl_lcd.c **** }
+ 1293              		.loc 1 329 3 is_stmt 1 view .LVU380
+ 329:Lib/screenl/Src/scrl_lcd.c **** }
+ 1294              		.loc 1 329 10 is_stmt 0 view .LVU381
+ 1295 0036 0894     		str	r4, [sp, #32]
+ 1296              	.LVL123:
+ 330:Lib/screenl/Src/scrl_lcd.c **** 
+ 1297              		.loc 1 330 1 view .LVU382
+ 1298 0038 03B0     		add	sp, sp, #12
+ 1299              		.cfi_def_cfa_offset 20
+ 1300              		@ sp needed
+ 1301 003a BDE8F040 		pop	{r4, r5, r6, r7, lr}
+ 1302              		.cfi_restore 14
+ 1303              		.cfi_restore 7
+ 1304              		.cfi_restore 6
+ 1305              		.cfi_restore 5
+ 1306              		.cfi_restore 4
+ 1307              		.cfi_def_cfa_offset 0
+ 329:Lib/screenl/Src/scrl_lcd.c **** }
+ 1308              		.loc 1 329 10 view .LVU383
+ 1309 003e FFF7FEBF 		b	BSP_LCD_DrawHLine
+ 1310              	.LVL124:
+ 1311              	.L73:
+ 329:Lib/screenl/Src/scrl_lcd.c **** }
+ 1312              		.loc 1 329 10 view .LVU384
+ 1313 0042 00BF     		.align	2
+ 1314              	.L72:
+ 1315 0044 00000000 		.word	current_layer
+ 1316 0048 00000000 		.word	is_layer_rgb888
+ 1317 004c 00000000 		.word	is_layer_argb8888
+ 1318              		.cfi_endproc
+ 1319              	.LFE880:
+ 1321              		.section	.text.SCRL_Init,"ax",%progbits
+ 1322              		.align	1
+ 1323              		.global	SCRL_Init
+ 1324              		.syntax unified
+ 1325              		.thumb
+ 1326              		.thumb_func
+ 1328              	SCRL_Init:
+ 1329              	.LVL125:
+ 1330              	.LFB889:
+ 397:Lib/screenl/Src/scrl_lcd.c **** }
+ 398:Lib/screenl/Src/scrl_lcd.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 37
+
+
+ 399:Lib/screenl/Src/scrl_lcd.c **** static const LCD_UTILS_Drv_t Dummy_Driver = {
+ 400:Lib/screenl/Src/scrl_lcd.c ****   .DrawBitmap = LTDC_DrawBitmap,
+ 401:Lib/screenl/Src/scrl_lcd.c ****   .FillRGBRect = LTDC_FillRGBRect,
+ 402:Lib/screenl/Src/scrl_lcd.c ****   .DrawHLine = LTDC_DrawHLine,
+ 403:Lib/screenl/Src/scrl_lcd.c ****   .DrawVLine = LTDC_DrawVLine,
+ 404:Lib/screenl/Src/scrl_lcd.c ****   .FillRect = LTDC_FillRect,
+ 405:Lib/screenl/Src/scrl_lcd.c ****   .GetPixel = LTDC_GetPixel,
+ 406:Lib/screenl/Src/scrl_lcd.c ****   .SetPixel = LTDC_SetPixel,
+ 407:Lib/screenl/Src/scrl_lcd.c ****   .GetXSize = LTDC_GetXSize,
+ 408:Lib/screenl/Src/scrl_lcd.c ****   .GetYSize = LTDC_GetYSize,
+ 409:Lib/screenl/Src/scrl_lcd.c ****   .SetLayer = LTDC_SetLayer,
+ 410:Lib/screenl/Src/scrl_lcd.c ****   .GetFormat = LTDC_GetFormat,
+ 411:Lib/screenl/Src/scrl_lcd.c **** };
+ 412:Lib/screenl/Src/scrl_lcd.c **** 
+ 413:Lib/screenl/Src/scrl_lcd.c **** int SCRL_Init(SCRL_LayerConfig *layers_config[SCRL_LAYER_NB], SCRL_ScreenConfig *screen_config)
+ 414:Lib/screenl/Src/scrl_lcd.c **** {
+ 1331              		.loc 1 414 1 is_stmt 1 view -0
+ 1332              		.cfi_startproc
+ 1333              		@ args = 0, pretend = 0, frame = 24
+ 1334              		@ frame_needed = 0, uses_anonymous_args = 0
+ 415:Lib/screenl/Src/scrl_lcd.c ****   BSP_LCD_LayerConfig_t LayerConfig = {0};
+ 1335              		.loc 1 415 3 view .LVU386
+ 414:Lib/screenl/Src/scrl_lcd.c ****   BSP_LCD_LayerConfig_t LayerConfig = {0};
+ 1336              		.loc 1 414 1 is_stmt 0 view .LVU387
+ 1337 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 1338              		.cfi_def_cfa_offset 20
+ 1339              		.cfi_offset 4, -20
+ 1340              		.cfi_offset 5, -16
+ 1341              		.cfi_offset 6, -12
+ 1342              		.cfi_offset 7, -8
+ 1343              		.cfi_offset 14, -4
+ 1344 0002 0546     		mov	r5, r0
+ 1345 0004 87B0     		sub	sp, sp, #28
+ 1346              		.cfi_def_cfa_offset 48
+ 1347              		.loc 1 415 25 view .LVU388
+ 1348 0006 1822     		movs	r2, #24
+ 1349 0008 0021     		movs	r1, #0
+ 1350              	.LVL126:
+ 1351              		.loc 1 415 25 view .LVU389
+ 1352 000a 6846     		mov	r0, sp
+ 1353              	.LVL127:
+ 1354              		.loc 1 415 25 view .LVU390
+ 1355 000c FFF7FEFF 		bl	memset
+ 1356              	.LVL128:
+ 416:Lib/screenl/Src/scrl_lcd.c ****   int ret;
+ 1357              		.loc 1 416 3 is_stmt 1 view .LVU391
+ 417:Lib/screenl/Src/scrl_lcd.c **** 
+ 418:Lib/screenl/Src/scrl_lcd.c ****   ret = SCRL_validate_parameters(layers_config, screen_config);
+ 1358              		.loc 1 418 3 view .LVU392
+ 1359              	.LBB42:
+ 1360              	.LBI42:
+ 154:Lib/screenl/Src/scrl_lcd.c **** {
+ 1361              		.loc 1 154 12 view .LVU393
+ 1362              	.LBB43:
+ 156:Lib/screenl/Src/scrl_lcd.c **** 
+ 1363              		.loc 1 156 3 view .LVU394
+ 159:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i])
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 38
+
+
+ 1364              		.loc 1 159 3 view .LVU395
+ 159:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i])
+ 1365              		.loc 1 159 17 discriminator 1 view .LVU396
+ 160:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1366              		.loc 1 160 5 view .LVU397
+ 160:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1367              		.loc 1 160 23 is_stmt 0 view .LVU398
+ 1368 0010 2A68     		ldr	r2, [r5]
+ 160:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1369              		.loc 1 160 8 view .LVU399
+ 1370 0012 002A     		cmp	r2, #0
+ 1371 0014 44D0     		beq	.L81
+ 159:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i])
+ 1372              		.loc 1 159 35 is_stmt 1 discriminator 2 view .LVU400
+ 1373              	.LVL129:
+ 159:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i])
+ 1374              		.loc 1 159 17 discriminator 1 view .LVU401
+ 160:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1375              		.loc 1 160 5 view .LVU402
+ 160:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1376              		.loc 1 160 23 is_stmt 0 view .LVU403
+ 1377 0016 6B68     		ldr	r3, [r5, #4]
+ 160:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1378              		.loc 1 160 8 view .LVU404
+ 1379 0018 002B     		cmp	r3, #0
+ 1380 001a 41D0     		beq	.L81
+ 159:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i])
+ 1381              		.loc 1 159 35 is_stmt 1 discriminator 2 view .LVU405
+ 1382              	.LVL130:
+ 159:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i])
+ 1383              		.loc 1 159 17 discriminator 1 view .LVU406
+ 164:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i]->address)
+ 1384              		.loc 1 164 17 discriminator 1 view .LVU407
+ 165:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1385              		.loc 1 165 5 view .LVU408
+ 165:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1386              		.loc 1 165 8 is_stmt 0 view .LVU409
+ 1387 001c D168     		ldr	r1, [r2, #12]
+ 1388 001e 0029     		cmp	r1, #0
+ 1389 0020 3ED0     		beq	.L81
+ 164:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i]->address)
+ 1390              		.loc 1 164 35 is_stmt 1 discriminator 2 view .LVU410
+ 1391              	.LVL131:
+ 164:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i]->address)
+ 1392              		.loc 1 164 17 discriminator 1 view .LVU411
+ 165:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1393              		.loc 1 165 5 view .LVU412
+ 165:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1394              		.loc 1 165 8 is_stmt 0 view .LVU413
+ 1395 0022 D968     		ldr	r1, [r3, #12]
+ 1396 0024 0029     		cmp	r1, #0
+ 1397 0026 3BD0     		beq	.L81
+ 164:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i]->address)
+ 1398              		.loc 1 164 35 is_stmt 1 discriminator 2 view .LVU414
+ 1399              	.LVL132:
+ 164:Lib/screenl/Src/scrl_lcd.c ****     if (!layers_config[i]->address)
+ 1400              		.loc 1 164 17 discriminator 1 view .LVU415
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 39
+
+
+ 169:Lib/screenl/Src/scrl_lcd.c ****     if (layers_config[i]->format == SCRL_YUV422)
+ 1401              		.loc 1 169 17 discriminator 1 view .LVU416
+ 170:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1402              		.loc 1 170 5 view .LVU417
+ 170:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1403              		.loc 1 170 8 is_stmt 0 view .LVU418
+ 1404 0028 127A     		ldrb	r2, [r2, #8]	@ zero_extendqisi2
+ 1405 002a 022A     		cmp	r2, #2
+ 1406 002c 38D0     		beq	.L81
+ 169:Lib/screenl/Src/scrl_lcd.c ****     if (layers_config[i]->format == SCRL_YUV422)
+ 1407              		.loc 1 169 35 is_stmt 1 discriminator 2 view .LVU419
+ 1408              	.LVL133:
+ 169:Lib/screenl/Src/scrl_lcd.c ****     if (layers_config[i]->format == SCRL_YUV422)
+ 1409              		.loc 1 169 17 discriminator 1 view .LVU420
+ 170:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1410              		.loc 1 170 5 view .LVU421
+ 170:Lib/screenl/Src/scrl_lcd.c ****       return -1;
+ 1411              		.loc 1 170 8 is_stmt 0 view .LVU422
+ 1412 002e 1B7A     		ldrb	r3, [r3, #8]	@ zero_extendqisi2
+ 1413 0030 022B     		cmp	r3, #2
+ 1414 0032 35D0     		beq	.L81
+ 169:Lib/screenl/Src/scrl_lcd.c ****     if (layers_config[i]->format == SCRL_YUV422)
+ 1415              		.loc 1 169 35 is_stmt 1 discriminator 2 view .LVU423
+ 1416              	.LVL134:
+ 169:Lib/screenl/Src/scrl_lcd.c ****     if (layers_config[i]->format == SCRL_YUV422)
+ 1417              		.loc 1 169 17 discriminator 1 view .LVU424
+ 169:Lib/screenl/Src/scrl_lcd.c ****     if (layers_config[i]->format == SCRL_YUV422)
+ 1418              		.loc 1 169 17 is_stmt 0 discriminator 1 view .LVU425
+ 1419              	.LBE43:
+ 1420              	.LBE42:
+ 419:Lib/screenl/Src/scrl_lcd.c ****   if (ret)
+ 1421              		.loc 1 419 3 is_stmt 1 view .LVU426
+ 420:Lib/screenl/Src/scrl_lcd.c ****     return ret;
+ 421:Lib/screenl/Src/scrl_lcd.c **** 
+ 422:Lib/screenl/Src/scrl_lcd.c ****   current_layer = SCRL_LAYER_0;
+ 1422              		.loc 1 422 3 view .LVU427
+ 1423              		.loc 1 422 17 is_stmt 0 view .LVU428
+ 1424 0034 0024     		movs	r4, #0
+ 1425 0036 1C4B     		ldr	r3, .L82
+ 423:Lib/screenl/Src/scrl_lcd.c **** 
+ 424:Lib/screenl/Src/scrl_lcd.c ****   BSP_LCD_Init(0, LCD_ORIENTATION_LANDSCAPE);
+ 1426              		.loc 1 424 3 view .LVU429
+ 1427 0038 0121     		movs	r1, #1
+ 1428 003a 2046     		mov	r0, r4
+ 422:Lib/screenl/Src/scrl_lcd.c **** 
+ 1429              		.loc 1 422 17 view .LVU430
+ 1430 003c 1C70     		strb	r4, [r3]
+ 1431              		.loc 1 424 3 is_stmt 1 view .LVU431
+ 1432 003e FFF7FEFF 		bl	BSP_LCD_Init
+ 1433              	.LVL135:
+ 425:Lib/screenl/Src/scrl_lcd.c **** 
+ 426:Lib/screenl/Src/scrl_lcd.c ****   fill_lcd_layer_config_from_scrl_layer_config(layers_config[SCRL_LAYER_0], &LayerConfig);
+ 1434              		.loc 1 426 3 view .LVU432
+ 1435 0042 2E68     		ldr	r6, [r5]
+ 1436 0044 6946     		mov	r1, sp
+ 1437 0046 3046     		mov	r0, r6
+ 1438 0048 FFF7FEFF 		bl	fill_lcd_layer_config_from_scrl_layer_config
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 40
+
+
+ 1439              	.LVL136:
+ 427:Lib/screenl/Src/scrl_lcd.c ****   is_layer_rgb888[SCRL_LAYER_0] = layers_config[SCRL_LAYER_0]->format == SCRL_RGB888;
+ 1440              		.loc 1 427 3 view .LVU433
+ 1441              		.loc 1 427 62 is_stmt 0 view .LVU434
+ 1442 004c 337A     		ldrb	r3, [r6, #8]	@ zero_extendqisi2
+ 1443              		.loc 1 427 33 view .LVU435
+ 1444 004e 174F     		ldr	r7, .L82+4
+ 1445              		.loc 1 427 71 view .LVU436
+ 1446 0050 191F     		subs	r1, r3, #4
+ 1447 0052 4A42     		rsbs	r2, r1, #0
+ 428:Lib/screenl/Src/scrl_lcd.c ****   is_layer_argb8888[SCRL_LAYER_0] = layers_config[SCRL_LAYER_0]->format == SCRL_ARGB8888;
+ 1448              		.loc 1 428 73 view .LVU437
+ 1449 0054 A3F10300 		sub	r0, r3, #3
+ 427:Lib/screenl/Src/scrl_lcd.c ****   is_layer_rgb888[SCRL_LAYER_0] = layers_config[SCRL_LAYER_0]->format == SCRL_RGB888;
+ 1450              		.loc 1 427 71 view .LVU438
+ 1451 0058 4A41     		adcs	r2, r2, r1
+ 1452              		.loc 1 428 35 view .LVU439
+ 1453 005a 154E     		ldr	r6, .L82+8
+ 1454              		.loc 1 428 73 view .LVU440
+ 1455 005c 4342     		rsbs	r3, r0, #0
+ 1456 005e 4341     		adcs	r3, r3, r0
+ 427:Lib/screenl/Src/scrl_lcd.c ****   is_layer_rgb888[SCRL_LAYER_0] = layers_config[SCRL_LAYER_0]->format == SCRL_RGB888;
+ 1457              		.loc 1 427 33 view .LVU441
+ 1458 0060 3A60     		str	r2, [r7]
+ 1459              		.loc 1 428 3 is_stmt 1 view .LVU442
+ 429:Lib/screenl/Src/scrl_lcd.c ****   BSP_LCD_ConfigLayer(0, LTDC_LAYER_1, &LayerConfig);
+ 1460              		.loc 1 429 3 is_stmt 0 view .LVU443
+ 1461 0062 2146     		mov	r1, r4
+ 1462 0064 6A46     		mov	r2, sp
+ 1463 0066 2046     		mov	r0, r4
+ 428:Lib/screenl/Src/scrl_lcd.c ****   is_layer_argb8888[SCRL_LAYER_0] = layers_config[SCRL_LAYER_0]->format == SCRL_ARGB8888;
+ 1464              		.loc 1 428 35 view .LVU444
+ 1465 0068 3360     		str	r3, [r6]
+ 1466              		.loc 1 429 3 is_stmt 1 view .LVU445
+ 1467 006a FFF7FEFF 		bl	BSP_LCD_ConfigLayer
+ 1468              	.LVL137:
+ 430:Lib/screenl/Src/scrl_lcd.c **** 
+ 431:Lib/screenl/Src/scrl_lcd.c ****   fill_lcd_layer_config_from_scrl_layer_config(layers_config[SCRL_LAYER_1], &LayerConfig);
+ 1469              		.loc 1 431 3 view .LVU446
+ 1470 006e 6D68     		ldr	r5, [r5, #4]
+ 1471              	.LVL138:
+ 1472              		.loc 1 431 3 is_stmt 0 view .LVU447
+ 1473 0070 6946     		mov	r1, sp
+ 1474 0072 2846     		mov	r0, r5
+ 1475 0074 FFF7FEFF 		bl	fill_lcd_layer_config_from_scrl_layer_config
+ 1476              	.LVL139:
+ 432:Lib/screenl/Src/scrl_lcd.c ****   is_layer_rgb888[SCRL_LAYER_1] = layers_config[SCRL_LAYER_1]->format == SCRL_RGB888;
+ 1477              		.loc 1 432 3 is_stmt 1 view .LVU448
+ 1478              		.loc 1 432 62 is_stmt 0 view .LVU449
+ 1479 0078 2B7A     		ldrb	r3, [r5, #8]	@ zero_extendqisi2
+ 433:Lib/screenl/Src/scrl_lcd.c ****   is_layer_argb8888[SCRL_LAYER_1] = layers_config[SCRL_LAYER_1]->format == SCRL_ARGB8888;
+ 434:Lib/screenl/Src/scrl_lcd.c ****   BSP_LCD_ConfigLayer(0, LTDC_LAYER_2, &LayerConfig);
+ 1480              		.loc 1 434 3 view .LVU450
+ 1481 007a 0121     		movs	r1, #1
+ 432:Lib/screenl/Src/scrl_lcd.c ****   is_layer_rgb888[SCRL_LAYER_1] = layers_config[SCRL_LAYER_1]->format == SCRL_RGB888;
+ 1482              		.loc 1 432 71 view .LVU451
+ 1483 007c 1D1F     		subs	r5, r3, #4
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 41
+
+
+ 1484 007e 6A42     		rsbs	r2, r5, #0
+ 1485 0080 6A41     		adcs	r2, r2, r5
+ 432:Lib/screenl/Src/scrl_lcd.c ****   is_layer_rgb888[SCRL_LAYER_1] = layers_config[SCRL_LAYER_1]->format == SCRL_RGB888;
+ 1486              		.loc 1 432 33 view .LVU452
+ 1487 0082 7A60     		str	r2, [r7, #4]
+ 433:Lib/screenl/Src/scrl_lcd.c ****   is_layer_argb8888[SCRL_LAYER_1] = layers_config[SCRL_LAYER_1]->format == SCRL_ARGB8888;
+ 1488              		.loc 1 433 3 is_stmt 1 view .LVU453
+ 433:Lib/screenl/Src/scrl_lcd.c ****   is_layer_argb8888[SCRL_LAYER_1] = layers_config[SCRL_LAYER_1]->format == SCRL_ARGB8888;
+ 1489              		.loc 1 433 73 is_stmt 0 view .LVU454
+ 1490 0084 DF1E     		subs	r7, r3, #3
+ 1491 0086 7B42     		rsbs	r3, r7, #0
+ 1492 0088 7B41     		adcs	r3, r3, r7
+ 1493              		.loc 1 434 3 view .LVU455
+ 1494 008a 6A46     		mov	r2, sp
+ 1495 008c 2046     		mov	r0, r4
+ 433:Lib/screenl/Src/scrl_lcd.c ****   is_layer_argb8888[SCRL_LAYER_1] = layers_config[SCRL_LAYER_1]->format == SCRL_ARGB8888;
+ 1496              		.loc 1 433 35 view .LVU456
+ 1497 008e 7360     		str	r3, [r6, #4]
+ 1498              		.loc 1 434 3 is_stmt 1 view .LVU457
+ 1499 0090 FFF7FEFF 		bl	BSP_LCD_ConfigLayer
+ 1500              	.LVL140:
+ 435:Lib/screenl/Src/scrl_lcd.c **** 
+ 436:Lib/screenl/Src/scrl_lcd.c ****   UTIL_LCD_SetFuncDriver(&Dummy_Driver);
+ 1501              		.loc 1 436 3 view .LVU458
+ 1502 0094 0748     		ldr	r0, .L82+12
+ 1503 0096 FFF7FEFF 		bl	UTIL_LCD_SetFuncDriver
+ 1504              	.LVL141:
+ 437:Lib/screenl/Src/scrl_lcd.c **** 
+ 438:Lib/screenl/Src/scrl_lcd.c ****   return 0;
+ 1505              		.loc 1 438 3 view .LVU459
+ 1506              	.LBB46:
+ 1507              	.LBB44:
+ 173:Lib/screenl/Src/scrl_lcd.c **** }
+ 1508              		.loc 1 173 10 is_stmt 0 view .LVU460
+ 1509 009a 2046     		mov	r0, r4
+ 1510              	.LVL142:
+ 1511              	.L74:
+ 173:Lib/screenl/Src/scrl_lcd.c **** }
+ 1512              		.loc 1 173 10 view .LVU461
+ 1513              	.LBE44:
+ 1514              	.LBE46:
+ 439:Lib/screenl/Src/scrl_lcd.c **** }
+ 1515              		.loc 1 439 1 view .LVU462
+ 1516 009c 07B0     		add	sp, sp, #28
+ 1517              		.cfi_remember_state
+ 1518              		.cfi_def_cfa_offset 20
+ 1519              		@ sp needed
+ 1520 009e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 1521              	.LVL143:
+ 1522              	.L81:
+ 1523              		.cfi_restore_state
+ 1524              	.LBB47:
+ 1525              	.LBB45:
+ 161:Lib/screenl/Src/scrl_lcd.c **** 
+ 1526              		.loc 1 161 14 view .LVU463
+ 1527 00a0 4FF0FF30 		mov	r0, #-1
+ 1528              	.LVL144:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 42
+
+
+ 161:Lib/screenl/Src/scrl_lcd.c **** 
+ 1529              		.loc 1 161 14 view .LVU464
+ 1530 00a4 FAE7     		b	.L74
+ 1531              	.L83:
+ 1532 00a6 00BF     		.align	2
+ 1533              	.L82:
+ 1534 00a8 00000000 		.word	current_layer
+ 1535 00ac 00000000 		.word	is_layer_rgb888
+ 1536 00b0 00000000 		.word	is_layer_argb8888
+ 1537 00b4 00000000 		.word	Dummy_Driver
+ 1538              	.LBE45:
+ 1539              	.LBE47:
+ 1540              		.cfi_endproc
+ 1541              	.LFE889:
+ 1543              		.section	.text.SCRL_SetAddress_NoReload,"ax",%progbits
+ 1544              		.align	1
+ 1545              		.global	SCRL_SetAddress_NoReload
+ 1546              		.syntax unified
+ 1547              		.thumb
+ 1548              		.thumb_func
+ 1550              	SCRL_SetAddress_NoReload:
+ 1551              	.LVL145:
+ 1552              	.LFB890:
+ 440:Lib/screenl/Src/scrl_lcd.c **** 
+ 441:Lib/screenl/Src/scrl_lcd.c **** int SCRL_SetAddress_NoReload(void *address, SCRL_Layer layer)
+ 442:Lib/screenl/Src/scrl_lcd.c **** {
+ 1553              		.loc 1 442 1 is_stmt 1 view -0
+ 1554              		.cfi_startproc
+ 1555              		@ args = 0, pretend = 0, frame = 0
+ 1556              		@ frame_needed = 0, uses_anonymous_args = 0
+ 443:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_SetAddress_NoReload(&hlcd_ltdc, (uint32_t) address, layer);
+ 1557              		.loc 1 443 3 view .LVU466
+ 442:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_SetAddress_NoReload(&hlcd_ltdc, (uint32_t) address, layer);
+ 1558              		.loc 1 442 1 is_stmt 0 view .LVU467
+ 1559 0000 08B5     		push	{r3, lr}
+ 1560              		.cfi_def_cfa_offset 8
+ 1561              		.cfi_offset 3, -8
+ 1562              		.cfi_offset 14, -4
+ 442:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_SetAddress_NoReload(&hlcd_ltdc, (uint32_t) address, layer);
+ 1563              		.loc 1 442 1 view .LVU468
+ 1564 0002 0A46     		mov	r2, r1
+ 1565              		.loc 1 443 10 view .LVU469
+ 1566 0004 0146     		mov	r1, r0
+ 1567              	.LVL146:
+ 1568              		.loc 1 443 10 view .LVU470
+ 1569 0006 0248     		ldr	r0, .L85
+ 1570              	.LVL147:
+ 1571              		.loc 1 443 10 view .LVU471
+ 1572 0008 FFF7FEFF 		bl	HAL_LTDC_SetAddress_NoReload
+ 1573              	.LVL148:
+ 444:Lib/screenl/Src/scrl_lcd.c **** }
+ 1574              		.loc 1 444 1 view .LVU472
+ 1575 000c 08BD     		pop	{r3, pc}
+ 1576              	.L86:
+ 1577 000e 00BF     		.align	2
+ 1578              	.L85:
+ 1579 0010 00000000 		.word	hlcd_ltdc
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 43
+
+
+ 1580              		.cfi_endproc
+ 1581              	.LFE890:
+ 1583              		.section	.text.SCRL_ReloadLayer,"ax",%progbits
+ 1584              		.align	1
+ 1585              		.global	SCRL_ReloadLayer
+ 1586              		.syntax unified
+ 1587              		.thumb
+ 1588              		.thumb_func
+ 1590              	SCRL_ReloadLayer:
+ 1591              	.LVL149:
+ 1592              	.LFB891:
+ 445:Lib/screenl/Src/scrl_lcd.c **** 
+ 446:Lib/screenl/Src/scrl_lcd.c **** int SCRL_ReloadLayer(SCRL_Layer layer)
+ 447:Lib/screenl/Src/scrl_lcd.c **** {
+ 1593              		.loc 1 447 1 is_stmt 1 view -0
+ 1594              		.cfi_startproc
+ 1595              		@ args = 0, pretend = 0, frame = 0
+ 1596              		@ frame_needed = 0, uses_anonymous_args = 0
+ 448:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_ReloadLayer(&hlcd_ltdc, LTDC_RELOAD_VERTICAL_BLANKING, layer);
+ 1597              		.loc 1 448 3 view .LVU474
+ 447:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_ReloadLayer(&hlcd_ltdc, LTDC_RELOAD_VERTICAL_BLANKING, layer);
+ 1598              		.loc 1 447 1 is_stmt 0 view .LVU475
+ 1599 0000 08B5     		push	{r3, lr}
+ 1600              		.cfi_def_cfa_offset 8
+ 1601              		.cfi_offset 3, -8
+ 1602              		.cfi_offset 14, -4
+ 447:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_ReloadLayer(&hlcd_ltdc, LTDC_RELOAD_VERTICAL_BLANKING, layer);
+ 1603              		.loc 1 447 1 view .LVU476
+ 1604 0002 0246     		mov	r2, r0
+ 1605              		.loc 1 448 10 view .LVU477
+ 1606 0004 0221     		movs	r1, #2
+ 1607 0006 0248     		ldr	r0, .L88
+ 1608              	.LVL150:
+ 1609              		.loc 1 448 10 view .LVU478
+ 1610 0008 FFF7FEFF 		bl	HAL_LTDC_ReloadLayer
+ 1611              	.LVL151:
+ 449:Lib/screenl/Src/scrl_lcd.c **** }
+ 1612              		.loc 1 449 1 view .LVU479
+ 1613 000c 08BD     		pop	{r3, pc}
+ 1614              	.L89:
+ 1615 000e 00BF     		.align	2
+ 1616              	.L88:
+ 1617 0010 00000000 		.word	hlcd_ltdc
+ 1618              		.cfi_endproc
+ 1619              	.LFE891:
+ 1621              		.section	.text.SRCL_Update,"ax",%progbits
+ 1622              		.align	1
+ 1623              		.global	SRCL_Update
+ 1624              		.syntax unified
+ 1625              		.thumb
+ 1626              		.thumb_func
+ 1628              	SRCL_Update:
+ 1629              	.LFB892:
+ 450:Lib/screenl/Src/scrl_lcd.c **** 
+ 451:Lib/screenl/Src/scrl_lcd.c **** int SRCL_Update(void)
+ 452:Lib/screenl/Src/scrl_lcd.c **** {
+ 1630              		.loc 1 452 1 is_stmt 1 view -0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 44
+
+
+ 1631              		.cfi_startproc
+ 1632              		@ args = 0, pretend = 0, frame = 0
+ 1633              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1634              		@ link register save eliminated.
+ 453:Lib/screenl/Src/scrl_lcd.c ****   /* Nothing to do */
+ 454:Lib/screenl/Src/scrl_lcd.c ****   return 0;
+ 1635              		.loc 1 454 3 view .LVU481
+ 455:Lib/screenl/Src/scrl_lcd.c **** }
+ 1636              		.loc 1 455 1 is_stmt 0 view .LVU482
+ 1637 0000 0020     		movs	r0, #0
+ 1638 0002 7047     		bx	lr
+ 1639              		.cfi_endproc
+ 1640              	.LFE892:
+ 1642              		.section	.rodata.MX_LTDC_ConfigLayer.str1.1,"aMS",%progbits,1
+ 1643              	.LC2:
+ 1644 0000 4C617965 		.ascii	"LayerIndex < SCRL_LAYER_NB\000"
+ 1644      72496E64 
+ 1644      6578203C 
+ 1644      20534352 
+ 1644      4C5F4C41 
+ 1645              		.section	.text.MX_LTDC_ConfigLayer,"ax",%progbits
+ 1646              		.align	1
+ 1647              		.global	MX_LTDC_ConfigLayer
+ 1648              		.syntax unified
+ 1649              		.thumb
+ 1650              		.thumb_func
+ 1652              	MX_LTDC_ConfigLayer:
+ 1653              	.LVL152:
+ 1654              	.LFB893:
+ 456:Lib/screenl/Src/scrl_lcd.c **** 
+ 457:Lib/screenl/Src/scrl_lcd.c **** HAL_StatusTypeDef MX_LTDC_ConfigLayer(LTDC_HandleTypeDef *hltdc, uint32_t LayerIndex, MX_LTDC_Layer
+ 458:Lib/screenl/Src/scrl_lcd.c **** {
+ 1655              		.loc 1 458 1 is_stmt 1 view -0
+ 1656              		.cfi_startproc
+ 1657              		@ args = 0, pretend = 0, frame = 96
+ 1658              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1659              		.loc 1 458 1 is_stmt 0 view .LVU484
+ 1660 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+ 1661              		.cfi_def_cfa_offset 36
+ 1662              		.cfi_offset 4, -36
+ 1663              		.cfi_offset 5, -32
+ 1664              		.cfi_offset 6, -28
+ 1665              		.cfi_offset 7, -24
+ 1666              		.cfi_offset 8, -20
+ 1667              		.cfi_offset 9, -16
+ 1668              		.cfi_offset 10, -12
+ 1669              		.cfi_offset 11, -8
+ 1670              		.cfi_offset 14, -4
+ 459:Lib/screenl/Src/scrl_lcd.c ****   assert(LayerIndex < SCRL_LAYER_NB);
+ 1671              		.loc 1 459 3 view .LVU485
+ 1672 0004 0129     		cmp	r1, #1
+ 458:Lib/screenl/Src/scrl_lcd.c ****   assert(LayerIndex < SCRL_LAYER_NB);
+ 1673              		.loc 1 458 1 view .LVU486
+ 1674 0006 99B0     		sub	sp, sp, #100
+ 1675              		.cfi_def_cfa_offset 136
+ 458:Lib/screenl/Src/scrl_lcd.c ****   assert(LayerIndex < SCRL_LAYER_NB);
+ 1676              		.loc 1 458 1 view .LVU487
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 45
+
+
+ 1677 0008 0C46     		mov	r4, r1
+ 1678              		.loc 1 459 3 is_stmt 1 view .LVU488
+ 458:Lib/screenl/Src/scrl_lcd.c ****   assert(LayerIndex < SCRL_LAYER_NB);
+ 1679              		.loc 1 458 1 is_stmt 0 view .LVU489
+ 1680 000a 1346     		mov	r3, r2
+ 1681 000c 0090     		str	r0, [sp]
+ 1682              		.loc 1 459 3 view .LVU490
+ 1683 000e 06D9     		bls	.L92
+ 1684              		.loc 1 459 3 discriminator 1 view .LVU491
+ 1685 0010 40F2CB11 		movw	r1, #459
+ 1686              	.LVL153:
+ 1687              		.loc 1 459 3 discriminator 1 view .LVU492
+ 1688 0014 344B     		ldr	r3, .L97
+ 1689 0016 354A     		ldr	r2, .L97+4
+ 1690              	.LVL154:
+ 1691              		.loc 1 459 3 discriminator 1 view .LVU493
+ 1692 0018 3548     		ldr	r0, .L97+8
+ 1693              	.LVL155:
+ 1694              		.loc 1 459 3 discriminator 1 view .LVU494
+ 1695 001a FFF7FEFF 		bl	__assert_func
+ 1696              	.LVL156:
+ 1697              	.L92:
+ 460:Lib/screenl/Src/scrl_lcd.c **** 
+ 461:Lib/screenl/Src/scrl_lcd.c ****   if (is_layer_rgb888[LayerIndex])
+ 1698              		.loc 1 461 3 is_stmt 1 view .LVU495
+ 1699              	.LBB54:
+ 1700              	.LBB55:
+  56:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY0 = Config->Y0;
+ 1701              		.loc 1 56 36 is_stmt 0 view .LVU496
+ 1702 001e D2E90098 		ldrd	r9, r8, [r2]
+  58:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha = LTDC_LxCACR_CONSTA;
+ 1703              		.loc 1 58 36 view .LVU497
+ 1704 0022 D2E90276 		ldrd	r7, r6, [r2, #8]
+  79:Lib/screenl/Src/scrl_lcd.c **** 
+ 1705              		.loc 1 79 33 view .LVU498
+ 1706 0026 D2F814B0 		ldr	fp, [r2, #20]
+ 1707              	.LBE55:
+ 1708              	.LBE54:
+ 1709              		.loc 1 461 22 view .LVU499
+ 1710 002a 324A     		ldr	r2, .L97+12
+ 1711              	.LVL157:
+ 1712              	.LBB59:
+ 1713              	.LBB56:
+  63:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageHeight = (Config->Y1 - Config->Y0);
+ 1714              		.loc 1 63 44 view .LVU500
+ 1715 002c A8EB090A 		sub	r10, r8, r9
+ 1716              	.LBE56:
+ 1717              	.LBE59:
+ 1718              		.loc 1 461 6 view .LVU501
+ 1719 0030 52F82100 		ldr	r0, [r2, r1, lsl #2]
+ 1720              	.LVL158:
+ 1721              	.LBB60:
+ 1722              	.LBB57:
+  64:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Blue = 0;
+ 1723              		.loc 1 64 45 view .LVU502
+ 1724 0034 F51B     		subs	r5, r6, r7
+ 1725              	.LBE57:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 46
+
+
+ 1726              	.LBE60:
+ 1727              		.loc 1 461 6 view .LVU503
+ 1728 0036 18B3     		cbz	r0, .L93
+ 462:Lib/screenl/Src/scrl_lcd.c ****     return SCRL_ConfigLayer_Layer_rgb888(hltdc, LayerIndex, Config);
+ 1729              		.loc 1 462 5 is_stmt 1 view .LVU504
+ 1730              	.LVL159:
+ 1731              	.LBB61:
+ 1732              	.LBI54:
+  51:Lib/screenl/Src/scrl_lcd.c **** {
+ 1733              		.loc 1 51 26 view .LVU505
+ 1734              	.LBB58:
+  53:Lib/screenl/Src/scrl_lcd.c **** 
+ 1735              		.loc 1 53 3 view .LVU506
+  53:Lib/screenl/Src/scrl_lcd.c **** 
+ 1736              		.loc 1 53 29 is_stmt 0 view .LVU507
+ 1737 0038 3022     		movs	r2, #48
+ 1738 003a 0021     		movs	r1, #0
+ 1739              	.LVL160:
+  53:Lib/screenl/Src/scrl_lcd.c **** 
+ 1740              		.loc 1 53 29 view .LVU508
+ 1741 003c 08A8     		add	r0, sp, #32
+ 1742 003e FFF7FEFF 		bl	memset
+ 1743              	.LVL161:
+  55:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowX1 = Config->X1;
+ 1744              		.loc 1 55 3 is_stmt 1 view .LVU509
+  59:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha0 = 0;
+ 1745              		.loc 1 59 25 is_stmt 0 view .LVU510
+ 1746 0042 FF23     		movs	r3, #255
+  62:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageWidth = (Config->X1 - Config->X0);
+ 1747              		.loc 1 62 35 view .LVU511
+ 1748 0044 4FF4C06C 		mov	ip, #1536
+  59:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha0 = 0;
+ 1749              		.loc 1 59 25 view .LVU512
+ 1750 0048 0793     		str	r3, [sp, #28]
+  62:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageWidth = (Config->X1 - Config->X0);
+ 1751              		.loc 1 62 35 view .LVU513
+ 1752 004a 0723     		movs	r3, #7
+ 1753 004c CDE909C3 		strd	ip, r3, [sp, #36]
+  69:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+ 1754              		.loc 1 69 32 view .LVU514
+ 1755 0050 0323     		movs	r3, #3
+  56:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY0 = Config->Y0;
+ 1756              		.loc 1 56 28 view .LVU515
+ 1757 0052 CDE90398 		strd	r9, r8, [sp, #12]
+  57:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY1 = Config->Y1;
+ 1758              		.loc 1 57 3 is_stmt 1 view .LVU516
+  58:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha = LTDC_LxCACR_CONSTA;
+ 1759              		.loc 1 58 28 is_stmt 0 view .LVU517
+ 1760 0056 CDE90576 		strd	r7, r6, [sp, #20]
+  59:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha0 = 0;
+ 1761              		.loc 1 59 3 is_stmt 1 view .LVU518
+  60:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
+ 1762              		.loc 1 60 3 view .LVU519
+  61:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
+ 1763              		.loc 1 61 3 view .LVU520
+  63:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageHeight = (Config->Y1 - Config->Y0);
+ 1764              		.loc 1 63 3 view .LVU521
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 47
+
+
+  64:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Blue = 0;
+ 1765              		.loc 1 64 31 is_stmt 0 view .LVU522
+ 1766 005a CDE90BA5 		strd	r10, r5, [sp, #44]
+  65:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Green = 0;
+ 1767              		.loc 1 65 3 is_stmt 1 view .LVU523
+  66:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Red = 0;
+ 1768              		.loc 1 66 3 view .LVU524
+  67:Lib/screenl/Src/scrl_lcd.c **** 
+ 1769              		.loc 1 67 3 view .LVU525
+  69:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+ 1770              		.loc 1 69 3 view .LVU526
+ 1771              	.LVL162:
+ 1772              	.L96:
+  69:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+ 1773              		.loc 1 69 3 is_stmt 0 view .LVU527
+ 1774              	.LBE58:
+ 1775              	.LBE61:
+ 1776              	.LBB62:
+ 1777              	.LBB63:
+ 106:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaWidth = 0;
+ 1778              		.loc 1 106 30 view .LVU528
+ 1779 005e 1022     		movs	r2, #16
+ 102:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+ 1780              		.loc 1 102 32 view .LVU529
+ 1781 0060 0E93     		str	r3, [sp, #56]
+ 103:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.RedPos = 0;
+ 1782              		.loc 1 103 3 is_stmt 1 view .LVU530
+ 104:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.GreenPos = 8;
+ 1783              		.loc 1 104 3 view .LVU531
+ 105:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.BluePos = 16;
+ 1784              		.loc 1 105 3 view .LVU532
+ 106:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaWidth = 0;
+ 1785              		.loc 1 106 30 is_stmt 0 view .LVU533
+ 1786 0062 0823     		movs	r3, #8
+ 114:Lib/screenl/Src/scrl_lcd.c **** }
+ 1787              		.loc 1 114 10 view .LVU534
+ 1788 0064 0098     		ldr	r0, [sp]
+ 106:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaWidth = 0;
+ 1789              		.loc 1 106 30 view .LVU535
+ 1790 0066 CDE91132 		strd	r3, r2, [sp, #68]
+ 107:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.RedWidth = 8;
+ 1791              		.loc 1 107 3 is_stmt 1 view .LVU536
+ 108:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.GreenWidth = 8;
+ 1792              		.loc 1 108 3 view .LVU537
+ 114:Lib/screenl/Src/scrl_lcd.c **** }
+ 1793              		.loc 1 114 10 is_stmt 0 view .LVU538
+ 1794 006a 03A9     		add	r1, sp, #12
+ 1795 006c 2246     		mov	r2, r4
+ 109:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.BlueWidth = 8;
+ 1796              		.loc 1 109 33 view .LVU539
+ 1797 006e CDE91433 		strd	r3, r3, [sp, #80]
+ 110:Lib/screenl/Src/scrl_lcd.c **** 
+ 1798              		.loc 1 110 3 is_stmt 1 view .LVU540
+ 112:Lib/screenl/Src/scrl_lcd.c **** 
+ 1799              		.loc 1 112 25 is_stmt 0 view .LVU541
+ 1800 0072 CDE9163B 		strd	r3, fp, [sp, #88]
+ 114:Lib/screenl/Src/scrl_lcd.c **** }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 48
+
+
+ 1801              		.loc 1 114 3 is_stmt 1 view .LVU542
+ 114:Lib/screenl/Src/scrl_lcd.c **** }
+ 1802              		.loc 1 114 10 is_stmt 0 view .LVU543
+ 1803 0076 FFF7FEFF 		bl	HAL_LTDC_ConfigLayerFlexARGB
+ 1804              	.LVL163:
+ 1805              	.L94:
+ 114:Lib/screenl/Src/scrl_lcd.c **** }
+ 1806              		.loc 1 114 10 view .LVU544
+ 1807              	.LBE63:
+ 1808              	.LBE62:
+ 463:Lib/screenl/Src/scrl_lcd.c ****   else if (is_layer_argb8888[LayerIndex])
+ 464:Lib/screenl/Src/scrl_lcd.c ****     return SCRL_ConfigLayer_Layer_argb888(hltdc, LayerIndex, Config);
+ 465:Lib/screenl/Src/scrl_lcd.c ****   else
+ 466:Lib/screenl/Src/scrl_lcd.c ****     return SCRL_ConfigLayer_Layer_default(hltdc, LayerIndex, Config);
+ 467:Lib/screenl/Src/scrl_lcd.c **** }
+ 1809              		.loc 1 467 1 view .LVU545
+ 1810 007a 19B0     		add	sp, sp, #100
+ 1811              		.cfi_remember_state
+ 1812              		.cfi_def_cfa_offset 36
+ 1813              	.LVL164:
+ 1814              		.loc 1 467 1 view .LVU546
+ 1815              		@ sp needed
+ 1816 007c BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 1817              	.LVL165:
+ 1818              	.L93:
+ 1819              		.cfi_restore_state
+ 463:Lib/screenl/Src/scrl_lcd.c ****   else if (is_layer_argb8888[LayerIndex])
+ 1820              		.loc 1 463 8 is_stmt 1 view .LVU547
+ 463:Lib/screenl/Src/scrl_lcd.c ****   else if (is_layer_argb8888[LayerIndex])
+ 1821              		.loc 1 463 29 is_stmt 0 view .LVU548
+ 1822 0080 1D4A     		ldr	r2, .L97+16
+ 463:Lib/screenl/Src/scrl_lcd.c ****   else if (is_layer_argb8888[LayerIndex])
+ 1823              		.loc 1 463 11 view .LVU549
+ 1824 0082 52F82110 		ldr	r1, [r2, r1, lsl #2]
+ 1825              	.LVL166:
+ 463:Lib/screenl/Src/scrl_lcd.c ****   else if (is_layer_argb8888[LayerIndex])
+ 1826              		.loc 1 463 11 view .LVU550
+ 1827 0086 99B1     		cbz	r1, .L95
+ 464:Lib/screenl/Src/scrl_lcd.c ****   else
+ 1828              		.loc 1 464 5 is_stmt 1 view .LVU551
+ 1829              	.LVL167:
+ 1830              	.LBB65:
+ 1831              	.LBI62:
+  84:Lib/screenl/Src/scrl_lcd.c **** {
+ 1832              		.loc 1 84 26 view .LVU552
+ 1833              	.LBB64:
+  86:Lib/screenl/Src/scrl_lcd.c **** 
+ 1834              		.loc 1 86 3 view .LVU553
+  86:Lib/screenl/Src/scrl_lcd.c **** 
+ 1835              		.loc 1 86 29 is_stmt 0 view .LVU554
+ 1836 0088 0146     		mov	r1, r0
+ 1837 008a 3022     		movs	r2, #48
+ 1838 008c 08A8     		add	r0, sp, #32
+ 1839 008e FFF7FEFF 		bl	memset
+ 1840              	.LVL168:
+  88:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowX1 = Config->X1;
+ 1841              		.loc 1 88 3 is_stmt 1 view .LVU555
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 49
+
+
+  92:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha0 = 0;
+ 1842              		.loc 1 92 25 is_stmt 0 view .LVU556
+ 1843 0092 FF23     		movs	r3, #255
+  91:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha = LTDC_LxCACR_CONSTA;
+ 1844              		.loc 1 91 28 view .LVU557
+ 1845 0094 CDE90576 		strd	r7, r6, [sp, #20]
+  92:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha0 = 0;
+ 1846              		.loc 1 92 25 view .LVU558
+ 1847 0098 0793     		str	r3, [sp, #28]
+  95:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageWidth = (Config->X1 - Config->X0);
+ 1848              		.loc 1 95 35 view .LVU559
+ 1849 009a 4FF4C066 		mov	r6, #1536
+ 1850 009e 0723     		movs	r3, #7
+  89:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY0 = Config->Y0;
+ 1851              		.loc 1 89 28 view .LVU560
+ 1852 00a0 CDE90398 		strd	r9, r8, [sp, #12]
+  90:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.WindowY1 = Config->Y1;
+ 1853              		.loc 1 90 3 is_stmt 1 view .LVU561
+  92:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Alpha0 = 0;
+ 1854              		.loc 1 92 3 view .LVU562
+  93:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
+ 1855              		.loc 1 93 3 view .LVU563
+  94:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
+ 1856              		.loc 1 94 3 view .LVU564
+  95:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageWidth = (Config->X1 - Config->X0);
+ 1857              		.loc 1 95 35 is_stmt 0 view .LVU565
+ 1858 00a4 CDE90963 		strd	r6, r3, [sp, #36]
+  96:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.ImageHeight = (Config->Y1 - Config->Y0);
+ 1859              		.loc 1 96 3 is_stmt 1 view .LVU566
+  97:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Blue = 0;
+ 1860              		.loc 1 97 31 is_stmt 0 view .LVU567
+ 1861 00a8 CDE90BA5 		strd	r10, r5, [sp, #44]
+  98:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Green = 0;
+ 1862              		.loc 1 98 3 is_stmt 1 view .LVU568
+  99:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Layer.Backcolor.Red = 0;
+ 1863              		.loc 1 99 3 view .LVU569
+ 100:Lib/screenl/Src/scrl_lcd.c **** 
+ 1864              		.loc 1 100 3 view .LVU570
+ 102:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+ 1865              		.loc 1 102 3 view .LVU571
+ 102:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+ 1866              		.loc 1 102 32 is_stmt 0 view .LVU572
+ 1867 00ac 0423     		movs	r3, #4
+ 1868 00ae D6E7     		b	.L96
+ 1869              	.LVL169:
+ 1870              	.L95:
+ 102:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FlexARGB.AlphaPos = 0;
+ 1871              		.loc 1 102 32 view .LVU573
+ 1872              	.LBE64:
+ 1873              	.LBE65:
+ 1874              	.LBB66:
+ 1875              	.LBB67:
+  31:Lib/screenl/Src/scrl_lcd.c **** 
+ 1876              		.loc 1 31 24 view .LVU574
+ 1877 00b0 1C22     		movs	r2, #28
+ 1878 00b2 09A8     		add	r0, sp, #36
+ 1879 00b4 0193     		str	r3, [sp, #4]
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 50
+
+
+ 1880              	.LBE67:
+ 1881              	.LBE66:
+ 466:Lib/screenl/Src/scrl_lcd.c **** }
+ 1882              		.loc 1 466 5 is_stmt 1 view .LVU575
+ 1883              	.LVL170:
+ 1884              	.LBB69:
+ 1885              	.LBI66:
+  29:Lib/screenl/Src/scrl_lcd.c **** {
+ 1886              		.loc 1 29 26 view .LVU576
+ 1887              	.LBB68:
+  31:Lib/screenl/Src/scrl_lcd.c **** 
+ 1888              		.loc 1 31 3 view .LVU577
+  31:Lib/screenl/Src/scrl_lcd.c **** 
+ 1889              		.loc 1 31 24 is_stmt 0 view .LVU578
+ 1890 00b6 FFF7FEFF 		bl	memset
+ 1891              	.LVL171:
+  33:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.WindowX1 = Config->X1;
+ 1892              		.loc 1 33 3 is_stmt 1 view .LVU579
+  37:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Alpha = LTDC_LxCACR_CONSTA;
+ 1893              		.loc 1 37 25 is_stmt 0 view .LVU580
+ 1894 00ba 019B     		ldr	r3, [sp, #4]
+  41:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FBStartAdress = Config->Address;
+ 1895              		.loc 1 41 29 view .LVU581
+ 1896 00bc 4FF4C061 		mov	r1, #1536
+  37:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Alpha = LTDC_LxCACR_CONSTA;
+ 1897              		.loc 1 37 25 view .LVU582
+ 1898 00c0 1B69     		ldr	r3, [r3, #16]
+  48:Lib/screenl/Src/scrl_lcd.c **** }
+ 1899              		.loc 1 48 10 view .LVU583
+ 1900 00c2 2246     		mov	r2, r4
+  37:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Alpha = LTDC_LxCACR_CONSTA;
+ 1901              		.loc 1 37 25 view .LVU584
+ 1902 00c4 0793     		str	r3, [sp, #28]
+  38:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Alpha0 = 0;
+ 1903              		.loc 1 38 19 view .LVU585
+ 1904 00c6 FF23     		movs	r3, #255
+ 1905 00c8 0893     		str	r3, [sp, #32]
+  41:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FBStartAdress = Config->Address;
+ 1906              		.loc 1 41 29 view .LVU586
+ 1907 00ca 0723     		movs	r3, #7
+  48:Lib/screenl/Src/scrl_lcd.c **** }
+ 1908              		.loc 1 48 10 view .LVU587
+ 1909 00cc 0098     		ldr	r0, [sp]
+  41:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.FBStartAdress = Config->Address;
+ 1910              		.loc 1 41 29 view .LVU588
+ 1911 00ce CDE90A13 		strd	r1, r3, [sp, #40]
+  48:Lib/screenl/Src/scrl_lcd.c **** }
+ 1912              		.loc 1 48 10 view .LVU589
+ 1913 00d2 03A9     		add	r1, sp, #12
+  34:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.WindowY0 = Config->Y0;
+ 1914              		.loc 1 34 22 view .LVU590
+ 1915 00d4 CDE90398 		strd	r9, r8, [sp, #12]
+  35:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.WindowY1 = Config->Y1;
+ 1916              		.loc 1 35 3 is_stmt 1 view .LVU591
+  36:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.PixelFormat = Config->PixelFormat;
+ 1917              		.loc 1 36 22 is_stmt 0 view .LVU592
+ 1918 00d8 CDE90576 		strd	r7, r6, [sp, #20]
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 51
+
+
+  37:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Alpha = LTDC_LxCACR_CONSTA;
+ 1919              		.loc 1 37 3 is_stmt 1 view .LVU593
+  38:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Alpha0 = 0;
+ 1920              		.loc 1 38 3 view .LVU594
+  39:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
+ 1921              		.loc 1 39 3 view .LVU595
+  40:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
+ 1922              		.loc 1 40 3 view .LVU596
+  42:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.ImageWidth = (Config->X1 - Config->X0);
+ 1923              		.loc 1 42 3 view .LVU597
+  43:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.ImageHeight = (Config->Y1 - Config->Y0);
+ 1924              		.loc 1 43 24 is_stmt 0 view .LVU598
+ 1925 00dc CDE90CBA 		strd	fp, r10, [sp, #48]
+  44:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Backcolor.Blue = 0;
+ 1926              		.loc 1 44 3 is_stmt 1 view .LVU599
+  44:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Backcolor.Blue = 0;
+ 1927              		.loc 1 44 25 is_stmt 0 view .LVU600
+ 1928 00e0 0E95     		str	r5, [sp, #56]
+  45:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Backcolor.Green = 0;
+ 1929              		.loc 1 45 3 is_stmt 1 view .LVU601
+  46:Lib/screenl/Src/scrl_lcd.c ****   pLayerCfg.Backcolor.Red = 0;
+ 1930              		.loc 1 46 3 view .LVU602
+  47:Lib/screenl/Src/scrl_lcd.c ****   return HAL_LTDC_ConfigLayer(hltdc, &pLayerCfg, LayerIndex);
+ 1931              		.loc 1 47 3 view .LVU603
+  48:Lib/screenl/Src/scrl_lcd.c **** }
+ 1932              		.loc 1 48 3 view .LVU604
+  48:Lib/screenl/Src/scrl_lcd.c **** }
+ 1933              		.loc 1 48 10 is_stmt 0 view .LVU605
+ 1934 00e2 FFF7FEFF 		bl	HAL_LTDC_ConfigLayer
+ 1935              	.LVL172:
+  48:Lib/screenl/Src/scrl_lcd.c **** }
+ 1936              		.loc 1 48 10 view .LVU606
+ 1937              	.LBE68:
+ 1938              	.LBE69:
+ 466:Lib/screenl/Src/scrl_lcd.c **** }
+ 1939              		.loc 1 466 12 view .LVU607
+ 1940 00e6 C8E7     		b	.L94
+ 1941              	.L98:
+ 1942              		.align	2
+ 1943              	.L97:
+ 1944 00e8 00000000 		.word	.LC2
+ 1945 00ec 00000000 		.word	__func__.0
+ 1946 00f0 02000000 		.word	.LC1
+ 1947 00f4 00000000 		.word	is_layer_rgb888
+ 1948 00f8 00000000 		.word	is_layer_argb8888
+ 1949              		.cfi_endproc
+ 1950              	.LFE893:
+ 1952              		.section	.rodata.__func__.0,"a"
+ 1955              	__func__.0:
+ 1956 0000 4D585F4C 		.ascii	"MX_LTDC_ConfigLayer\000"
+ 1956      5444435F 
+ 1956      436F6E66 
+ 1956      69674C61 
+ 1956      79657200 
+ 1957              		.section	.rodata.__func__.1,"a"
+ 1960              	__func__.1:
+ 1961 0000 70697865 		.ascii	"pixel_format_from_scrl_format\000"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 52
+
+
+ 1961      6C5F666F 
+ 1961      726D6174 
+ 1961      5F66726F 
+ 1961      6D5F7363 
+ 1962              		.section	.rodata.Dummy_Driver,"a"
+ 1963              		.align	2
+ 1966              	Dummy_Driver:
+ 1967 0000 00000000 		.word	LTDC_DrawBitmap
+ 1968 0004 00000000 		.word	LTDC_FillRGBRect
+ 1969 0008 00000000 		.word	LTDC_DrawHLine
+ 1970 000c 00000000 		.word	LTDC_DrawVLine
+ 1971 0010 00000000 		.word	LTDC_FillRect
+ 1972 0014 00000000 		.word	LTDC_GetPixel
+ 1973 0018 00000000 		.word	LTDC_SetPixel
+ 1974 001c 00000000 		.word	LTDC_GetXSize
+ 1975 0020 00000000 		.word	LTDC_GetYSize
+ 1976 0024 00000000 		.word	LTDC_SetLayer
+ 1977 0028 00000000 		.word	LTDC_GetFormat
+ 1978              		.section	.bss.is_layer_argb8888,"aw",%nobits
+ 1979              		.align	2
+ 1982              	is_layer_argb8888:
+ 1983 0000 00000000 		.space	8
+ 1983      00000000 
+ 1984              		.section	.bss.is_layer_rgb888,"aw",%nobits
+ 1985              		.align	2
+ 1988              	is_layer_rgb888:
+ 1989 0000 00000000 		.space	8
+ 1989      00000000 
+ 1990              		.section	.bss.current_layer,"aw",%nobits
+ 1993              	current_layer:
+ 1994 0000 00       		.space	1
+ 1995              		.text
+ 1996              	.Letext0:
+ 1997              		.file 2 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1998              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 1999              		.file 4 "Lib/screenl/Inc/scrl.h"
+ 2000              		.file 5 "STM32Cube_FW_N6/Drivers/CMSIS/Device/ST/STM32N6xx/Include/stm32n657xx.h"
+ 2001              		.file 6 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_def.h"
+ 2002              		.file 7 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_ltdc.h"
+ 2003              		.file 8 "STM32Cube_FW_N6/Drivers/BSP/Components/Common/lcd.h"
+ 2004              		.file 9 "STM32Cube_FW_N6/Drivers/BSP/STM32N6570-DK/stm32n6570_discovery_lcd.h"
+ 2005              		.file 10 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltoo
+ 2006              		.file 11 "STM32Cube_FW_N6/Utilities/lcd/stm32_lcd.h"
+ 2007              		.file 12 "<built-in>"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 53
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 scrl_lcd.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:26     .text.LTDC_FillRectRgb888:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:31     .text.LTDC_FillRectRgb888:00000000 LTDC_FillRectRgb888
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:143    .text.LTDC_FillRectRgb888:0000006c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:149    .text.LTDC_FillRectArgb8888:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:154    .text.LTDC_FillRectArgb8888:00000000 LTDC_FillRectArgb8888
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:270    .text.LTDC_FillRectArgb8888:00000070 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:276    .text.LTDC_GetFormat:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:281    .text.LTDC_GetFormat:00000000 LTDC_GetFormat
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:298    .text.LTDC_SetLayer:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:303    .text.LTDC_SetLayer:00000000 LTDC_SetLayer
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:355    .text.LTDC_SetLayer:00000028 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1993   .bss.current_layer:00000000 current_layer
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1988   .bss.is_layer_rgb888:00000000 is_layer_rgb888
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:362    .text.LTDC_GetYSize:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:367    .text.LTDC_GetYSize:00000000 LTDC_GetYSize
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:384    .text.LTDC_GetXSize:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:389    .text.LTDC_GetXSize:00000000 LTDC_GetXSize
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:406    .text.LTDC_GetPixel:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:411    .text.LTDC_GetPixel:00000000 LTDC_GetPixel
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:428    .text.LTDC_FillRect:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:433    .text.LTDC_FillRect:00000000 LTDC_FillRect
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:514    .text.LTDC_FillRect:00000034 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1982   .bss.is_layer_argb8888:00000000 is_layer_argb8888
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:521    .text.LTDC_FillRGBRect:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:526    .text.LTDC_FillRGBRect:00000000 LTDC_FillRGBRect
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:810    .text.LTDC_FillRGBRect:00000104 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:819    .text.LTDC_DrawBitmap:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:824    .text.LTDC_DrawBitmap:00000000 LTDC_DrawBitmap
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:846    .text.fill_lcd_layer_config_from_scrl_layer_config:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:851    .text.fill_lcd_layer_config_from_scrl_layer_config:00000000 fill_lcd_layer_config_from_scrl_layer_config
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:900    .text.fill_lcd_layer_config_from_scrl_layer_config:00000020 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:906    .text.fill_lcd_layer_config_from_scrl_layer_config:00000026 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:959    .text.fill_lcd_layer_config_from_scrl_layer_config:00000048 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1960   .rodata.__func__.1:00000000 __func__.1
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:968    .text.LTDC_SetPixel:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:973    .text.LTDC_SetPixel:00000000 LTDC_SetPixel
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1077   .text.LTDC_SetPixel:00000040 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1084   .text.LTDC_DrawVLine:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1089   .text.LTDC_DrawVLine:00000000 LTDC_DrawVLine
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1197   .text.LTDC_DrawVLine:00000044 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1204   .text.LTDC_DrawHLine:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1209   .text.LTDC_DrawHLine:00000000 LTDC_DrawHLine
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1315   .text.LTDC_DrawHLine:00000044 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1322   .text.SCRL_Init:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1328   .text.SCRL_Init:00000000 SCRL_Init
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1534   .text.SCRL_Init:000000a8 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1966   .rodata.Dummy_Driver:00000000 Dummy_Driver
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1544   .text.SCRL_SetAddress_NoReload:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1550   .text.SCRL_SetAddress_NoReload:00000000 SCRL_SetAddress_NoReload
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1579   .text.SCRL_SetAddress_NoReload:00000010 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1584   .text.SCRL_ReloadLayer:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1590   .text.SCRL_ReloadLayer:00000000 SCRL_ReloadLayer
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1617   .text.SCRL_ReloadLayer:00000010 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1622   .text.SRCL_Update:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1628   .text.SRCL_Update:00000000 SRCL_Update
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 54
+
+
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1646   .text.MX_LTDC_ConfigLayer:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1652   .text.MX_LTDC_ConfigLayer:00000000 MX_LTDC_ConfigLayer
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1944   .text.MX_LTDC_ConfigLayer:000000e8 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1955   .rodata.__func__.0:00000000 __func__.0
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1963   .rodata.Dummy_Driver:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1979   .bss.is_layer_argb8888:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1985   .bss.is_layer_rgb888:00000000 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s:1994   .bss.current_layer:00000000 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.e0c9f337c65cb9f22ed5f23d082bc78b
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.newlib.h.7.a37ffbe9e5aff74303f4e60b1cc1c01b
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.assert.h.11.db24e541f16414db224bf986d21017e2
+                           .group:00000000 wm4.stm32n6xx_hal_conf.h.21.004a06df6e15ac197e03f723792da58a
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.arm_cmse.h.103.a0d15a79c4c9a67da8d5831704d7248e
+                           .group:00000000 wm4.stm32n6xx.h.34.c523a1ffdf274a69e8802892c6776332
+                           .group:00000000 wm4.stm32n657xx.h.26.acd272cb67318cc1a4791ce2f0720ca6
+                           .group:00000000 wm4.cmsis_version.h.30.d128735bf87720f7436b74fefeb5043c
+                           .group:00000000 wm4.core_cm55.h.67.25006a3ce7048d64bcddd2996d5fac93
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.core_cm55.h.213.0528f46a674315ef8d35c4477e230358
+                           .group:00000000 wm4.armv8m_mpu.h.24.bf28cc25bee30a7ff9d2f7a44a5e2230
+                           .group:00000000 wm4.armv8m_pmu.h.24.6ded195d2625055391fd378c0e1d2519
+                           .group:00000000 wm4.core_cm55.h.4477.396e822ef855bcfb932819ad48de1c4c
+                           .group:00000000 wm4.armv7m_cachel1.h.24.936dd92d6e204a8d0b17d5e4ea4a356e
+                           .group:00000000 wm4.stm32n657xx.h.575.78d331c417ec710388ced647138f735f
+                           .group:00000000 wm4.stm32n6xx.h.116.b4247d9785590e7c5ec9234ffb2153bf
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.e62aae2fd3ae33360b6781c8a72e5b18
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.math.h.13.47cfc34cae8a1153323939c4d32cf7c2
+                           .group:00000000 wm4.stm32n6xx_hal_def.h.63.3a8f01490e8852464e9fcb69092e9c75
+                           .group:00000000 wm4.stm32n6xx_ll_bus.h.38.2366a295ee4cdb04833997d3787fcd2d
+                           .group:00000000 wm4.stm32n6xx_ll_rcc.h.21.656bd5637db608589ad16ea57d39430c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.194.69b522b1afdf59a82d05a1f71efe03c7
+                           .group:00000000 wm4.stm32n6xx_hal_rcc_ex.h.21.cc6be0a7d168882a1a6f470236ba784c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.4361.4b490a4a19722e68c21f88cb8a774a30
+                           .group:00000000 wm4.stm32n6xx_hal_gpio.h.21.89d54af663b98eb8fc098192053f7eeb
+                           .group:00000000 wm4.stm32n6xx_hal_gpio_ex.h.22.f7e795fb05a69a19b87d946b47c8db8b
+                           .group:00000000 wm4.stm32n6xx_hal_rif.h.21.33f2c553a8a3fc14dca8c470b213ab19
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.21.61e48c5c2e8d25d22177834b232fe45c
+                           .group:00000000 wm4.stm32n6xx_hal_dma_ex.h.21.82f854ecdb6a463b06d0b4e5c217c368
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 55
+
+
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.1020.87e2180c009560b617c1f8208140c950
+                           .group:00000000 wm4.stm32n6xx_hal_cortex.h.21.f493623cc58f9454ab4eae41e395c5cc
+                           .group:00000000 wm4.stm32n6xx_hal_bsec.h.21.1ee89319140541f82434908b4267aa30
+                           .group:00000000 wm4.stm32n6xx_hal_dcmipp.h.21.e2b87dce83d7d722d696a597f6ac56bf
+                           .group:00000000 wm4.stm32n6xx_hal_dma2d.h.21.75c8d46cdbb72970123b3f34ae2043d7
+                           .group:00000000 wm4.stm32n6xx_hal_exti.h.21.e0efb23591051684dc14f1f2431c6aab
+                           .group:00000000 wm4.stm32n6xx_hal_gfxmmu.h.21.9784a9103143d48bd3c37389d0e0b8e6
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.21.3f483626ff64c5bf027265bb2e1d1331
+                           .group:00000000 wm4.stm32n6xx_hal_i2c_ex.h.21.79e9196c22282cdaf6b4047893638c45
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.741.1084702632703acc669e4282b3043372
+                           .group:00000000 wm4.stm32n6xx_hal_icache.h.21.194b4ec6e76f32b14f65c85616854850
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.21.ae1eb09930e7e550e48e418ac5849e4d
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.1002.b13ede7fc94ed5ad1c6768a157d2149a
+                           .group:00000000 wm4.stm32n6xx_ll_usb.h.21.daaf86158046f2cf02166c495d637480
+                           .group:00000000 wm4.stm32n6xx_hal_pcd.h.155.27040aac6844effe2af8c180caf1dd2e
+                           .group:00000000 wm4.stm32n6xx_hal_pwr.h.21.cdb73e4869c3fed3fc84f901ec0e5f0a
+                           .group:00000000 wm4.stm32n6xx_hal_pwr_ex.h.21.1a673224a58b0c1e5fad8eeda6514208
+                           .group:00000000 wm4.stm32n6xx_hal_ramcfg.h.21.a62dfbb4d2c14e9a8c634a215e37bd3d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.21.9f810303326e2d91749800e9911f8e4d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.906.8ad9375f39dce09dc0a4db0025ee7a76
+                           .group:00000000 wm4.stm32n6xx_hal_tim.h.21.839dd2b2a70382fb2c44f8f293a84d5f
+                           .group:00000000 wm4.stm32n6xx_hal_tim_ex.h.21.e372d5ac63c13441211ea4ecbd353150
+                           .group:00000000 wm4.stm32n6xx_hal_uart.h.21.230f549bfa0d5ebfd77bfb311b2aca15
+                           .group:00000000 wm4.stm32n6xx_hal_uart_ex.h.21.a0d5511e1d0703b7b5278c8f5472b96d
+                           .group:00000000 wm4.stm32n6xx_hal_xspi.h.21.7fd922d3bdb871475cf18436a68935bb
+                           .group:00000000 wm4.stm32n6xx_hal_cacheaxi.h.21.7c3375b7903ec42376e4883320997f74
+                           .group:00000000 wm4.stm32n6xx_hal_gpu2d.h.21.48d0249122abad294a630c39cc4ebaed
+                           .group:00000000 wm4.stm32n6xx_hal.h.81.e79d59262ba173c33cf1d69281830d15
+                           .group:00000000 wm4.stm32n6570_discovery_conf.h.30.6a134136ef3ab5cd3294c32587074c68
+                           .group:00000000 wm4.stm32n6570_discovery_errno.h.22.80e523b09444a11ebe4b6e24ae914f0e
+                           .group:00000000 wm4.rk050hr18.h.22.144f33c0bcd7d0505e68bc8528efe870
+                           .group:00000000 wm4.lcd.h.21.98701c105e66fef2e089854e5bc0fe32
+                           .group:00000000 wm4.stm32n6570_discovery_lcd.h.57.e266983512ca4d9da59336b85522ef19
+                           .group:00000000 wm4.stm32_lcd.h.55.1a04e503950bf34ef3721d2ebb9542fc
+
+UNDEFINED SYMBOLS
+Lcd_Ctx
+hlcd_ltdc
+BSP_LCD_GetPixelFormat
+BSP_LCD_SetActiveLayer
+BSP_LCD_GetYSize
+BSP_LCD_GetXSize
+BSP_LCD_ReadPixel
+BSP_LCD_FillRect
+BSP_LCD_FillRGBRect
+BSP_LCD_DrawBitmap
+__assert_func
+BSP_LCD_WritePixel
+BSP_LCD_DrawVLine
+BSP_LCD_DrawHLine
+memset
+BSP_LCD_Init
+BSP_LCD_ConfigLayer
+UTIL_LCD_SetFuncDriver
+HAL_LTDC_SetAddress_NoReload
+HAL_LTDC_ReloadLayer
+HAL_LTDC_ConfigLayerFlexARGB
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccJpkMpe.s 			page 56
+
+
+HAL_LTDC_ConfigLayer

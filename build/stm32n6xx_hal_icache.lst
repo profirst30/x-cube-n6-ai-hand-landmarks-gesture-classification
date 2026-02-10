@@ -1,0 +1,1548 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"stm32n6xx_hal_icache.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c"
+  25              		.section	.rodata.HAL_ICACHE_ConfigAssociativityMode.str1.1,"aMS",%progbits,1
+  26              	.LC0:
+  27 0000 53544D33 		.ascii	"STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/st"
+  27      32437562 
+  27      655F4657 
+  27      5F4E362F 
+  27      44726976 
+  28 0033 6D33326E 		.ascii	"m32n6xx_hal_icache.c\000"
+  28      3678785F 
+  28      68616C5F 
+  28      69636163 
+  28      68652E63 
+  29              		.section	.text.HAL_ICACHE_ConfigAssociativityMode,"ax",%progbits
+  30              		.align	1
+  31              		.global	HAL_ICACHE_ConfigAssociativityMode
+  32              		.syntax unified
+  33              		.thumb
+  34              		.thumb_func
+  36              	HAL_ICACHE_ConfigAssociativityMode:
+  37              	.LVL0:
+  38              	.LFB862:
+   1:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+   2:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ******************************************************************************
+   3:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @file    stm32n6xx_hal_icache.c
+   4:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @author  MCD Application Team
+   5:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief   ICACHE HAL module driver.
+   6:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *          This file provides firmware functions to manage the following
+   7:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *          functionalities of the Instruction Cache (ICACHE).
+   8:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *           + Initialization and Configuration
+   9:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *           + Invalidate functions
+  10:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *           + Monitoring management
+  11:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *           + Memory address remap management
+  12:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ******************************************************************************
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 2
+
+
+  13:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @attention
+  14:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *
+  15:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * Copyright (c) 2023 STMicroelectronics.
+  16:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * All rights reserved.
+  17:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *
+  18:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  19:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * in the root directory of this software component.
+  20:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  21:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *
+  22:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ******************************************************************************
+  23:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   @verbatim
+  24:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ==============================================================================
+  25:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****                         ##### ICACHE main features #####
+  26:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ==============================================================================
+  27:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   [..]
+  28:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     The Texture Cache (ICACHE) is introduced on AXI read-only texture port of
+  29:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     the GPU2D to improve performance when reading texture data from internal and
+  30:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     external memories.
+  31:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  32:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ===============================================================================
+  33:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****                         ##### How to use this driver #####
+  34:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ===============================================================================
+  35:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   [..]
+  36:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****      The ICACHE HAL driver can be used as follows:
+  37:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  38:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     (#) Optionally configure the Instruction Cache mode with
+  39:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         HAL_ICACHE_ConfigAssociativityMode() if the default configuration
+  40:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         does not suit the application requirements.
+  41:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  42:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     (#) Enable and disable the Instruction Cache with respectively
+  43:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         HAL_ICACHE_Enable() and HAL_ICACHE_Disable().
+  44:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         Use HAL_ICACHE_IsEnabled() to get the Instruction Cache status.
+  45:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         To ensure a deterministic cache behavior after power on, system reset or after
+  46:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         a call to @ref HAL_ICACHE_Disable(), the application must call
+  47:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         @ref HAL_ICACHE_WaitForInvalidateComplete(). Indeed on power on, system reset
+  48:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         or cache disable, an automatic cache invalidation procedure is launched and the
+  49:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         cache is bypassed until the operation completes.
+  50:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  51:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     (#) Initiate the cache maintenance invalidation procedure with either
+  52:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         HAL_ICACHE_Invalidate() (blocking mode) or HAL_ICACHE_Invalidate_IT()
+  53:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         (interrupt mode). When interrupt mode is used, the callback function
+  54:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         HAL_ICACHE_InvalidateCompleteCallback() is called when the invalidate
+  55:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         procedure is complete. The function HAL_ICACHE_WaitForInvalidateComplete()
+  56:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         may be called to wait for the end of the invalidate procedure automatically
+  57:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         initiated when disabling the Instruction Cache with HAL_ICACHE_Disable().
+  58:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         The cache operation is bypassed during the invalidation procedure.
+  59:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  60:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     (#) Use the performance monitoring counters for Hit and Miss with the following
+  61:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         functions: HAL_ICACHE_Monitor_Start(), HAL_ICACHE_Monitor_Stop(),
+  62:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         HAL_ICACHE_Monitor_Reset(), HAL_ICACHE_Monitor_GetHitValue() and
+  63:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         HAL_ICACHE_Monitor_GetMissValue()
+  64:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  65:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   @endverbatim
+  66:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+  67:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  68:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /* Includes ------------------------------------------------------------------*/
+  69:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** #include "stm32n6xx_hal.h"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 3
+
+
+  70:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  71:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /** @addtogroup STM32N6xx_HAL_Driver
+  72:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @{
+  73:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+  74:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  75:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /** @defgroup ICACHE ICACHE
+  76:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief HAL ICACHE module driver
+  77:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @{
+  78:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+  79:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** #if defined(ICACHE) && defined (HAL_ICACHE_MODULE_ENABLED)
+  80:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  81:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /* Private typedef -----------------------------------------------------------*/
+  82:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /* Private constants ---------------------------------------------------------*/
+  83:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /** @addtogroup ICACHE_Private_Constants ICACHE Private Constants
+  84:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @{
+  85:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+  86:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** #define ICACHE_INVALIDATE_TIMEOUT_VALUE        1U   /* 1ms */
+  87:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** #define ICACHE_DISABLE_TIMEOUT_VALUE           1U   /* 1ms */
+  88:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  89:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+  90:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @}
+  91:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+  92:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  93:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /* Private macros ------------------------------------------------------------*/
+  94:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /** @defgroup ICACHE_Private_Macros ICACHE Private Macros
+  95:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @{
+  96:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+  97:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+  98:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** #define IS_ICACHE_ASSOCIATIVITY_MODE(__MODE__) (((__MODE__) == ICACHE_1WAY) || \
+  99:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****                                                 ((__MODE__) == ICACHE_4WAYS))
+ 100:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 101:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** #define IS_ICACHE_MONITOR_TYPE(__TYPE__)    (((__TYPE__) == ICACHE_MONITOR_HIT_MISS) || \
+ 102:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****                                              ((__TYPE__) == ICACHE_MONITOR_HIT)      || \
+ 103:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****                                              ((__TYPE__) == ICACHE_MONITOR_MISS))
+ 104:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 105:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 106:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @}
+ 107:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 108:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 109:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /* Private variables ---------------------------------------------------------*/
+ 110:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /* Private function prototypes -----------------------------------------------*/
+ 111:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 112:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /* Exported functions --------------------------------------------------------*/
+ 113:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 114:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /** @defgroup ICACHE_Exported_Functions ICACHE Exported Functions
+ 115:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @{
+ 116:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 117:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 118:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /** @defgroup ICACHE_Exported_Functions_Group1 Initialization and control functions
+ 119:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief    Initialization and control functions
+ 120:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *
+ 121:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   @verbatim
+ 122:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ==============================================================================
+ 123:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****             ##### Initialization and control functions #####
+ 124:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ==============================================================================
+ 125:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   [..]
+ 126:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     This section provides functions allowing to initialize and control the
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 4
+
+
+ 127:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     Instruction Cache (mode, invalidate procedure, performance counters).
+ 128:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   @endverbatim
+ 129:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @{
+ 130:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 131:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 132:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 133:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Configure the Instruction Cache cache associativity mode selection.
+ 134:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @param  AssociativityMode  Associativity mode selection
+ 135:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         This parameter can be one of the following values:
+ 136:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_1WAY   1-way cache (direct mapped cache)
+ 137:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_4WAYS  4-ways set associative cache (default)
+ 138:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK/HAL_ERROR)
+ 139:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 140:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_ConfigAssociativityMode(uint32_t AssociativityMode)
+ 141:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+  39              		.loc 1 141 1 view -0
+  40              		.cfi_startproc
+  41              		@ args = 0, pretend = 0, frame = 0
+  42              		@ frame_needed = 0, uses_anonymous_args = 0
+ 142:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status = HAL_OK;
+  43              		.loc 1 142 3 view .LVU1
+ 143:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 144:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 145:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   assert_param(IS_ICACHE_ASSOCIATIVITY_MODE(AssociativityMode));
+  44              		.loc 1 145 3 view .LVU2
+  45 0000 30F00403 		bics	r3, r0, #4
+ 141:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status = HAL_OK;
+  46              		.loc 1 141 1 is_stmt 0 view .LVU3
+  47 0004 10B5     		push	{r4, lr}
+  48              		.cfi_def_cfa_offset 8
+  49              		.cfi_offset 4, -8
+  50              		.cfi_offset 14, -4
+ 141:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status = HAL_OK;
+  51              		.loc 1 141 1 view .LVU4
+  52 0006 0446     		mov	r4, r0
+  53              		.loc 1 145 3 view .LVU5
+  54 0008 03D0     		beq	.L2
+  55              		.loc 1 145 3 discriminator 2 view .LVU6
+  56 000a 9121     		movs	r1, #145
+  57 000c 0748     		ldr	r0, .L8
+  58              	.LVL1:
+  59              		.loc 1 145 3 discriminator 2 view .LVU7
+  60 000e FFF7FEFF 		bl	assert_failed
+  61              	.LVL2:
+  62              	.L2:
+ 146:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 147:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check cache is not enabled */
+ 148:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   if (READ_BIT(ICACHE->CR, ICACHE_CR_EN) != 0U)
+  63              		.loc 1 148 3 is_stmt 1 view .LVU8
+  64              		.loc 1 148 7 is_stmt 0 view .LVU9
+  65 0012 074A     		ldr	r2, .L8+4
+  66 0014 1068     		ldr	r0, [r2]
+  67              		.loc 1 148 6 view .LVU10
+  68 0016 10F00100 		ands	r0, r0, #1
+ 149:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 150:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     status = HAL_ERROR;
+ 151:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 5
+
+
+ 152:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   else
+ 153:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 154:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     MODIFY_REG(ICACHE->CR, ICACHE_CR_WAYSEL, AssociativityMode);
+  69              		.loc 1 154 5 is_stmt 1 view .LVU11
+  70 001a 09BF     		itett	eq
+  71 001c 1368     		ldreq	r3, [r2]
+ 150:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+  72              		.loc 1 150 12 is_stmt 0 view .LVU12
+  73 001e 0120     		movne	r0, #1
+  74              	.LVL3:
+ 155:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 156:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 157:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return status;
+  75              		.loc 1 157 3 is_stmt 1 view .LVU13
+ 154:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+  76              		.loc 1 154 5 is_stmt 0 view .LVU14
+  77 0020 23F00403 		biceq	r3, r3, #4
+  78 0024 2343     		orreq	r3, r3, r4
+  79 0026 08BF     		it	eq
+  80 0028 1360     		streq	r3, [r2]
+ 158:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+  81              		.loc 1 158 1 view .LVU15
+  82 002a 10BD     		pop	{r4, pc}
+  83              	.LVL4:
+  84              	.L9:
+  85              		.loc 1 158 1 view .LVU16
+  86              		.align	2
+  87              	.L8:
+  88 002c 00000000 		.word	.LC0
+  89 0030 00500358 		.word	1476612096
+  90              		.cfi_endproc
+  91              	.LFE862:
+  93              		.section	.text.HAL_ICACHE_DeInit,"ax",%progbits
+  94              		.align	1
+  95              		.global	HAL_ICACHE_DeInit
+  96              		.syntax unified
+  97              		.thumb
+  98              		.thumb_func
+ 100              	HAL_ICACHE_DeInit:
+ 101              	.LFB863:
+ 159:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 160:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 161:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  DeInitialize the Instruction Cache.
+ 162:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK)
+ 163:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 164:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_DeInit(void)
+ 165:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 102              		.loc 1 165 1 is_stmt 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 106              		@ link register save eliminated.
+ 166:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Reset interrupt enable value */
+ 167:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   WRITE_REG(ICACHE->IER, 0U);
+ 107              		.loc 1 167 3 view .LVU18
+ 108 0000 0020     		movs	r0, #0
+ 168:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 6
+
+
+ 169:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Clear any pending flags */
+ 170:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   WRITE_REG(ICACHE->FCR, ICACHE_FCR_CBSYENDF | ICACHE_FCR_CERRF);
+ 109              		.loc 1 170 3 is_stmt 0 view .LVU19
+ 110 0002 0622     		movs	r2, #6
+ 167:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 111              		.loc 1 167 3 view .LVU20
+ 112 0004 0A4B     		ldr	r3, .L11
+ 113 0006 9860     		str	r0, [r3, #8]
+ 114              		.loc 1 170 3 is_stmt 1 view .LVU21
+ 115 0008 DA60     		str	r2, [r3, #12]
+ 171:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 172:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Disable cache then set default associative mode value */
+ 173:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   CLEAR_BIT(ICACHE->CR, ICACHE_CR_EN);
+ 116              		.loc 1 173 3 view .LVU22
+ 117 000a 1A68     		ldr	r2, [r3]
+ 118 000c 22F00102 		bic	r2, r2, #1
+ 119 0010 1A60     		str	r2, [r3]
+ 174:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   WRITE_REG(ICACHE->CR, ICACHE_CR_WAYSEL);
+ 120              		.loc 1 174 3 view .LVU23
+ 121 0012 0422     		movs	r2, #4
+ 122 0014 1A60     		str	r2, [r3]
+ 175:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 176:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Stop monitor and reset monitor values */
+ 177:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   CLEAR_BIT(ICACHE->CR, ICACHE_MONITOR_HIT_MISS);
+ 123              		.loc 1 177 3 view .LVU24
+ 124 0016 1A68     		ldr	r2, [r3]
+ 125 0018 22F44032 		bic	r2, r2, #196608
+ 126 001c 1A60     		str	r2, [r3]
+ 178:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   SET_BIT(ICACHE->CR, (ICACHE_MONITOR_HIT_MISS << 2U));
+ 127              		.loc 1 178 3 view .LVU25
+ 128 001e 1A68     		ldr	r2, [r3]
+ 129 0020 42F44022 		orr	r2, r2, #786432
+ 130 0024 1A60     		str	r2, [r3]
+ 179:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   CLEAR_BIT(ICACHE->CR, (ICACHE_MONITOR_HIT_MISS << 2U));
+ 131              		.loc 1 179 3 view .LVU26
+ 132 0026 1A68     		ldr	r2, [r3]
+ 133 0028 22F44022 		bic	r2, r2, #786432
+ 134 002c 1A60     		str	r2, [r3]
+ 180:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 181:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 182:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return HAL_OK;
+ 135              		.loc 1 182 3 view .LVU27
+ 183:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 136              		.loc 1 183 1 is_stmt 0 view .LVU28
+ 137 002e 7047     		bx	lr
+ 138              	.L12:
+ 139              		.align	2
+ 140              	.L11:
+ 141 0030 00500358 		.word	1476612096
+ 142              		.cfi_endproc
+ 143              	.LFE863:
+ 145              		.section	.text.HAL_ICACHE_Enable,"ax",%progbits
+ 146              		.align	1
+ 147              		.global	HAL_ICACHE_Enable
+ 148              		.syntax unified
+ 149              		.thumb
+ 150              		.thumb_func
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 7
+
+
+ 152              	HAL_ICACHE_Enable:
+ 153              	.LFB864:
+ 184:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 185:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 186:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Enable the Instruction Cache.
+ 187:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note   This function always returns HAL_OK even if there is any ongoing
+ 188:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         cache operation. The Instruction Cache is bypassed until the
+ 189:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         cache operation completes.
+ 190:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK)
+ 191:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 192:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_Enable(void)
+ 193:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 154              		.loc 1 193 1 is_stmt 1 view -0
+ 155              		.cfi_startproc
+ 156              		@ args = 0, pretend = 0, frame = 0
+ 157              		@ frame_needed = 0, uses_anonymous_args = 0
+ 158              		@ link register save eliminated.
+ 194:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   SET_BIT(ICACHE->CR, ICACHE_CR_EN);
+ 159              		.loc 1 194 3 view .LVU30
+ 160 0000 034A     		ldr	r2, .L14
+ 195:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 196:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return HAL_OK;
+ 197:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 161              		.loc 1 197 1 is_stmt 0 view .LVU31
+ 162 0002 0020     		movs	r0, #0
+ 194:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   SET_BIT(ICACHE->CR, ICACHE_CR_EN);
+ 163              		.loc 1 194 3 view .LVU32
+ 164 0004 1368     		ldr	r3, [r2]
+ 165 0006 43F00103 		orr	r3, r3, #1
+ 166 000a 1360     		str	r3, [r2]
+ 196:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 167              		.loc 1 196 3 is_stmt 1 view .LVU33
+ 168              		.loc 1 197 1 is_stmt 0 view .LVU34
+ 169 000c 7047     		bx	lr
+ 170              	.L15:
+ 171 000e 00BF     		.align	2
+ 172              	.L14:
+ 173 0010 00500358 		.word	1476612096
+ 174              		.cfi_endproc
+ 175              	.LFE864:
+ 177              		.section	.text.HAL_ICACHE_Disable,"ax",%progbits
+ 178              		.align	1
+ 179              		.global	HAL_ICACHE_Disable
+ 180              		.syntax unified
+ 181              		.thumb
+ 182              		.thumb_func
+ 184              	HAL_ICACHE_Disable:
+ 185              	.LFB865:
+ 198:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 199:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 200:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Disable the Instruction Cache.
+ 201:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note   This function waits for the cache being disabled but
+ 202:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         not for the end of the automatic cache invalidation procedure.
+ 203:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK/HAL_TIMEOUT)
+ 204:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 205:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_Disable(void)
+ 206:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 8
+
+
+ 186              		.loc 1 206 1 is_stmt 1 view -0
+ 187              		.cfi_startproc
+ 188              		@ args = 0, pretend = 0, frame = 0
+ 189              		@ frame_needed = 0, uses_anonymous_args = 0
+ 207:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 190              		.loc 1 207 3 view .LVU36
+ 191              	.LVL5:
+ 208:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   uint32_t tickstart;
+ 192              		.loc 1 208 3 view .LVU37
+ 209:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 210:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Make sure BSYENDF is reset before to disable the instruction cache */
+ 211:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* as it automatically starts a cache invalidation procedure */
+ 212:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   WRITE_REG(ICACHE->FCR, ICACHE_FCR_CBSYENDF);
+ 193              		.loc 1 212 3 view .LVU38
+ 206:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 194              		.loc 1 206 1 is_stmt 0 view .LVU39
+ 195 0000 38B5     		push	{r3, r4, r5, lr}
+ 196              		.cfi_def_cfa_offset 16
+ 197              		.cfi_offset 3, -16
+ 198              		.cfi_offset 4, -12
+ 199              		.cfi_offset 5, -8
+ 200              		.cfi_offset 14, -4
+ 201              		.loc 1 212 3 view .LVU40
+ 202 0002 0223     		movs	r3, #2
+ 203 0004 0B4C     		ldr	r4, .L22
+ 204 0006 E360     		str	r3, [r4, #12]
+ 213:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 214:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   CLEAR_BIT(ICACHE->CR, ICACHE_CR_EN);
+ 205              		.loc 1 214 3 is_stmt 1 view .LVU41
+ 206 0008 2368     		ldr	r3, [r4]
+ 207 000a 23F00103 		bic	r3, r3, #1
+ 208 000e 2360     		str	r3, [r4]
+ 215:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 216:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Get tick */
+ 217:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   tickstart = HAL_GetTick();
+ 209              		.loc 1 217 3 view .LVU42
+ 210              		.loc 1 217 15 is_stmt 0 view .LVU43
+ 211 0010 FFF7FEFF 		bl	HAL_GetTick
+ 212              	.LVL6:
+ 213 0014 0546     		mov	r5, r0
+ 214              	.LVL7:
+ 218:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 219:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Wait for instruction cache being disabled */
+ 220:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   while (READ_BIT(ICACHE->CR, ICACHE_CR_EN) != 0U)
+ 215              		.loc 1 220 3 is_stmt 1 view .LVU44
+ 216              	.L21:
+ 217              		.loc 1 220 45 view .LVU45
+ 218              		.loc 1 220 10 is_stmt 0 view .LVU46
+ 219 0016 2068     		ldr	r0, [r4]
+ 220              		.loc 1 220 45 view .LVU47
+ 221 0018 10F00100 		ands	r0, r0, #1
+ 222 001c 00D1     		bne	.L19
+ 223              	.L18:
+ 224              	.LVL8:
+ 221:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 222:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     if ((HAL_GetTick() - tickstart) > ICACHE_DISABLE_TIMEOUT_VALUE)
+ 223:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 9
+
+
+ 224:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       /* New check to avoid false timeout detection in case of preemption */
+ 225:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       if (READ_BIT(ICACHE->CR, ICACHE_CR_EN) != 0U)
+ 226:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 227:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         status = HAL_TIMEOUT;
+ 228:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         break;
+ 229:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       }
+ 230:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     }
+ 231:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 232:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 233:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return status;
+ 225              		.loc 1 233 3 is_stmt 1 view .LVU48
+ 234:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 226              		.loc 1 234 1 is_stmt 0 view .LVU49
+ 227 001e 38BD     		pop	{r3, r4, r5, pc}
+ 228              	.LVL9:
+ 229              	.L19:
+ 222:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 230              		.loc 1 222 5 is_stmt 1 view .LVU50
+ 222:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 231              		.loc 1 222 10 is_stmt 0 view .LVU51
+ 232 0020 FFF7FEFF 		bl	HAL_GetTick
+ 233              	.LVL10:
+ 222:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 234              		.loc 1 222 24 discriminator 1 view .LVU52
+ 235 0024 401B     		subs	r0, r0, r5
+ 222:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 236              		.loc 1 222 8 discriminator 1 view .LVU53
+ 237 0026 0128     		cmp	r0, #1
+ 238 0028 F5D9     		bls	.L21
+ 225:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 239              		.loc 1 225 7 is_stmt 1 view .LVU54
+ 225:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 240              		.loc 1 225 11 is_stmt 0 view .LVU55
+ 241 002a 2368     		ldr	r3, [r4]
+ 225:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 242              		.loc 1 225 10 view .LVU56
+ 243 002c DB07     		lsls	r3, r3, #31
+ 244 002e F2D5     		bpl	.L21
+ 227:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         break;
+ 245              		.loc 1 227 16 view .LVU57
+ 246 0030 0320     		movs	r0, #3
+ 247 0032 F4E7     		b	.L18
+ 248              	.L23:
+ 249              		.align	2
+ 250              	.L22:
+ 251 0034 00500358 		.word	1476612096
+ 252              		.cfi_endproc
+ 253              	.LFE865:
+ 255              		.section	.text.HAL_ICACHE_IsEnabled,"ax",%progbits
+ 256              		.align	1
+ 257              		.global	HAL_ICACHE_IsEnabled
+ 258              		.syntax unified
+ 259              		.thumb
+ 260              		.thumb_func
+ 262              	HAL_ICACHE_IsEnabled:
+ 263              	.LFB866:
+ 235:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 10
+
+
+ 236:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 237:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Check whether the Instruction Cache is enabled or not.
+ 238:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval Status (0: disabled, 1: enabled)
+ 239:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 240:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** uint32_t HAL_ICACHE_IsEnabled(void)
+ 241:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 264              		.loc 1 241 1 is_stmt 1 view -0
+ 265              		.cfi_startproc
+ 266              		@ args = 0, pretend = 0, frame = 0
+ 267              		@ frame_needed = 0, uses_anonymous_args = 0
+ 268              		@ link register save eliminated.
+ 242:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return ((READ_BIT(ICACHE->CR, ICACHE_CR_EN) != 0U) ? 1UL : 0UL);
+ 269              		.loc 1 242 3 view .LVU59
+ 270              		.loc 1 242 12 is_stmt 0 view .LVU60
+ 271 0000 024B     		ldr	r3, .L25
+ 272 0002 1868     		ldr	r0, [r3]
+ 243:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 273              		.loc 1 243 1 view .LVU61
+ 274 0004 00F00100 		and	r0, r0, #1
+ 275 0008 7047     		bx	lr
+ 276              	.L26:
+ 277 000a 00BF     		.align	2
+ 278              	.L25:
+ 279 000c 00500358 		.word	1476612096
+ 280              		.cfi_endproc
+ 281              	.LFE866:
+ 283              		.section	.text.HAL_ICACHE_Invalidate_IT,"ax",%progbits
+ 284              		.align	1
+ 285              		.global	HAL_ICACHE_Invalidate_IT
+ 286              		.syntax unified
+ 287              		.thumb
+ 288              		.thumb_func
+ 290              	HAL_ICACHE_Invalidate_IT:
+ 291              	.LFB868:
+ 244:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 245:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 246:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Invalidate the Instruction Cache.
+ 247:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note   This function waits for the end of cache invalidation procedure
+ 248:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         and clears the associated BSYENDF flag.
+ 249:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK/HAL_ERROR/HAL_TIMEOUT)
+ 250:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 251:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_Invalidate(void)
+ 252:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 253:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status;
+ 254:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 255:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check if no ongoing operation */
+ 256:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   if (READ_BIT(ICACHE->SR, ICACHE_SR_BUSYF) == 0U)
+ 257:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 258:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Launch cache invalidation */
+ 259:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     SET_BIT(ICACHE->CR, ICACHE_CR_CACHEINV);
+ 260:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 261:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 262:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   status = HAL_ICACHE_WaitForInvalidateComplete();
+ 263:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 264:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return status;
+ 265:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 266:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 11
+
+
+ 267:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 268:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Invalidate the Instruction Cache with interrupt.
+ 269:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note   This function launches cache invalidation and returns.
+ 270:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         User application shall resort to interrupt generation to check
+ 271:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         the end of the cache invalidation with the BSYENDF flag and the
+ 272:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         HAL_ICACHE_InvalidateCompleteCallback() callback.
+ 273:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK/HAL_ERROR)
+ 274:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 275:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_Invalidate_IT(void)
+ 276:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 292              		.loc 1 276 1 is_stmt 1 view -0
+ 293              		.cfi_startproc
+ 294              		@ args = 0, pretend = 0, frame = 0
+ 295              		@ frame_needed = 0, uses_anonymous_args = 0
+ 296              		@ link register save eliminated.
+ 277:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 297              		.loc 1 277 3 view .LVU63
+ 298              	.LVL11:
+ 278:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 279:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check no ongoing operation */
+ 280:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   if (READ_BIT(ICACHE->SR, ICACHE_SR_BUSYF) != 0U)
+ 299              		.loc 1 280 3 view .LVU64
+ 300              		.loc 1 280 7 is_stmt 0 view .LVU65
+ 301 0000 084B     		ldr	r3, .L30
+ 302 0002 5868     		ldr	r0, [r3, #4]
+ 303              		.loc 1 280 6 view .LVU66
+ 304 0004 10F00100 		ands	r0, r0, #1
+ 305 0008 0AD1     		bne	.L29
+ 281:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 282:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     status = HAL_ERROR;
+ 283:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 284:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   else
+ 285:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 286:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Make sure BSYENDF is reset before to start cache invalidation */
+ 287:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     WRITE_REG(ICACHE->FCR, ICACHE_FCR_CBSYENDF);
+ 306              		.loc 1 287 5 is_stmt 1 view .LVU67
+ 307 000a 0222     		movs	r2, #2
+ 308 000c DA60     		str	r2, [r3, #12]
+ 288:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 289:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Enable end of cache invalidation interrupt */
+ 290:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     SET_BIT(ICACHE->IER, ICACHE_IER_BSYENDIE);
+ 309              		.loc 1 290 5 view .LVU68
+ 310 000e 9A68     		ldr	r2, [r3, #8]
+ 311 0010 42F00202 		orr	r2, r2, #2
+ 312 0014 9A60     		str	r2, [r3, #8]
+ 291:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 292:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Launch cache invalidation */
+ 293:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     SET_BIT(ICACHE->CR, ICACHE_CR_CACHEINV);
+ 313              		.loc 1 293 5 view .LVU69
+ 314 0016 1A68     		ldr	r2, [r3]
+ 315 0018 42F00202 		orr	r2, r2, #2
+ 316 001c 1A60     		str	r2, [r3]
+ 317 001e 7047     		bx	lr
+ 318              	.L29:
+ 282:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 319              		.loc 1 282 12 is_stmt 0 view .LVU70
+ 320 0020 0120     		movs	r0, #1
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 12
+
+
+ 321              	.LVL12:
+ 294:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 295:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 296:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return status;
+ 322              		.loc 1 296 3 is_stmt 1 view .LVU71
+ 297:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 323              		.loc 1 297 1 is_stmt 0 view .LVU72
+ 324 0022 7047     		bx	lr
+ 325              	.L31:
+ 326              		.align	2
+ 327              	.L30:
+ 328 0024 00500358 		.word	1476612096
+ 329              		.cfi_endproc
+ 330              	.LFE868:
+ 332              		.section	.text.HAL_ICACHE_WaitForInvalidateComplete,"ax",%progbits
+ 333              		.align	1
+ 334              		.global	HAL_ICACHE_WaitForInvalidateComplete
+ 335              		.syntax unified
+ 336              		.thumb
+ 337              		.thumb_func
+ 339              	HAL_ICACHE_WaitForInvalidateComplete:
+ 340              	.LFB869:
+ 298:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 299:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 300:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief Wait for the end of the Instruction Cache invalidate procedure.
+ 301:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note This function checks and clears the BSYENDF flag when set.
+ 302:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK/HAL_TIMEOUT)
+ 303:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 304:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_WaitForInvalidateComplete(void)
+ 305:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 341              		.loc 1 305 1 is_stmt 1 view -0
+ 342              		.cfi_startproc
+ 343              		@ args = 0, pretend = 0, frame = 0
+ 344              		@ frame_needed = 0, uses_anonymous_args = 0
+ 306:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 345              		.loc 1 306 3 view .LVU74
+ 346              	.LVL13:
+ 307:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   uint32_t tickstart;
+ 347              		.loc 1 307 3 view .LVU75
+ 308:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 309:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check if ongoing invalidation operation */
+ 310:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   if (READ_BIT(ICACHE->SR, ICACHE_SR_BUSYF) != 0U)
+ 348              		.loc 1 310 3 view .LVU76
+ 305:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status = HAL_OK;
+ 349              		.loc 1 305 1 is_stmt 0 view .LVU77
+ 350 0000 38B5     		push	{r3, r4, r5, lr}
+ 351              		.cfi_def_cfa_offset 16
+ 352              		.cfi_offset 3, -16
+ 353              		.cfi_offset 4, -12
+ 354              		.cfi_offset 5, -8
+ 355              		.cfi_offset 14, -4
+ 356              		.loc 1 310 7 view .LVU78
+ 357 0002 0C4C     		ldr	r4, .L40
+ 358 0004 6368     		ldr	r3, [r4, #4]
+ 359              		.loc 1 310 6 view .LVU79
+ 360 0006 D907     		lsls	r1, r3, #31
+ 361 0008 04D4     		bmi	.L33
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 13
+
+
+ 362              	.L37:
+ 306:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   uint32_t tickstart;
+ 363              		.loc 1 306 21 view .LVU80
+ 364 000a 0020     		movs	r0, #0
+ 365              	.L34:
+ 366              	.LVL14:
+ 311:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 312:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Get tick */
+ 313:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     tickstart = HAL_GetTick();
+ 314:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 315:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Wait for end of cache invalidation */
+ 316:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     while (READ_BIT(ICACHE->SR, ICACHE_SR_BSYENDF) == 0U)
+ 317:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 318:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       if ((HAL_GetTick() - tickstart) > ICACHE_INVALIDATE_TIMEOUT_VALUE)
+ 319:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 320:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         /* New check to avoid false timeout detection in case of preemption */
+ 321:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         if (READ_BIT(ICACHE->SR, ICACHE_SR_BSYENDF) == 0U)
+ 322:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         {
+ 323:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****           status = HAL_TIMEOUT;
+ 324:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****           break;
+ 325:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         }
+ 326:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       }
+ 327:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     }
+ 328:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 329:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 330:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Clear BSYENDF */
+ 331:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   WRITE_REG(ICACHE->FCR, ICACHE_FCR_CBSYENDF);
+ 367              		.loc 1 331 3 is_stmt 1 view .LVU81
+ 368 000c 0222     		movs	r2, #2
+ 369 000e 094B     		ldr	r3, .L40
+ 370 0010 DA60     		str	r2, [r3, #12]
+ 332:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 333:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return status;
+ 371              		.loc 1 333 3 view .LVU82
+ 334:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 372              		.loc 1 334 1 is_stmt 0 view .LVU83
+ 373 0012 38BD     		pop	{r3, r4, r5, pc}
+ 374              	.LVL15:
+ 375              	.L33:
+ 313:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 376              		.loc 1 313 5 is_stmt 1 view .LVU84
+ 313:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 377              		.loc 1 313 17 is_stmt 0 view .LVU85
+ 378 0014 FFF7FEFF 		bl	HAL_GetTick
+ 379              	.LVL16:
+ 380 0018 0546     		mov	r5, r0
+ 381              	.LVL17:
+ 316:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 382              		.loc 1 316 5 is_stmt 1 view .LVU86
+ 383              	.L39:
+ 316:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 384              		.loc 1 316 52 view .LVU87
+ 316:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 385              		.loc 1 316 12 is_stmt 0 view .LVU88
+ 386 001a 6368     		ldr	r3, [r4, #4]
+ 316:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     {
+ 387              		.loc 1 316 52 view .LVU89
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 14
+
+
+ 388 001c 9B07     		lsls	r3, r3, #30
+ 389 001e F4D4     		bmi	.L37
+ 318:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 390              		.loc 1 318 7 is_stmt 1 view .LVU90
+ 318:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 391              		.loc 1 318 12 is_stmt 0 view .LVU91
+ 392 0020 FFF7FEFF 		bl	HAL_GetTick
+ 393              	.LVL18:
+ 318:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 394              		.loc 1 318 26 discriminator 1 view .LVU92
+ 395 0024 401B     		subs	r0, r0, r5
+ 318:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****       {
+ 396              		.loc 1 318 10 discriminator 1 view .LVU93
+ 397 0026 0128     		cmp	r0, #1
+ 398 0028 F7D9     		bls	.L39
+ 321:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         {
+ 399              		.loc 1 321 9 is_stmt 1 view .LVU94
+ 321:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         {
+ 400              		.loc 1 321 13 is_stmt 0 view .LVU95
+ 401 002a 6368     		ldr	r3, [r4, #4]
+ 321:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****         {
+ 402              		.loc 1 321 12 view .LVU96
+ 403 002c 9A07     		lsls	r2, r3, #30
+ 404 002e F4D4     		bmi	.L39
+ 323:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****           break;
+ 405              		.loc 1 323 18 view .LVU97
+ 406 0030 0320     		movs	r0, #3
+ 407 0032 EBE7     		b	.L34
+ 408              	.L41:
+ 409              		.align	2
+ 410              	.L40:
+ 411 0034 00500358 		.word	1476612096
+ 412              		.cfi_endproc
+ 413              	.LFE869:
+ 415              		.section	.text.HAL_ICACHE_Invalidate,"ax",%progbits
+ 416              		.align	1
+ 417              		.global	HAL_ICACHE_Invalidate
+ 418              		.syntax unified
+ 419              		.thumb
+ 420              		.thumb_func
+ 422              	HAL_ICACHE_Invalidate:
+ 423              	.LFB867:
+ 252:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   HAL_StatusTypeDef status;
+ 424              		.loc 1 252 1 is_stmt 1 view -0
+ 425              		.cfi_startproc
+ 426              		@ args = 0, pretend = 0, frame = 0
+ 427              		@ frame_needed = 0, uses_anonymous_args = 0
+ 428              		@ link register save eliminated.
+ 253:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 429              		.loc 1 253 3 view .LVU99
+ 256:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 430              		.loc 1 256 3 view .LVU100
+ 256:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 431              		.loc 1 256 7 is_stmt 0 view .LVU101
+ 432 0000 044B     		ldr	r3, .L44
+ 433 0002 5A68     		ldr	r2, [r3, #4]
+ 256:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 15
+
+
+ 434              		.loc 1 256 6 view .LVU102
+ 435 0004 D207     		lsls	r2, r2, #31
+ 259:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 436              		.loc 1 259 5 is_stmt 1 view .LVU103
+ 437 0006 5EBF     		ittt	pl
+ 438 0008 1A68     		ldrpl	r2, [r3]
+ 439 000a 42F00202 		orrpl	r2, r2, #2
+ 440 000e 1A60     		strpl	r2, [r3]
+ 262:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 441              		.loc 1 262 3 view .LVU104
+ 262:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 442              		.loc 1 262 12 is_stmt 0 view .LVU105
+ 443 0010 FFF7FEBF 		b	HAL_ICACHE_WaitForInvalidateComplete
+ 444              	.LVL19:
+ 445              	.L45:
+ 446              		.align	2
+ 447              	.L44:
+ 448 0014 00500358 		.word	1476612096
+ 449              		.cfi_endproc
+ 450              	.LFE867:
+ 452              		.section	.text.HAL_ICACHE_Monitor_Start,"ax",%progbits
+ 453              		.align	1
+ 454              		.global	HAL_ICACHE_Monitor_Start
+ 455              		.syntax unified
+ 456              		.thumb
+ 457              		.thumb_func
+ 459              	HAL_ICACHE_Monitor_Start:
+ 460              	.LVL20:
+ 461              	.LFB870:
+ 335:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 336:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 337:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 338:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Start the Instruction Cache performance monitoring.
+ 339:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @param  MonitorType  Monitoring type
+ 340:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         This parameter can be one of the following values:
+ 341:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_HIT_MISS   Hit & Miss monitoring
+ 342:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_HIT        Hit monitoring
+ 343:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_MISS       Miss monitoring
+ 344:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK)
+ 345:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 346:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_Monitor_Start(uint32_t MonitorType)
+ 347:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 462              		.loc 1 347 1 is_stmt 1 view -0
+ 463              		.cfi_startproc
+ 464              		@ args = 0, pretend = 0, frame = 0
+ 465              		@ frame_needed = 0, uses_anonymous_args = 0
+ 348:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 349:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   assert_param(IS_ICACHE_MONITOR_TYPE(MonitorType));
+ 466              		.loc 1 349 3 view .LVU107
+ 467 0000 20F40033 		bic	r3, r0, #131072
+ 468 0004 B3F5803F 		cmp	r3, #65536
+ 347:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 469              		.loc 1 347 1 is_stmt 0 view .LVU108
+ 470 0008 10B5     		push	{r4, lr}
+ 471              		.cfi_def_cfa_offset 8
+ 472              		.cfi_offset 4, -8
+ 473              		.cfi_offset 14, -4
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 16
+
+
+ 347:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 474              		.loc 1 347 1 view .LVU109
+ 475 000a 0446     		mov	r4, r0
+ 476              		.loc 1 349 3 view .LVU110
+ 477 000c 07D0     		beq	.L47
+ 478              		.loc 1 349 3 discriminator 2 view .LVU111
+ 479 000e B0F5003F 		cmp	r0, #131072
+ 480 0012 04D0     		beq	.L47
+ 481              		.loc 1 349 3 discriminator 3 view .LVU112
+ 482 0014 40F25D11 		movw	r1, #349
+ 483 0018 0448     		ldr	r0, .L54
+ 484              	.LVL21:
+ 485              		.loc 1 349 3 discriminator 3 view .LVU113
+ 486 001a FFF7FEFF 		bl	assert_failed
+ 487              	.LVL22:
+ 488              	.L47:
+ 350:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 351:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   SET_BIT(ICACHE->CR, MonitorType);
+ 489              		.loc 1 351 3 is_stmt 1 view .LVU114
+ 490 001e 044A     		ldr	r2, .L54+4
+ 352:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 353:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return HAL_OK;
+ 354:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 491              		.loc 1 354 1 is_stmt 0 view .LVU115
+ 492 0020 0020     		movs	r0, #0
+ 351:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 493              		.loc 1 351 3 view .LVU116
+ 494 0022 1368     		ldr	r3, [r2]
+ 495 0024 2343     		orrs	r3, r3, r4
+ 496 0026 1360     		str	r3, [r2]
+ 353:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 497              		.loc 1 353 3 is_stmt 1 view .LVU117
+ 498              		.loc 1 354 1 is_stmt 0 view .LVU118
+ 499 0028 10BD     		pop	{r4, pc}
+ 500              	.LVL23:
+ 501              	.L55:
+ 502              		.loc 1 354 1 view .LVU119
+ 503 002a 00BF     		.align	2
+ 504              	.L54:
+ 505 002c 00000000 		.word	.LC0
+ 506 0030 00500358 		.word	1476612096
+ 507              		.cfi_endproc
+ 508              	.LFE870:
+ 510              		.section	.text.HAL_ICACHE_Monitor_Stop,"ax",%progbits
+ 511              		.align	1
+ 512              		.global	HAL_ICACHE_Monitor_Stop
+ 513              		.syntax unified
+ 514              		.thumb
+ 515              		.thumb_func
+ 517              	HAL_ICACHE_Monitor_Stop:
+ 518              	.LVL24:
+ 519              	.LFB871:
+ 355:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 356:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 357:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Stop the Instruction Cache performance monitoring.
+ 358:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note   Stopping the monitoring does not reset the values.
+ 359:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @param  MonitorType  Monitoring type
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 17
+
+
+ 360:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         This parameter can be one of the following values:
+ 361:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_HIT_MISS   Hit & Miss monitoring
+ 362:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_HIT        Hit monitoring
+ 363:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_MISS       Miss monitoring
+ 364:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK)
+ 365:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 366:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_Monitor_Stop(uint32_t MonitorType)
+ 367:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 520              		.loc 1 367 1 is_stmt 1 view -0
+ 521              		.cfi_startproc
+ 522              		@ args = 0, pretend = 0, frame = 0
+ 523              		@ frame_needed = 0, uses_anonymous_args = 0
+ 368:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 369:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   assert_param(IS_ICACHE_MONITOR_TYPE(MonitorType));
+ 524              		.loc 1 369 3 view .LVU121
+ 525 0000 20F40033 		bic	r3, r0, #131072
+ 526 0004 B3F5803F 		cmp	r3, #65536
+ 367:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 527              		.loc 1 367 1 is_stmt 0 view .LVU122
+ 528 0008 10B5     		push	{r4, lr}
+ 529              		.cfi_def_cfa_offset 8
+ 530              		.cfi_offset 4, -8
+ 531              		.cfi_offset 14, -4
+ 367:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 532              		.loc 1 367 1 view .LVU123
+ 533 000a 0446     		mov	r4, r0
+ 534              		.loc 1 369 3 view .LVU124
+ 535 000c 07D0     		beq	.L57
+ 536              		.loc 1 369 3 discriminator 2 view .LVU125
+ 537 000e B0F5003F 		cmp	r0, #131072
+ 538 0012 04D0     		beq	.L57
+ 539              		.loc 1 369 3 discriminator 3 view .LVU126
+ 540 0014 40F27111 		movw	r1, #369
+ 541 0018 0448     		ldr	r0, .L64
+ 542              	.LVL25:
+ 543              		.loc 1 369 3 discriminator 3 view .LVU127
+ 544 001a FFF7FEFF 		bl	assert_failed
+ 545              	.LVL26:
+ 546              	.L57:
+ 370:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 371:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   CLEAR_BIT(ICACHE->CR, MonitorType);
+ 547              		.loc 1 371 3 is_stmt 1 view .LVU128
+ 548 001e 044A     		ldr	r2, .L64+4
+ 372:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 373:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return HAL_OK;
+ 374:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 549              		.loc 1 374 1 is_stmt 0 view .LVU129
+ 550 0020 0020     		movs	r0, #0
+ 371:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 551              		.loc 1 371 3 view .LVU130
+ 552 0022 1368     		ldr	r3, [r2]
+ 553 0024 23EA0403 		bic	r3, r3, r4
+ 554 0028 1360     		str	r3, [r2]
+ 373:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 555              		.loc 1 373 3 is_stmt 1 view .LVU131
+ 556              		.loc 1 374 1 is_stmt 0 view .LVU132
+ 557 002a 10BD     		pop	{r4, pc}
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 18
+
+
+ 558              	.LVL27:
+ 559              	.L65:
+ 560              		.loc 1 374 1 view .LVU133
+ 561              		.align	2
+ 562              	.L64:
+ 563 002c 00000000 		.word	.LC0
+ 564 0030 00500358 		.word	1476612096
+ 565              		.cfi_endproc
+ 566              	.LFE871:
+ 568              		.section	.text.HAL_ICACHE_Monitor_Reset,"ax",%progbits
+ 569              		.align	1
+ 570              		.global	HAL_ICACHE_Monitor_Reset
+ 571              		.syntax unified
+ 572              		.thumb
+ 573              		.thumb_func
+ 575              	HAL_ICACHE_Monitor_Reset:
+ 576              	.LVL28:
+ 577              	.LFB872:
+ 375:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 376:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 377:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Reset the Instruction Cache performance monitoring values.
+ 378:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @param  MonitorType  Monitoring type
+ 379:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *         This parameter can be one of the following values:
+ 380:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_HIT_MISS   Hit & Miss monitoring
+ 381:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_HIT        Hit monitoring
+ 382:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *            @arg ICACHE_MONITOR_MISS       Miss monitoring
+ 383:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval HAL status (HAL_OK)
+ 384:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 385:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** HAL_StatusTypeDef HAL_ICACHE_Monitor_Reset(uint32_t MonitorType)
+ 386:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 578              		.loc 1 386 1 is_stmt 1 view -0
+ 579              		.cfi_startproc
+ 580              		@ args = 0, pretend = 0, frame = 0
+ 581              		@ frame_needed = 0, uses_anonymous_args = 0
+ 387:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 388:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   assert_param(IS_ICACHE_MONITOR_TYPE(MonitorType));
+ 582              		.loc 1 388 3 view .LVU135
+ 583 0000 20F40033 		bic	r3, r0, #131072
+ 584 0004 B3F5803F 		cmp	r3, #65536
+ 386:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 585              		.loc 1 386 1 is_stmt 0 view .LVU136
+ 586 0008 10B5     		push	{r4, lr}
+ 587              		.cfi_def_cfa_offset 8
+ 588              		.cfi_offset 4, -8
+ 589              		.cfi_offset 14, -4
+ 386:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check the parameters */
+ 590              		.loc 1 386 1 view .LVU137
+ 591 000a 0446     		mov	r4, r0
+ 592              		.loc 1 388 3 view .LVU138
+ 593 000c 07D0     		beq	.L67
+ 594              		.loc 1 388 3 discriminator 2 view .LVU139
+ 595 000e B0F5003F 		cmp	r0, #131072
+ 596 0012 04D0     		beq	.L67
+ 597              		.loc 1 388 3 discriminator 3 view .LVU140
+ 598 0014 4FF4C271 		mov	r1, #388
+ 599 0018 0648     		ldr	r0, .L74
+ 600              	.LVL29:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 19
+
+
+ 601              		.loc 1 388 3 discriminator 3 view .LVU141
+ 602 001a FFF7FEFF 		bl	assert_failed
+ 603              	.LVL30:
+ 604              	.L67:
+ 389:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 390:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Force/Release reset */
+ 391:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   SET_BIT(ICACHE->CR, (MonitorType << 2U));
+ 605              		.loc 1 391 3 is_stmt 1 view .LVU142
+ 606 001e 064B     		ldr	r3, .L74+4
+ 392:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   CLEAR_BIT(ICACHE->CR, (MonitorType << 2U));
+ 393:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 394:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return HAL_OK;
+ 395:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 607              		.loc 1 395 1 is_stmt 0 view .LVU143
+ 608 0020 0020     		movs	r0, #0
+ 391:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   CLEAR_BIT(ICACHE->CR, (MonitorType << 2U));
+ 609              		.loc 1 391 3 view .LVU144
+ 610 0022 1A68     		ldr	r2, [r3]
+ 611 0024 42EA8402 		orr	r2, r2, r4, lsl #2
+ 612 0028 1A60     		str	r2, [r3]
+ 392:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   CLEAR_BIT(ICACHE->CR, (MonitorType << 2U));
+ 613              		.loc 1 392 3 is_stmt 1 view .LVU145
+ 614 002a 1A68     		ldr	r2, [r3]
+ 615 002c 22EA8402 		bic	r2, r2, r4, lsl #2
+ 616 0030 1A60     		str	r2, [r3]
+ 394:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 617              		.loc 1 394 3 view .LVU146
+ 618              		.loc 1 395 1 is_stmt 0 view .LVU147
+ 619 0032 10BD     		pop	{r4, pc}
+ 620              	.LVL31:
+ 621              	.L75:
+ 622              		.loc 1 395 1 view .LVU148
+ 623              		.align	2
+ 624              	.L74:
+ 625 0034 00000000 		.word	.LC0
+ 626 0038 00500358 		.word	1476612096
+ 627              		.cfi_endproc
+ 628              	.LFE872:
+ 630              		.section	.text.HAL_ICACHE_Monitor_GetHitValue,"ax",%progbits
+ 631              		.align	1
+ 632              		.global	HAL_ICACHE_Monitor_GetHitValue
+ 633              		.syntax unified
+ 634              		.thumb
+ 635              		.thumb_func
+ 637              	HAL_ICACHE_Monitor_GetHitValue:
+ 638              	.LFB873:
+ 396:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 397:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 398:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Get the Instruction Cache performance Hit monitoring value.
+ 399:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note   Upon reaching the 32-bit maximum value, monitor does not wrap.
+ 400:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval Hit monitoring value
+ 401:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 402:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** uint32_t HAL_ICACHE_Monitor_GetHitValue(void)
+ 403:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 639              		.loc 1 403 1 is_stmt 1 view -0
+ 640              		.cfi_startproc
+ 641              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 20
+
+
+ 642              		@ frame_needed = 0, uses_anonymous_args = 0
+ 643              		@ link register save eliminated.
+ 404:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return (ICACHE->HMONR);
+ 644              		.loc 1 404 3 view .LVU150
+ 645              		.loc 1 404 17 is_stmt 0 view .LVU151
+ 646 0000 014B     		ldr	r3, .L77
+ 647 0002 1869     		ldr	r0, [r3, #16]
+ 405:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 648              		.loc 1 405 1 view .LVU152
+ 649 0004 7047     		bx	lr
+ 650              	.L78:
+ 651 0006 00BF     		.align	2
+ 652              	.L77:
+ 653 0008 00500358 		.word	1476612096
+ 654              		.cfi_endproc
+ 655              	.LFE873:
+ 657              		.section	.text.HAL_ICACHE_Monitor_GetMissValue,"ax",%progbits
+ 658              		.align	1
+ 659              		.global	HAL_ICACHE_Monitor_GetMissValue
+ 660              		.syntax unified
+ 661              		.thumb
+ 662              		.thumb_func
+ 664              	HAL_ICACHE_Monitor_GetMissValue:
+ 665              	.LFB874:
+ 406:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 407:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 408:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Get the Instruction Cache performance Miss monitoring value.
+ 409:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note   Upon reaching the 32-bit maximum value, monitor does not wrap.
+ 410:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval Miss monitoring value
+ 411:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 412:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** uint32_t HAL_ICACHE_Monitor_GetMissValue(void)
+ 413:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 666              		.loc 1 413 1 is_stmt 1 view -0
+ 667              		.cfi_startproc
+ 668              		@ args = 0, pretend = 0, frame = 0
+ 669              		@ frame_needed = 0, uses_anonymous_args = 0
+ 670              		@ link register save eliminated.
+ 414:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   return (ICACHE->MMONR);
+ 671              		.loc 1 414 3 view .LVU154
+ 672              		.loc 1 414 17 is_stmt 0 view .LVU155
+ 673 0000 014B     		ldr	r3, .L80
+ 674 0002 5869     		ldr	r0, [r3, #20]
+ 415:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 675              		.loc 1 415 1 view .LVU156
+ 676 0004 7047     		bx	lr
+ 677              	.L81:
+ 678 0006 00BF     		.align	2
+ 679              	.L80:
+ 680 0008 00500358 		.word	1476612096
+ 681              		.cfi_endproc
+ 682              	.LFE874:
+ 684              		.section	.text.HAL_ICACHE_InvalidateCompleteCallback,"ax",%progbits
+ 685              		.align	1
+ 686              		.weak	HAL_ICACHE_InvalidateCompleteCallback
+ 687              		.syntax unified
+ 688              		.thumb
+ 689              		.thumb_func
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 21
+
+
+ 691              	HAL_ICACHE_InvalidateCompleteCallback:
+ 692              	.LFB876:
+ 416:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 417:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 418:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @}
+ 419:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 420:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 421:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /** @defgroup ICACHE_Exported_Functions_Group2 IRQ and callback functions
+ 422:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief    IRQ and callback functions
+ 423:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *
+ 424:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   @verbatim
+ 425:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ==============================================================================
+ 426:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****             ##### IRQ and callback functions #####
+ 427:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   ==============================================================================
+ 428:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   [..]
+ 429:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     This section provides functions allowing to handle ICACHE global interrupt
+ 430:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     and the associated callback functions.
+ 431:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   @endverbatim
+ 432:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @{
+ 433:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 434:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 435:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 436:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief Handle the Instruction Cache interrupt request.
+ 437:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note This function should be called under the ICACHE_IRQHandler().
+ 438:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @note This function respectively disables the interrupt and clears the
+ 439:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   *       flag of any pending flag before calling the associated user callback.
+ 440:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @retval None
+ 441:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 442:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** void HAL_ICACHE_IRQHandler(void)
+ 443:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 444:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Get current interrupt flags and interrupt sources value */
+ 445:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   uint32_t itflags   = READ_REG(ICACHE->SR);
+ 446:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   uint32_t itsources = READ_REG(ICACHE->IER);
+ 447:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 448:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check Instruction cache Error interrupt flag */
+ 449:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   if (((itflags & itsources) & ICACHE_FLAG_ERROR) != 0U)
+ 450:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 451:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Disable error interrupt */
+ 452:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     CLEAR_BIT(ICACHE->IER, ICACHE_IER_ERRIE);
+ 453:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 454:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Clear ERR pending flag */
+ 455:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     WRITE_REG(ICACHE->FCR, ICACHE_FCR_CERRF);
+ 456:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 457:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Instruction cache error interrupt user callback */
+ 458:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     HAL_ICACHE_ErrorCallback();
+ 459:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 460:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 461:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Check Instruction cache BusyEnd interrupt flag */
+ 462:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   if (((itflags & itsources) & ICACHE_FLAG_BUSYEND) != 0U)
+ 463:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 464:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Disable end of cache invalidation interrupt */
+ 465:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     CLEAR_BIT(ICACHE->IER, ICACHE_IER_BSYENDIE);
+ 466:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 467:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Clear BSYENDF pending flag */
+ 468:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     WRITE_REG(ICACHE->FCR, ICACHE_FCR_CBSYENDF);
+ 469:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 470:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     /* Instruction cache busyend interrupt user callback */
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 22
+
+
+ 471:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****     HAL_ICACHE_InvalidateCompleteCallback();
+ 472:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 473:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 474:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 475:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 476:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Cache invalidation complete callback.
+ 477:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 478:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** __weak void HAL_ICACHE_InvalidateCompleteCallback(void)
+ 479:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** {
+ 693              		.loc 1 479 1 is_stmt 1 view -0
+ 694              		.cfi_startproc
+ 695              		@ args = 0, pretend = 0, frame = 0
+ 696              		@ frame_needed = 0, uses_anonymous_args = 0
+ 697              		@ link register save eliminated.
+ 480:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* NOTE : This function should not be modified, when the callback is needed,
+ 481:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****             the HAL_ICACHE_InvalidateCompleteCallback() should be implemented in the user file
+ 482:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****    */
+ 483:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** }
+ 698              		.loc 1 483 1 view .LVU158
+ 699 0000 7047     		bx	lr
+ 700              		.cfi_endproc
+ 701              	.LFE876:
+ 703              		.section	.text.HAL_ICACHE_ErrorCallback,"ax",%progbits
+ 704              		.align	1
+ 705              		.weak	HAL_ICACHE_ErrorCallback
+ 706              		.syntax unified
+ 707              		.thumb
+ 708              		.thumb_func
+ 710              	HAL_ICACHE_ErrorCallback:
+ 711              	.LFB879:
+ 712              		.cfi_startproc
+ 484:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 485:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** /**
+ 486:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   * @brief  Error callback.
+ 487:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   */
+ 488:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** __weak void HAL_ICACHE_ErrorCallback(void)
+ 713              		.loc 1 488 13 view -0
+ 714              		@ args = 0, pretend = 0, frame = 0
+ 715              		@ frame_needed = 0, uses_anonymous_args = 0
+ 716              		@ link register save eliminated.
+ 717 0000 7047     		bx	lr
+ 718              		.cfi_endproc
+ 719              	.LFE879:
+ 721              		.section	.text.HAL_ICACHE_IRQHandler,"ax",%progbits
+ 722              		.align	1
+ 723              		.global	HAL_ICACHE_IRQHandler
+ 724              		.syntax unified
+ 725              		.thumb
+ 726              		.thumb_func
+ 728              	HAL_ICACHE_IRQHandler:
+ 729              	.LFB875:
+ 443:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Get current interrupt flags and interrupt sources value */
+ 730              		.loc 1 443 1 view -0
+ 731              		.cfi_startproc
+ 732              		@ args = 0, pretend = 0, frame = 0
+ 733              		@ frame_needed = 0, uses_anonymous_args = 0
+ 445:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   uint32_t itsources = READ_REG(ICACHE->IER);
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 23
+
+
+ 734              		.loc 1 445 3 view .LVU161
+ 445:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   uint32_t itsources = READ_REG(ICACHE->IER);
+ 735              		.loc 1 445 12 is_stmt 0 view .LVU162
+ 736 0000 0D4B     		ldr	r3, .L93
+ 443:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   /* Get current interrupt flags and interrupt sources value */
+ 737              		.loc 1 443 1 view .LVU163
+ 738 0002 10B5     		push	{r4, lr}
+ 739              		.cfi_def_cfa_offset 8
+ 740              		.cfi_offset 4, -8
+ 741              		.cfi_offset 14, -4
+ 445:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   uint32_t itsources = READ_REG(ICACHE->IER);
+ 742              		.loc 1 445 12 view .LVU164
+ 743 0004 5C68     		ldr	r4, [r3, #4]
+ 744              	.LVL32:
+ 446:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 745              		.loc 1 446 3 is_stmt 1 view .LVU165
+ 446:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 746              		.loc 1 446 12 is_stmt 0 view .LVU166
+ 747 0006 9A68     		ldr	r2, [r3, #8]
+ 748              	.LVL33:
+ 449:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 749              		.loc 1 449 3 is_stmt 1 view .LVU167
+ 449:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 750              		.loc 1 449 17 is_stmt 0 view .LVU168
+ 751 0008 1440     		ands	r4, r4, r2
+ 752              	.LVL34:
+ 449:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 753              		.loc 1 449 6 view .LVU169
+ 754 000a 6207     		lsls	r2, r4, #29
+ 755              	.LVL35:
+ 449:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 756              		.loc 1 449 6 view .LVU170
+ 757 000c 07D5     		bpl	.L85
+ 452:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 758              		.loc 1 452 5 is_stmt 1 view .LVU171
+ 759 000e 9A68     		ldr	r2, [r3, #8]
+ 760 0010 22F00402 		bic	r2, r2, #4
+ 761 0014 9A60     		str	r2, [r3, #8]
+ 455:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 762              		.loc 1 455 5 view .LVU172
+ 763 0016 0422     		movs	r2, #4
+ 764 0018 DA60     		str	r2, [r3, #12]
+ 458:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 765              		.loc 1 458 5 view .LVU173
+ 766 001a FFF7FEFF 		bl	HAL_ICACHE_ErrorCallback
+ 767              	.LVL36:
+ 768              	.L85:
+ 462:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 769              		.loc 1 462 3 view .LVU174
+ 462:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   {
+ 770              		.loc 1 462 6 is_stmt 0 view .LVU175
+ 771 001e A307     		lsls	r3, r4, #30
+ 772 0020 08D5     		bpl	.L84
+ 465:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 773              		.loc 1 465 5 is_stmt 1 view .LVU176
+ 774 0022 054B     		ldr	r3, .L93
+ 775 0024 9A68     		ldr	r2, [r3, #8]
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 24
+
+
+ 776 0026 22F00202 		bic	r2, r2, #2
+ 777 002a 9A60     		str	r2, [r3, #8]
+ 468:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 778              		.loc 1 468 5 view .LVU177
+ 779 002c 0222     		movs	r2, #2
+ 780 002e DA60     		str	r2, [r3, #12]
+ 471:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c ****   }
+ 781              		.loc 1 471 5 view .LVU178
+ 782 0030 FFF7FEFF 		bl	HAL_ICACHE_InvalidateCompleteCallback
+ 783              	.LVL37:
+ 784              	.L84:
+ 473:STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Src/stm32n6xx_hal_icache.c **** 
+ 785              		.loc 1 473 1 is_stmt 0 view .LVU179
+ 786 0034 10BD     		pop	{r4, pc}
+ 787              	.L94:
+ 788 0036 00BF     		.align	2
+ 789              	.L93:
+ 790 0038 00500358 		.word	1476612096
+ 791              		.cfi_endproc
+ 792              	.LFE875:
+ 794              		.text
+ 795              	.Letext0:
+ 796              		.file 2 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 797              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 798              		.file 4 "STM32Cube_FW_N6/Drivers/CMSIS/Device/ST/STM32N6xx/Include/stm32n657xx.h"
+ 799              		.file 5 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_def.h"
+ 800              		.file 6 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal.h"
+ 801              		.file 7 "Inc/stm32n6xx_hal_conf.h"
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 25
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32n6xx_hal_icache.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:30     .text.HAL_ICACHE_ConfigAssociativityMode:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:36     .text.HAL_ICACHE_ConfigAssociativityMode:00000000 HAL_ICACHE_ConfigAssociativityMode
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:88     .text.HAL_ICACHE_ConfigAssociativityMode:0000002c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:94     .text.HAL_ICACHE_DeInit:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:100    .text.HAL_ICACHE_DeInit:00000000 HAL_ICACHE_DeInit
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:141    .text.HAL_ICACHE_DeInit:00000030 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:146    .text.HAL_ICACHE_Enable:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:152    .text.HAL_ICACHE_Enable:00000000 HAL_ICACHE_Enable
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:173    .text.HAL_ICACHE_Enable:00000010 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:178    .text.HAL_ICACHE_Disable:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:184    .text.HAL_ICACHE_Disable:00000000 HAL_ICACHE_Disable
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:251    .text.HAL_ICACHE_Disable:00000034 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:256    .text.HAL_ICACHE_IsEnabled:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:262    .text.HAL_ICACHE_IsEnabled:00000000 HAL_ICACHE_IsEnabled
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:279    .text.HAL_ICACHE_IsEnabled:0000000c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:284    .text.HAL_ICACHE_Invalidate_IT:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:290    .text.HAL_ICACHE_Invalidate_IT:00000000 HAL_ICACHE_Invalidate_IT
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:328    .text.HAL_ICACHE_Invalidate_IT:00000024 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:333    .text.HAL_ICACHE_WaitForInvalidateComplete:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:339    .text.HAL_ICACHE_WaitForInvalidateComplete:00000000 HAL_ICACHE_WaitForInvalidateComplete
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:411    .text.HAL_ICACHE_WaitForInvalidateComplete:00000034 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:416    .text.HAL_ICACHE_Invalidate:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:422    .text.HAL_ICACHE_Invalidate:00000000 HAL_ICACHE_Invalidate
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:448    .text.HAL_ICACHE_Invalidate:00000014 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:453    .text.HAL_ICACHE_Monitor_Start:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:459    .text.HAL_ICACHE_Monitor_Start:00000000 HAL_ICACHE_Monitor_Start
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:505    .text.HAL_ICACHE_Monitor_Start:0000002c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:511    .text.HAL_ICACHE_Monitor_Stop:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:517    .text.HAL_ICACHE_Monitor_Stop:00000000 HAL_ICACHE_Monitor_Stop
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:563    .text.HAL_ICACHE_Monitor_Stop:0000002c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:569    .text.HAL_ICACHE_Monitor_Reset:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:575    .text.HAL_ICACHE_Monitor_Reset:00000000 HAL_ICACHE_Monitor_Reset
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:625    .text.HAL_ICACHE_Monitor_Reset:00000034 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:631    .text.HAL_ICACHE_Monitor_GetHitValue:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:637    .text.HAL_ICACHE_Monitor_GetHitValue:00000000 HAL_ICACHE_Monitor_GetHitValue
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:653    .text.HAL_ICACHE_Monitor_GetHitValue:00000008 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:658    .text.HAL_ICACHE_Monitor_GetMissValue:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:664    .text.HAL_ICACHE_Monitor_GetMissValue:00000000 HAL_ICACHE_Monitor_GetMissValue
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:680    .text.HAL_ICACHE_Monitor_GetMissValue:00000008 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:685    .text.HAL_ICACHE_InvalidateCompleteCallback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:691    .text.HAL_ICACHE_InvalidateCompleteCallback:00000000 HAL_ICACHE_InvalidateCompleteCallback
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:704    .text.HAL_ICACHE_ErrorCallback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:710    .text.HAL_ICACHE_ErrorCallback:00000000 HAL_ICACHE_ErrorCallback
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:722    .text.HAL_ICACHE_IRQHandler:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:728    .text.HAL_ICACHE_IRQHandler:00000000 HAL_ICACHE_IRQHandler
+C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s:790    .text.HAL_ICACHE_IRQHandler:00000038 $d
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4.stm32n6xx_hal_conf.h.21.004a06df6e15ac197e03f723792da58a
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4.arm_cmse.h.103.a0d15a79c4c9a67da8d5831704d7248e
+                           .group:00000000 wm4.stm32n6xx.h.34.c523a1ffdf274a69e8802892c6776332
+                           .group:00000000 wm4.stm32n657xx.h.26.acd272cb67318cc1a4791ce2f0720ca6
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.features.h.33.e0c9f337c65cb9f22ed5f23d082bc78b
+                           .group:00000000 wm4._default_types.h.15.247e5cd201eca3442cbf5404108c4935
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 26
+
+
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.cmsis_version.h.30.d128735bf87720f7436b74fefeb5043c
+                           .group:00000000 wm4.core_cm55.h.67.25006a3ce7048d64bcddd2996d5fac93
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.core_cm55.h.213.0528f46a674315ef8d35c4477e230358
+                           .group:00000000 wm4.armv8m_mpu.h.24.bf28cc25bee30a7ff9d2f7a44a5e2230
+                           .group:00000000 wm4.armv8m_pmu.h.24.6ded195d2625055391fd378c0e1d2519
+                           .group:00000000 wm4.core_cm55.h.4477.396e822ef855bcfb932819ad48de1c4c
+                           .group:00000000 wm4.armv7m_cachel1.h.24.936dd92d6e204a8d0b17d5e4ea4a356e
+                           .group:00000000 wm4.stm32n657xx.h.575.78d331c417ec710388ced647138f735f
+                           .group:00000000 wm4.stm32n6xx.h.116.b4247d9785590e7c5ec9234ffb2153bf
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.e62aae2fd3ae33360b6781c8a72e5b18
+                           .group:00000000 wm4.newlib.h.7.a37ffbe9e5aff74303f4e60b1cc1c01b
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.math.h.13.47cfc34cae8a1153323939c4d32cf7c2
+                           .group:00000000 wm4.stm32n6xx_hal_def.h.63.3a8f01490e8852464e9fcb69092e9c75
+                           .group:00000000 wm4.stm32n6xx_ll_bus.h.38.2366a295ee4cdb04833997d3787fcd2d
+                           .group:00000000 wm4.stm32n6xx_ll_rcc.h.21.656bd5637db608589ad16ea57d39430c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.194.69b522b1afdf59a82d05a1f71efe03c7
+                           .group:00000000 wm4.stm32n6xx_hal_rcc_ex.h.21.cc6be0a7d168882a1a6f470236ba784c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.4361.4b490a4a19722e68c21f88cb8a774a30
+                           .group:00000000 wm4.stm32n6xx_hal_gpio.h.21.89d54af663b98eb8fc098192053f7eeb
+                           .group:00000000 wm4.stm32n6xx_hal_gpio_ex.h.22.f7e795fb05a69a19b87d946b47c8db8b
+                           .group:00000000 wm4.stm32n6xx_hal_rif.h.21.33f2c553a8a3fc14dca8c470b213ab19
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.21.61e48c5c2e8d25d22177834b232fe45c
+                           .group:00000000 wm4.stm32n6xx_hal_dma_ex.h.21.82f854ecdb6a463b06d0b4e5c217c368
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.1020.87e2180c009560b617c1f8208140c950
+                           .group:00000000 wm4.stm32n6xx_hal_cortex.h.21.f493623cc58f9454ab4eae41e395c5cc
+                           .group:00000000 wm4.stm32n6xx_hal_bsec.h.21.1ee89319140541f82434908b4267aa30
+                           .group:00000000 wm4.stm32n6xx_hal_dcmipp.h.21.e2b87dce83d7d722d696a597f6ac56bf
+                           .group:00000000 wm4.stm32n6xx_hal_dma2d.h.21.75c8d46cdbb72970123b3f34ae2043d7
+                           .group:00000000 wm4.stm32n6xx_hal_exti.h.21.e0efb23591051684dc14f1f2431c6aab
+                           .group:00000000 wm4.stm32n6xx_hal_gfxmmu.h.21.9784a9103143d48bd3c37389d0e0b8e6
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.21.3f483626ff64c5bf027265bb2e1d1331
+                           .group:00000000 wm4.stm32n6xx_hal_i2c_ex.h.21.79e9196c22282cdaf6b4047893638c45
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.741.1084702632703acc669e4282b3043372
+                           .group:00000000 wm4.stm32n6xx_hal_icache.h.21.194b4ec6e76f32b14f65c85616854850
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.21.ae1eb09930e7e550e48e418ac5849e4d
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.1002.b13ede7fc94ed5ad1c6768a157d2149a
+                           .group:00000000 wm4.stm32n6xx_ll_usb.h.21.daaf86158046f2cf02166c495d637480
+                           .group:00000000 wm4.stm32n6xx_hal_pcd.h.155.27040aac6844effe2af8c180caf1dd2e
+                           .group:00000000 wm4.stm32n6xx_hal_pwr.h.21.cdb73e4869c3fed3fc84f901ec0e5f0a
+                           .group:00000000 wm4.stm32n6xx_hal_pwr_ex.h.21.1a673224a58b0c1e5fad8eeda6514208
+                           .group:00000000 wm4.stm32n6xx_hal_ramcfg.h.21.a62dfbb4d2c14e9a8c634a215e37bd3d
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccR0HFs8.s 			page 27
+
+
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.21.9f810303326e2d91749800e9911f8e4d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.906.8ad9375f39dce09dc0a4db0025ee7a76
+                           .group:00000000 wm4.stm32n6xx_hal_tim.h.21.839dd2b2a70382fb2c44f8f293a84d5f
+                           .group:00000000 wm4.stm32n6xx_hal_tim_ex.h.21.e372d5ac63c13441211ea4ecbd353150
+                           .group:00000000 wm4.stm32n6xx_hal_uart.h.21.230f549bfa0d5ebfd77bfb311b2aca15
+                           .group:00000000 wm4.stm32n6xx_hal_uart_ex.h.21.a0d5511e1d0703b7b5278c8f5472b96d
+                           .group:00000000 wm4.stm32n6xx_hal_xspi.h.21.7fd922d3bdb871475cf18436a68935bb
+                           .group:00000000 wm4.stm32n6xx_hal_cacheaxi.h.21.7c3375b7903ec42376e4883320997f74
+                           .group:00000000 wm4.stm32n6xx_hal_gpu2d.h.21.48d0249122abad294a630c39cc4ebaed
+                           .group:00000000 wm4.stm32n6xx_hal.h.81.e79d59262ba173c33cf1d69281830d15
+
+UNDEFINED SYMBOLS
+assert_failed
+HAL_GetTick

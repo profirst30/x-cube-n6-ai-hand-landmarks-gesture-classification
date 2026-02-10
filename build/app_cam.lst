@@ -1,0 +1,1405 @@
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 1
+
+
+   1              		.arch armv8.1-m.main
+   2              		.fpu fpv5-d16
+   3              		.arch_extension dsp
+   4              		.arch_extension fp
+   5              		.arch_extension fp.dp
+   6              		.arch_extension mve
+   7              		.arch_extension mve.fp
+   8              		.eabi_attribute 5, "cortex-m55"
+   9              		.eabi_attribute 28, 1
+  10              		.eabi_attribute 20, 1
+  11              		.eabi_attribute 21, 1
+  12              		.eabi_attribute 23, 3
+  13              		.eabi_attribute 24, 1
+  14              		.eabi_attribute 25, 1
+  15              		.eabi_attribute 26, 1
+  16              		.eabi_attribute 30, 4
+  17              		.eabi_attribute 34, 1
+  18              		.eabi_attribute 38, 1
+  19              		.eabi_attribute 18, 4
+  20              		.file	"app_cam.c"
+  21              		.text
+  22              	.Ltext0:
+  23              		.cfi_sections	.debug_frame
+  24              		.file 1 "Src/app_cam.c"
+  25              		.section	.rodata.CAM_InitCropConfig.str1.1,"aMS",%progbits,1
+  26              	.LC0:
+  27 0000 72617469 		.ascii	"ratio >= 1\000"
+  27      6F203E3D 
+  27      203100
+  28              	.LC1:
+  29 000b 5372632F 		.ascii	"Src/app_cam.c\000"
+  29      6170705F 
+  29      63616D2E 
+  29      6300
+  30              	.LC2:
+  31 0019 72617469 		.ascii	"ratio < 64\000"
+  31      6F203C20 
+  31      363400
+  32              		.section	.text.CAM_InitCropConfig,"ax",%progbits
+  33              		.align	1
+  34              		.syntax unified
+  35              		.thumb
+  36              		.thumb_func
+  38              	CAM_InitCropConfig:
+  39              	.LVL0:
+  40              	.LFB3413:
+   1:Src/app_cam.c ****  /**
+   2:Src/app_cam.c ****  ******************************************************************************
+   3:Src/app_cam.c ****  * @file    app_cam.c
+   4:Src/app_cam.c ****  * @author  GPM Application Team
+   5:Src/app_cam.c ****  *
+   6:Src/app_cam.c ****  ******************************************************************************
+   7:Src/app_cam.c ****  * @attention
+   8:Src/app_cam.c ****  *
+   9:Src/app_cam.c ****  * Copyright (c) 2023 STMicroelectronics.
+  10:Src/app_cam.c ****  * All rights reserved.
+  11:Src/app_cam.c ****  *
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 2
+
+
+  12:Src/app_cam.c ****  * This software is licensed under terms that can be found in the LICENSE file
+  13:Src/app_cam.c ****  * in the root directory of this software component.
+  14:Src/app_cam.c ****  * If no LICENSE file comes with this software, it is provided AS-IS.
+  15:Src/app_cam.c ****  *
+  16:Src/app_cam.c ****  ******************************************************************************
+  17:Src/app_cam.c ****  */
+  18:Src/app_cam.c **** #include <assert.h>
+  19:Src/app_cam.c **** #include "app.h"
+  20:Src/app_cam.c **** #include "cmw_camera.h"
+  21:Src/app_cam.c **** #include "app_cam.h"
+  22:Src/app_cam.c **** #include "app_config.h"
+  23:Src/app_cam.c **** #include "utils.h"
+  24:Src/app_cam.c **** #include "stai_palm_detector.h"
+  25:Src/app_cam.c **** 
+  26:Src/app_cam.c **** /* Keep display output aspect ratio using crop area */
+  27:Src/app_cam.c **** static void CAM_InitCropConfig(CMW_Manual_roi_area_t *roi, int sensor_width, int sensor_height)
+  28:Src/app_cam.c **** {
+  41              		.loc 1 28 1 view -0
+  42              		.cfi_startproc
+  43              		@ args = 0, pretend = 0, frame = 0
+  44              		@ frame_needed = 0, uses_anonymous_args = 0
+  29:Src/app_cam.c ****   const float ratiox = (float)sensor_width / LCD_BG_WIDTH;
+  45              		.loc 1 29 3 view .LVU1
+  46              		.loc 1 29 24 is_stmt 0 view .LVU2
+  47 0000 07EE901A 		vmov	s15, r1	@ int
+  48 0004 F8EEE76A 		vcvt.f32.s32	s13, s15
+  30:Src/app_cam.c ****   const float ratioy = (float)sensor_height / LCD_BG_HEIGHT;
+  49              		.loc 1 30 24 view .LVU3
+  50 0008 07EE902A 		vmov	s15, r2	@ int
+  29:Src/app_cam.c ****   const float ratiox = (float)sensor_width / LCD_BG_WIDTH;
+  51              		.loc 1 29 15 view .LVU4
+  52 000c 9FED286A 		vldr.32	s12, .L18
+  53              		.loc 1 30 24 view .LVU5
+  54 0010 B8EEE77A 		vcvt.f32.s32	s14, s15
+  55              		.loc 1 30 15 view .LVU6
+  56 0014 DFED275A 		vldr.32	s11, .L18+4
+  29:Src/app_cam.c ****   const float ratiox = (float)sensor_width / LCD_BG_WIDTH;
+  57              		.loc 1 29 15 view .LVU7
+  58 0018 86EE865A 		vdiv.f32	s10, s13, s12
+  59              	.LVL1:
+  60              		.loc 1 30 3 is_stmt 1 view .LVU8
+  61              		.loc 1 30 15 is_stmt 0 view .LVU9
+  62 001c C7EE257A 		vdiv.f32	s15, s14, s11
+  63              	.LVL2:
+  31:Src/app_cam.c ****   const float ratio = MIN(ratiox, ratioy);
+  64              		.loc 1 31 3 is_stmt 1 view .LVU10
+  65              		.loc 1 31 23 is_stmt 0 discriminator 1 view .LVU11
+  66 0020 B4EE675A 		vcmp.f32	s10, s15
+  67 0024 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  68 0028 48BF     		it	mi
+  69 002a F0EE457A 		vmovmi.f32	s15, s10
+  70              	.LVL3:
+  32:Src/app_cam.c **** 
+  33:Src/app_cam.c ****   assert(ratio >= 1);
+  71              		.loc 1 33 3 is_stmt 1 view .LVU12
+  72 002e B7EE005A 		vmov.f32	s10, #1.0e+0
+  73              	.LVL4:
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 3
+
+
+  74              		.loc 1 33 3 is_stmt 0 view .LVU13
+  75 0032 F4EEC57A 		vcmpe.f32	s15, s10
+  76 0036 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  28:Src/app_cam.c ****   const float ratiox = (float)sensor_width / LCD_BG_WIDTH;
+  77              		.loc 1 28 1 view .LVU14
+  78 003a 08B5     		push	{r3, lr}
+  79              		.cfi_def_cfa_offset 8
+  80              		.cfi_offset 3, -8
+  81              		.cfi_offset 14, -4
+  82              		.loc 1 33 3 view .LVU15
+  83 003c 05DA     		bge	.L4
+  84              		.loc 1 33 3 discriminator 1 view .LVU16
+  85 003e 2121     		movs	r1, #33
+  86              	.LVL5:
+  87              		.loc 1 33 3 discriminator 1 view .LVU17
+  88 0040 1D4B     		ldr	r3, .L18+8
+  89 0042 1E4A     		ldr	r2, .L18+12
+  90              	.LVL6:
+  91              	.L17:
+  34:Src/app_cam.c ****   assert(ratio < 64);
+  92              		.loc 1 34 3 discriminator 1 view .LVU18
+  93 0044 1E48     		ldr	r0, .L18+16
+  94              	.LVL7:
+  95              		.loc 1 34 3 discriminator 1 view .LVU19
+  96 0046 FFF7FEFF 		bl	__assert_func
+  97              	.LVL8:
+  98              	.L4:
+  99              		.loc 1 34 3 is_stmt 1 view .LVU20
+ 100 004a 9FED1E5A 		vldr.32	s10, .L18+20
+ 101 004e F4EEC57A 		vcmpe.f32	s15, s10
+ 102 0052 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 103 0056 03D4     		bmi	.L5
+ 104              		.loc 1 34 3 is_stmt 0 discriminator 1 view .LVU21
+ 105 0058 2221     		movs	r1, #34
+ 106              	.LVL9:
+ 107              		.loc 1 34 3 discriminator 1 view .LVU22
+ 108 005a 1B4B     		ldr	r3, .L18+24
+ 109 005c 174A     		ldr	r2, .L18+12
+ 110              	.LVL10:
+ 111              		.loc 1 34 3 discriminator 1 view .LVU23
+ 112 005e F1E7     		b	.L17
+ 113              	.LVL11:
+ 114              	.L5:
+  35:Src/app_cam.c **** 
+  36:Src/app_cam.c ****   roi->width = (uint32_t) MIN(LCD_BG_WIDTH * ratio, sensor_width);
+ 115              		.loc 1 36 3 is_stmt 1 view .LVU24
+ 116              		.loc 1 36 27 is_stmt 0 view .LVU25
+ 117 0060 27EE866A 		vmul.f32	s12, s15, s12
+ 118              	.LVL12:
+  37:Src/app_cam.c ****   roi->height = (uint32_t) MIN(LCD_BG_HEIGHT * ratio, sensor_height);
+ 119              		.loc 1 37 28 view .LVU26
+ 120 0064 67EEA57A 		vmul.f32	s15, s15, s11
+ 121              	.LVL13:
+  36:Src/app_cam.c ****   roi->height = (uint32_t) MIN(LCD_BG_HEIGHT * ratio, sensor_height);
+ 122              		.loc 1 36 16 view .LVU27
+ 123 0068 F4EEC66A 		vcmpe.f32	s13, s12
+ 124 006c F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 4
+
+
+ 125              		.loc 1 37 17 view .LVU28
+ 126 0070 B4EEE77A 		vcmpe.f32	s14, s15
+  36:Src/app_cam.c ****   roi->height = (uint32_t) MIN(LCD_BG_HEIGHT * ratio, sensor_height);
+ 127              		.loc 1 36 16 discriminator 1 view .LVU29
+ 128 0074 CCBF     		ite	gt
+ 129 0076 FCEEC66A 		vcvtgt.u32.f32	s13, s12
+ 130              	.LVL14:
+  36:Src/app_cam.c ****   roi->height = (uint32_t) MIN(LCD_BG_HEIGHT * ratio, sensor_height);
+ 131              		.loc 1 36 16 discriminator 2 view .LVU30
+ 132 007a FCEEE66A 		vcvtle.u32.f32	s13, s13
+ 133              		.loc 1 37 17 view .LVU31
+ 134 007e F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  38:Src/app_cam.c ****   roi->offset_x = (sensor_width - roi->width + 1) / 2;
+ 135              		.loc 1 38 46 view .LVU32
+ 136 0082 16EE903A 		vmov	r3, s13	@ int
+  37:Src/app_cam.c ****   roi->height = (uint32_t) MIN(LCD_BG_HEIGHT * ratio, sensor_height);
+ 137              		.loc 1 37 17 discriminator 1 view .LVU33
+ 138 0086 CCBF     		ite	gt
+ 139 0088 BCEEE77A 		vcvtgt.u32.f32	s14, s15
+ 140              	.LVL15:
+  37:Src/app_cam.c ****   roi->height = (uint32_t) MIN(LCD_BG_HEIGHT * ratio, sensor_height);
+ 141              		.loc 1 37 17 discriminator 2 view .LVU34
+ 142 008c BCEEC77A 		vcvtle.u32.f32	s14, s14
+ 143              		.loc 1 38 46 view .LVU35
+ 144 0090 0131     		adds	r1, r1, #1
+ 145              	.LVL16:
+ 146              		.loc 1 38 46 view .LVU36
+ 147 0092 C91A     		subs	r1, r1, r3
+ 148              	.LVL17:
+  39:Src/app_cam.c ****   roi->offset_y = (sensor_height - roi->height + 1) / 2;
+ 149              		.loc 1 39 48 view .LVU37
+ 150 0094 17EE103A 		vmov	r3, s14	@ int
+ 151 0098 0132     		adds	r2, r2, #1
+ 152              	.LVL18:
+ 153              		.loc 1 39 48 view .LVU38
+ 154 009a D21A     		subs	r2, r2, r3
+ 155              	.LVL19:
+  38:Src/app_cam.c ****   roi->offset_x = (sensor_width - roi->width + 1) / 2;
+ 156              		.loc 1 38 51 view .LVU39
+ 157 009c 4908     		lsrs	r1, r1, #1
+ 158              		.loc 1 39 53 view .LVU40
+ 159 009e 5208     		lsrs	r2, r2, #1
+  36:Src/app_cam.c ****   roi->height = (uint32_t) MIN(LCD_BG_HEIGHT * ratio, sensor_height);
+ 160              		.loc 1 36 14 discriminator 4 view .LVU41
+ 161 00a0 C0ED006A 		vstr.32	s13, [r0]	@ int
+  37:Src/app_cam.c ****   roi->offset_x = (sensor_width - roi->width + 1) / 2;
+ 162              		.loc 1 37 3 is_stmt 1 view .LVU42
+  37:Src/app_cam.c ****   roi->offset_x = (sensor_width - roi->width + 1) / 2;
+ 163              		.loc 1 37 15 is_stmt 0 discriminator 4 view .LVU43
+ 164 00a4 80ED017A 		vstr.32	s14, [r0, #4]	@ int
+  38:Src/app_cam.c ****   roi->offset_x = (sensor_width - roi->width + 1) / 2;
+ 165              		.loc 1 38 3 is_stmt 1 view .LVU44
+  38:Src/app_cam.c ****   roi->offset_x = (sensor_width - roi->width + 1) / 2;
+ 166              		.loc 1 38 17 is_stmt 0 view .LVU45
+ 167 00a8 8160     		str	r1, [r0, #8]
+ 168              		.loc 1 39 3 is_stmt 1 view .LVU46
+ 169              		.loc 1 39 17 is_stmt 0 view .LVU47
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 5
+
+
+ 170 00aa C260     		str	r2, [r0, #12]
+  40:Src/app_cam.c **** }
+ 171              		.loc 1 40 1 view .LVU48
+ 172 00ac 08BD     		pop	{r3, pc}
+ 173              	.L19:
+ 174 00ae 00BF     		.align	2
+ 175              	.L18:
+ 176 00b0 00004844 		.word	1145569280
+ 177 00b4 0000F043 		.word	1139802112
+ 178 00b8 00000000 		.word	.LC0
+ 179 00bc 00000000 		.word	__func__.5
+ 180 00c0 0B000000 		.word	.LC1
+ 181 00c4 00008042 		.word	1115684864
+ 182 00c8 19000000 		.word	.LC2
+ 183              		.cfi_endproc
+ 184              	.LFE3413:
+ 186              		.section	.rodata.CAM_Init.str1.1,"aMS",%progbits,1
+ 187              	.LC3:
+ 188 0000 72657420 		.ascii	"ret == CMW_ERROR_NONE\000"
+ 188      3D3D2043 
+ 188      4D575F45 
+ 188      52524F52 
+ 188      5F4E4F4E 
+ 189              	.LC4:
+ 190 0016 72657420 		.ascii	"ret == HAL_OK\000"
+ 190      3D3D2048 
+ 190      414C5F4F 
+ 190      4B00
+ 191              	.LC5:
+ 192 0024 68775F70 		.ascii	"hw_pitch == dcmipp_conf.output_width * dcmipp_conf."
+ 192      69746368 
+ 192      203D3D20 
+ 192      64636D69 
+ 192      70705F63 
+ 193 0057 6F757470 		.ascii	"output_bpp\000"
+ 193      75745F62 
+ 193      707000
+ 194              		.section	.text.CAM_Init,"ax",%progbits
+ 195              		.align	1
+ 196              		.global	CAM_Init
+ 197              		.syntax unified
+ 198              		.thumb
+ 199              		.thumb_func
+ 201              	CAM_Init:
+ 202              	.LFB3418:
+  41:Src/app_cam.c **** 
+  42:Src/app_cam.c **** static void DCMIPP_PipeInitDisplay(int sensor_width, int sensor_height)
+  43:Src/app_cam.c **** {
+  44:Src/app_cam.c ****   CMW_DCMIPP_Conf_t dcmipp_conf;
+  45:Src/app_cam.c ****   uint32_t hw_pitch;
+  46:Src/app_cam.c ****   int ret;
+  47:Src/app_cam.c **** 
+  48:Src/app_cam.c ****   assert(LCD_BG_WIDTH >= LCD_BG_HEIGHT);
+  49:Src/app_cam.c **** 
+  50:Src/app_cam.c ****   dcmipp_conf.output_width = LCD_BG_WIDTH;
+  51:Src/app_cam.c ****   dcmipp_conf.output_height = LCD_BG_HEIGHT;
+  52:Src/app_cam.c ****   dcmipp_conf.output_format = DISPLAY_FORMAT;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 6
+
+
+  53:Src/app_cam.c ****   dcmipp_conf.output_bpp = DISPLAY_BPP;
+  54:Src/app_cam.c ****   dcmipp_conf.mode = CMW_Aspect_ratio_manual_roi;
+  55:Src/app_cam.c ****   dcmipp_conf.enable_swap = 1;
+  56:Src/app_cam.c ****   dcmipp_conf.enable_gamma_conversion = 0;
+  57:Src/app_cam.c ****   CAM_InitCropConfig(&dcmipp_conf.manual_conf, sensor_width, sensor_height);
+  58:Src/app_cam.c ****   ret = CMW_CAMERA_SetPipeConfig(DCMIPP_PIPE1, &dcmipp_conf, &hw_pitch);
+  59:Src/app_cam.c ****   assert(ret == HAL_OK);
+  60:Src/app_cam.c ****   assert(hw_pitch == dcmipp_conf.output_width * dcmipp_conf.output_bpp);
+  61:Src/app_cam.c **** }
+  62:Src/app_cam.c **** 
+  63:Src/app_cam.c **** static void DCMIPP_PipeInitNn(int sensor_width, int sensor_height)
+  64:Src/app_cam.c **** {
+  65:Src/app_cam.c ****   CMW_DCMIPP_Conf_t dcmipp_conf;
+  66:Src/app_cam.c ****   uint32_t hw_pitch;
+  67:Src/app_cam.c ****   int ret;
+  68:Src/app_cam.c **** 
+  69:Src/app_cam.c ****   assert(LCD_BG_HEIGHT <= LCD_BG_WIDTH);
+  70:Src/app_cam.c ****   /* Keep screen aspect ratio. Consequence is that bottom of palm detector input will be black */
+  71:Src/app_cam.c ****   dcmipp_conf.output_width = STAI_PALM_DETECTOR_IN_1_WIDTH;
+  72:Src/app_cam.c ****   dcmipp_conf.output_height = (int) (STAI_PALM_DETECTOR_IN_1_HEIGHT * ((float)LCD_BG_HEIGHT / LCD_B
+  73:Src/app_cam.c ****   dcmipp_conf.output_format = NN_FORMAT;
+  74:Src/app_cam.c ****   dcmipp_conf.output_bpp = STAI_PALM_DETECTOR_IN_1_CHANNEL;
+  75:Src/app_cam.c ****   dcmipp_conf.mode = CMW_Aspect_ratio_manual_roi;
+  76:Src/app_cam.c ****   dcmipp_conf.enable_swap = 1;
+  77:Src/app_cam.c ****   dcmipp_conf.enable_gamma_conversion = 0;
+  78:Src/app_cam.c ****   CAM_InitCropConfig(&dcmipp_conf.manual_conf, sensor_width, sensor_height);
+  79:Src/app_cam.c ****   ret = CMW_CAMERA_SetPipeConfig(DCMIPP_PIPE2, &dcmipp_conf, &hw_pitch);
+  80:Src/app_cam.c ****   assert(ret == HAL_OK);
+  81:Src/app_cam.c ****   assert(hw_pitch == dcmipp_conf.output_width * dcmipp_conf.output_bpp);
+  82:Src/app_cam.c **** }
+  83:Src/app_cam.c **** 
+  84:Src/app_cam.c **** static void DCMIPP_IpPlugInit(DCMIPP_HandleTypeDef *hdcmipp)
+  85:Src/app_cam.c **** {
+  86:Src/app_cam.c ****   DCMIPP_IPPlugConfTypeDef ipplug_conf = { 0 };
+  87:Src/app_cam.c ****   int ret;
+  88:Src/app_cam.c **** 
+  89:Src/app_cam.c ****   ipplug_conf.MemoryPageSize = DCMIPP_MEMORY_PAGE_SIZE_256BYTES;
+  90:Src/app_cam.c **** 
+  91:Src/app_cam.c ****   ipplug_conf.Client = DCMIPP_CLIENT2; /* aux pipe */
+  92:Src/app_cam.c ****   ipplug_conf.Traffic = DCMIPP_TRAFFIC_BURST_SIZE_128BYTES;
+  93:Src/app_cam.c ****   ipplug_conf.MaxOutstandingTransactions = DCMIPP_OUTSTANDING_TRANSACTION_NONE;
+  94:Src/app_cam.c ****   ipplug_conf.DPREGStart = 0;
+  95:Src/app_cam.c ****   ipplug_conf.DPREGEnd = 559; /* (4480 bytes / one line) */
+  96:Src/app_cam.c ****   ipplug_conf.WLRURatio = 15; /* 16 parts of BW */
+  97:Src/app_cam.c ****   ret = HAL_DCMIPP_SetIPPlugConfig(hdcmipp, &ipplug_conf);
+  98:Src/app_cam.c ****   assert(ret == HAL_OK);
+  99:Src/app_cam.c **** 
+ 100:Src/app_cam.c ****   ipplug_conf.Client = DCMIPP_CLIENT5; /* main rgb pipe */
+ 101:Src/app_cam.c ****   ipplug_conf.Traffic = DCMIPP_TRAFFIC_BURST_SIZE_128BYTES;
+ 102:Src/app_cam.c ****   ipplug_conf.MaxOutstandingTransactions = DCMIPP_OUTSTANDING_TRANSACTION_3;
+ 103:Src/app_cam.c ****   ipplug_conf.DPREGStart = 560;
+ 104:Src/app_cam.c ****   ipplug_conf.DPREGEnd = 639;
+ 105:Src/app_cam.c ****   ipplug_conf.WLRURatio = 0; /* 1 parts of BW */
+ 106:Src/app_cam.c ****   ret = HAL_DCMIPP_SetIPPlugConfig(hdcmipp, &ipplug_conf);
+ 107:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 108:Src/app_cam.c **** }
+ 109:Src/app_cam.c **** 
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 7
+
+
+ 110:Src/app_cam.c **** static void DCMIPP_ReduceSpurious(DCMIPP_HandleTypeDef *hdcmipp)
+ 111:Src/app_cam.c **** {
+ 112:Src/app_cam.c ****   int ret;
+ 113:Src/app_cam.c **** 
+ 114:Src/app_cam.c ****   ret = HAL_DCMIPP_PIPE_EnableLineEvent(hdcmipp, DCMIPP_PIPE1, DCMIPP_MULTILINE_128_LINES);
+ 115:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 116:Src/app_cam.c ****   ret = HAL_DCMIPP_PIPE_DisableLineEvent(hdcmipp, DCMIPP_PIPE1);
+ 117:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 118:Src/app_cam.c **** }
+ 119:Src/app_cam.c **** 
+ 120:Src/app_cam.c **** void CAM_Init(void)
+ 121:Src/app_cam.c **** {
+ 203              		.loc 1 121 1 is_stmt 1 view -0
+ 204              		.cfi_startproc
+ 205              		@ args = 0, pretend = 0, frame = 80
+ 206              		@ frame_needed = 0, uses_anonymous_args = 0
+ 122:Src/app_cam.c ****   CMW_Advanced_Config_t sensor_config;
+ 207              		.loc 1 122 3 view .LVU50
+ 123:Src/app_cam.c ****   CMW_CameraInit_t cam_conf;
+ 208              		.loc 1 123 3 view .LVU51
+ 124:Src/app_cam.c ****   CMW_Sensor_Name_t sensor;
+ 209              		.loc 1 124 3 view .LVU52
+ 125:Src/app_cam.c ****   int ret;
+ 210              		.loc 1 125 3 view .LVU53
+ 126:Src/app_cam.c **** 
+ 127:Src/app_cam.c ****   ret = CMW_CAMERA_GetSensorName(&sensor);
+ 211              		.loc 1 127 3 view .LVU54
+ 121:Src/app_cam.c ****   CMW_Advanced_Config_t sensor_config;
+ 212              		.loc 1 121 1 is_stmt 0 view .LVU55
+ 213 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 214              		.cfi_def_cfa_offset 20
+ 215              		.cfi_offset 4, -20
+ 216              		.cfi_offset 5, -16
+ 217              		.cfi_offset 6, -12
+ 218              		.cfi_offset 7, -8
+ 219              		.cfi_offset 14, -4
+ 220 0002 95B0     		sub	sp, sp, #84
+ 221              		.cfi_def_cfa_offset 104
+ 222              		.loc 1 127 9 view .LVU56
+ 223 0004 0DF10300 		add	r0, sp, #3
+ 224 0008 FFF7FEFF 		bl	CMW_CAMERA_GetSensorName
+ 225              	.LVL20:
+ 128:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 226              		.loc 1 128 3 is_stmt 1 view .LVU57
+ 227 000c 28B1     		cbz	r0, .L21
+ 228              		.loc 1 128 3 is_stmt 0 discriminator 1 view .LVU58
+ 229 000e 8021     		movs	r1, #128
+ 230 0010 584B     		ldr	r3, .L35
+ 231 0012 594A     		ldr	r2, .L35+4
+ 232              	.LVL21:
+ 233              	.L34:
+ 129:Src/app_cam.c **** 
+ 130:Src/app_cam.c ****   /* With vd66gy sensor we have peak bandwidth higher than the external memory can support. So to r
+ 131:Src/app_cam.c ****    *  - Fine tune IP Plug so we can buffer at lease one line
+ 132:Src/app_cam.c ****    *  - Increase line_len so IP Plug has enought time to empty internal FIFO before next line is co
+ 133:Src/app_cam.c ****    */
+ 134:Src/app_cam.c ****   sensor_config.selected_sensor = CMW_VD66GY_Sensor;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 8
+
+
+ 135:Src/app_cam.c ****   ret = CMW_CAMERA_SetDefaultSensorValues(&sensor_config);
+ 136:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 234              		.loc 1 136 3 discriminator 1 view .LVU59
+ 235 0014 5948     		ldr	r0, .L35+8
+ 236 0016 FFF7FEFF 		bl	__assert_func
+ 237              	.LVL22:
+ 238              	.L21:
+ 134:Src/app_cam.c ****   ret = CMW_CAMERA_SetDefaultSensorValues(&sensor_config);
+ 239              		.loc 1 134 3 is_stmt 1 view .LVU60
+ 134:Src/app_cam.c ****   ret = CMW_CAMERA_SetDefaultSensorValues(&sensor_config);
+ 240              		.loc 1 134 33 is_stmt 0 view .LVU61
+ 241 001a 0125     		movs	r5, #1
+ 135:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 242              		.loc 1 135 9 view .LVU62
+ 243 001c 02AE     		add	r6, sp, #8
+ 244 001e 3046     		mov	r0, r6
+ 245              	.LVL23:
+ 134:Src/app_cam.c ****   ret = CMW_CAMERA_SetDefaultSensorValues(&sensor_config);
+ 246              		.loc 1 134 33 view .LVU63
+ 247 0020 8DF80850 		strb	r5, [sp, #8]
+ 135:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 248              		.loc 1 135 3 is_stmt 1 view .LVU64
+ 135:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 249              		.loc 1 135 9 is_stmt 0 view .LVU65
+ 250 0024 FFF7FEFF 		bl	CMW_CAMERA_SetDefaultSensorValues
+ 251              	.LVL24:
+ 252              		.loc 1 136 3 is_stmt 1 view .LVU66
+ 253 0028 18B1     		cbz	r0, .L22
+ 254              		.loc 1 136 3 is_stmt 0 discriminator 1 view .LVU67
+ 255 002a 8821     		movs	r1, #136
+ 256 002c 514B     		ldr	r3, .L35
+ 257 002e 524A     		ldr	r2, .L35+4
+ 258 0030 F0E7     		b	.L34
+ 259              	.L22:
+ 137:Src/app_cam.c ****   sensor_config.config_sensor.vd66gy_config.line_len = 2000;
+ 260              		.loc 1 137 3 is_stmt 1 view .LVU68
+ 261              		.loc 1 137 54 is_stmt 0 view .LVU69
+ 262 0032 4FF4FA63 		mov	r3, #2000
+ 138:Src/app_cam.c **** 
+ 139:Src/app_cam.c ****   /* Let sensor driver choose which width/height to use */
+ 140:Src/app_cam.c ****   cam_conf.width = 0;
+ 141:Src/app_cam.c ****   cam_conf.height = 0;
+ 142:Src/app_cam.c ****   cam_conf.fps = CAMERA_FPS;
+ 143:Src/app_cam.c ****   cam_conf.mirror_flip = CAMERA_FLIP;
+ 263              		.loc 1 143 24 view .LVU70
+ 264 0036 0224     		movs	r4, #2
+ 140:Src/app_cam.c ****   cam_conf.height = 0;
+ 265              		.loc 1 140 18 view .LVU71
+ 266 0038 CDE90430 		strd	r3, r0, [sp, #16]
+ 141:Src/app_cam.c ****   cam_conf.fps = CAMERA_FPS;
+ 267              		.loc 1 141 3 is_stmt 1 view .LVU72
+ 268              		.loc 1 143 24 is_stmt 0 view .LVU73
+ 269 003c 1E23     		movs	r3, #30
+ 270 003e CDE90734 		strd	r3, r4, [sp, #28]
+ 144:Src/app_cam.c ****   ret = CMW_CAMERA_Init(&cam_conf, sensor == CMW_VD66GY_Sensor ? &sensor_config : NULL);
+ 271              		.loc 1 144 9 view .LVU74
+ 272 0042 9DF80330 		ldrb	r3, [sp, #3]	@ zero_extendqisi2
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 9
+
+
+ 141:Src/app_cam.c ****   cam_conf.fps = CAMERA_FPS;
+ 273              		.loc 1 141 19 view .LVU75
+ 274 0046 0690     		str	r0, [sp, #24]
+ 142:Src/app_cam.c ****   cam_conf.mirror_flip = CAMERA_FLIP;
+ 275              		.loc 1 142 3 is_stmt 1 view .LVU76
+ 276              		.loc 1 144 3 view .LVU77
+ 277              		.loc 1 144 9 is_stmt 0 discriminator 1 view .LVU78
+ 278 0048 012B     		cmp	r3, #1
+ 279              		.loc 1 144 9 discriminator 4 view .LVU79
+ 280 004a 0CBF     		ite	eq
+ 281 004c 3146     		moveq	r1, r6
+ 282 004e 0021     		movne	r1, #0
+ 283 0050 05A8     		add	r0, sp, #20
+ 284              	.LVL25:
+ 285              		.loc 1 144 9 discriminator 4 view .LVU80
+ 286 0052 FFF7FEFF 		bl	CMW_CAMERA_Init
+ 287              	.LVL26:
+ 145:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 288              		.loc 1 145 3 is_stmt 1 view .LVU81
+ 289 0056 0646     		mov	r6, r0
+ 290 0058 18B1     		cbz	r0, .L24
+ 291              		.loc 1 145 3 is_stmt 0 discriminator 1 view .LVU82
+ 292 005a 9121     		movs	r1, #145
+ 293 005c 454B     		ldr	r3, .L35
+ 294 005e 464A     		ldr	r2, .L35+4
+ 295 0060 D8E7     		b	.L34
+ 296              	.L24:
+ 146:Src/app_cam.c **** 
+ 147:Src/app_cam.c ****   /* cam_conf.width / cam_conf.height now contains choose resolution */
+ 148:Src/app_cam.c ****   DCMIPP_IpPlugInit(CMW_CAMERA_GetDCMIPPHandle());
+ 297              		.loc 1 148 3 is_stmt 1 view .LVU83
+ 298 0062 FFF7FEFF 		bl	CMW_CAMERA_GetDCMIPPHandle
+ 299              	.LVL27:
+ 300              	.LBB10:
+ 301              	.LBB11:
+  96:Src/app_cam.c ****   ret = HAL_DCMIPP_SetIPPlugConfig(hdcmipp, &ipplug_conf);
+ 302              		.loc 1 96 25 is_stmt 0 view .LVU84
+ 303 0066 40F22F2E 		movw	lr, #559
+ 304 006a 0F23     		movs	r3, #15
+  86:Src/app_cam.c ****   int ret;
+ 305              		.loc 1 86 28 view .LVU85
+ 306 006c CDE90C66 		strd	r6, r6, [sp, #48]
+  92:Src/app_cam.c ****   ipplug_conf.MaxOutstandingTransactions = DCMIPP_OUTSTANDING_TRANSACTION_NONE;
+ 307              		.loc 1 92 23 view .LVU86
+ 308 0070 0426     		movs	r6, #4
+ 309              	.LVL28:
+  97:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 310              		.loc 1 97 9 view .LVU87
+ 311 0072 09A9     		add	r1, sp, #36
+ 312              	.LBE11:
+ 313              	.LBE10:
+ 314              		.loc 1 148 3 view .LVU88
+ 315 0074 0746     		mov	r7, r0
+ 316              	.LVL29:
+ 317              	.LBB13:
+ 318              	.LBI10:
+  84:Src/app_cam.c **** {
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 10
+
+
+ 319              		.loc 1 84 13 is_stmt 1 view .LVU89
+ 320              	.LBB12:
+  86:Src/app_cam.c ****   int ret;
+ 321              		.loc 1 86 3 view .LVU90
+  87:Src/app_cam.c **** 
+ 322              		.loc 1 87 3 view .LVU91
+  89:Src/app_cam.c **** 
+ 323              		.loc 1 89 3 view .LVU92
+  91:Src/app_cam.c ****   ipplug_conf.Traffic = DCMIPP_TRAFFIC_BURST_SIZE_128BYTES;
+ 324              		.loc 1 91 22 is_stmt 0 view .LVU93
+ 325 0076 CDE90944 		strd	r4, r4, [sp, #36]
+  92:Src/app_cam.c ****   ipplug_conf.MaxOutstandingTransactions = DCMIPP_OUTSTANDING_TRANSACTION_NONE;
+ 326              		.loc 1 92 3 is_stmt 1 view .LVU94
+  96:Src/app_cam.c ****   ret = HAL_DCMIPP_SetIPPlugConfig(hdcmipp, &ipplug_conf);
+ 327              		.loc 1 96 25 is_stmt 0 view .LVU95
+ 328 007a CDE90EE3 		strd	lr, r3, [sp, #56]
+  92:Src/app_cam.c ****   ipplug_conf.MaxOutstandingTransactions = DCMIPP_OUTSTANDING_TRANSACTION_NONE;
+ 329              		.loc 1 92 23 view .LVU96
+ 330 007e 0B96     		str	r6, [sp, #44]
+  93:Src/app_cam.c ****   ipplug_conf.DPREGStart = 0;
+ 331              		.loc 1 93 3 is_stmt 1 view .LVU97
+  94:Src/app_cam.c ****   ipplug_conf.DPREGEnd = 559; /* (4480 bytes / one line) */
+ 332              		.loc 1 94 3 view .LVU98
+  95:Src/app_cam.c ****   ipplug_conf.WLRURatio = 15; /* 16 parts of BW */
+ 333              		.loc 1 95 3 view .LVU99
+  97:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 334              		.loc 1 97 3 view .LVU100
+  97:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 335              		.loc 1 97 9 is_stmt 0 view .LVU101
+ 336 0080 FFF7FEFF 		bl	HAL_DCMIPP_SetIPPlugConfig
+ 337              	.LVL30:
+  98:Src/app_cam.c **** 
+ 338              		.loc 1 98 3 is_stmt 1 view .LVU102
+ 339 0084 18B1     		cbz	r0, .L25
+  98:Src/app_cam.c **** 
+ 340              		.loc 1 98 3 is_stmt 0 discriminator 1 view .LVU103
+ 341 0086 6221     		movs	r1, #98
+ 342 0088 3D4B     		ldr	r3, .L35+12
+ 343 008a 3E4A     		ldr	r2, .L35+16
+ 344 008c C2E7     		b	.L34
+ 345              	.L25:
+ 100:Src/app_cam.c ****   ipplug_conf.Traffic = DCMIPP_TRAFFIC_BURST_SIZE_128BYTES;
+ 346              		.loc 1 100 3 is_stmt 1 view .LVU104
+ 100:Src/app_cam.c ****   ipplug_conf.Traffic = DCMIPP_TRAFFIC_BURST_SIZE_128BYTES;
+ 347              		.loc 1 100 22 is_stmt 0 view .LVU105
+ 348 008e 0523     		movs	r3, #5
+ 104:Src/app_cam.c ****   ipplug_conf.WLRURatio = 0; /* 1 parts of BW */
+ 349              		.loc 1 104 24 view .LVU106
+ 350 0090 4FF40C7C 		mov	ip, #560
+ 100:Src/app_cam.c ****   ipplug_conf.Traffic = DCMIPP_TRAFFIC_BURST_SIZE_128BYTES;
+ 351              		.loc 1 100 22 view .LVU107
+ 352 0094 0993     		str	r3, [sp, #36]
+ 101:Src/app_cam.c ****   ipplug_conf.MaxOutstandingTransactions = DCMIPP_OUTSTANDING_TRANSACTION_3;
+ 353              		.loc 1 101 3 is_stmt 1 view .LVU108
+ 104:Src/app_cam.c ****   ipplug_conf.WLRURatio = 0; /* 1 parts of BW */
+ 354              		.loc 1 104 24 is_stmt 0 view .LVU109
+ 355 0096 40F27F23 		movw	r3, #639
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 11
+
+
+ 105:Src/app_cam.c ****   ret = HAL_DCMIPP_SetIPPlugConfig(hdcmipp, &ipplug_conf);
+ 356              		.loc 1 105 25 view .LVU110
+ 357 009a 0F90     		str	r0, [sp, #60]
+ 106:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 358              		.loc 1 106 9 view .LVU111
+ 359 009c 09A9     		add	r1, sp, #36
+ 360 009e 3846     		mov	r0, r7
+ 361              	.LVL31:
+ 102:Src/app_cam.c ****   ipplug_conf.DPREGStart = 560;
+ 362              		.loc 1 102 42 view .LVU112
+ 363 00a0 CDE90B64 		strd	r6, r4, [sp, #44]
+ 103:Src/app_cam.c ****   ipplug_conf.DPREGEnd = 639;
+ 364              		.loc 1 103 3 is_stmt 1 view .LVU113
+ 104:Src/app_cam.c ****   ipplug_conf.WLRURatio = 0; /* 1 parts of BW */
+ 365              		.loc 1 104 24 is_stmt 0 view .LVU114
+ 366 00a4 CDE90DC3 		strd	ip, r3, [sp, #52]
+ 105:Src/app_cam.c ****   ret = HAL_DCMIPP_SetIPPlugConfig(hdcmipp, &ipplug_conf);
+ 367              		.loc 1 105 3 is_stmt 1 view .LVU115
+ 106:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 368              		.loc 1 106 3 view .LVU116
+ 106:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 369              		.loc 1 106 9 is_stmt 0 view .LVU117
+ 370 00a8 FFF7FEFF 		bl	HAL_DCMIPP_SetIPPlugConfig
+ 371              	.LVL32:
+ 107:Src/app_cam.c **** }
+ 372              		.loc 1 107 3 is_stmt 1 view .LVU118
+ 373 00ac 18B1     		cbz	r0, .L26
+ 107:Src/app_cam.c **** }
+ 374              		.loc 1 107 3 is_stmt 0 discriminator 1 view .LVU119
+ 375 00ae 6B21     		movs	r1, #107
+ 376 00b0 334B     		ldr	r3, .L35+12
+ 377 00b2 344A     		ldr	r2, .L35+16
+ 378 00b4 AEE7     		b	.L34
+ 379              	.L26:
+ 380              	.LVL33:
+ 107:Src/app_cam.c **** }
+ 381              		.loc 1 107 3 discriminator 1 view .LVU120
+ 382              	.LBE12:
+ 383              	.LBE13:
+ 149:Src/app_cam.c ****   DCMIPP_PipeInitDisplay(cam_conf.width, cam_conf.height);
+ 384              		.loc 1 149 3 is_stmt 1 view .LVU121
+ 385              	.LBB14:
+ 386              	.LBI14:
+  42:Src/app_cam.c **** {
+ 387              		.loc 1 42 13 view .LVU122
+ 388              	.LBB15:
+  44:Src/app_cam.c ****   uint32_t hw_pitch;
+ 389              		.loc 1 44 3 view .LVU123
+  45:Src/app_cam.c ****   int ret;
+ 390              		.loc 1 45 3 view .LVU124
+  46:Src/app_cam.c **** 
+ 391              		.loc 1 46 3 view .LVU125
+  48:Src/app_cam.c **** 
+ 392              		.loc 1 48 3 view .LVU126
+  50:Src/app_cam.c ****   dcmipp_conf.output_height = LCD_BG_HEIGHT;
+ 393              		.loc 1 50 3 view .LVU127
+  51:Src/app_cam.c ****   dcmipp_conf.output_format = DISPLAY_FORMAT;
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 12
+
+
+ 394              		.loc 1 51 29 is_stmt 0 view .LVU128
+ 395 00b6 4FF44871 		mov	r1, #800
+ 396 00ba 4FF4F073 		mov	r3, #480
+  53:Src/app_cam.c ****   dcmipp_conf.mode = CMW_Aspect_ratio_manual_roi;
+ 397              		.loc 1 53 26 view .LVU129
+ 398 00be CDE90B46 		strd	r4, r6, [sp, #44]
+  54:Src/app_cam.c ****   dcmipp_conf.enable_swap = 1;
+ 399              		.loc 1 54 20 view .LVU130
+ 400 00c2 0326     		movs	r6, #3
+  51:Src/app_cam.c ****   dcmipp_conf.output_format = DISPLAY_FORMAT;
+ 401              		.loc 1 51 29 view .LVU131
+ 402 00c4 CDE90913 		strd	r1, r3, [sp, #36]
+  52:Src/app_cam.c ****   dcmipp_conf.output_bpp = DISPLAY_BPP;
+ 403              		.loc 1 52 3 is_stmt 1 view .LVU132
+  54:Src/app_cam.c ****   dcmipp_conf.enable_swap = 1;
+ 404              		.loc 1 54 3 view .LVU133
+  57:Src/app_cam.c ****   ret = CMW_CAMERA_SetPipeConfig(DCMIPP_PIPE1, &dcmipp_conf, &hw_pitch);
+ 405              		.loc 1 57 3 is_stmt 0 view .LVU134
+ 406 00c8 DDE90512 		ldrd	r1, r2, [sp, #20]
+  56:Src/app_cam.c ****   CAM_InitCropConfig(&dcmipp_conf.manual_conf, sensor_width, sensor_height);
+ 407              		.loc 1 56 39 view .LVU135
+ 408 00cc CDE90D50 		strd	r5, r0, [sp, #52]
+  57:Src/app_cam.c ****   ret = CMW_CAMERA_SetPipeConfig(DCMIPP_PIPE1, &dcmipp_conf, &hw_pitch);
+ 409              		.loc 1 57 3 view .LVU136
+ 410 00d0 10A8     		add	r0, sp, #64
+ 411              	.LVL34:
+  54:Src/app_cam.c ****   dcmipp_conf.enable_swap = 1;
+ 412              		.loc 1 54 20 view .LVU137
+ 413 00d2 0F96     		str	r6, [sp, #60]
+  55:Src/app_cam.c ****   dcmipp_conf.enable_gamma_conversion = 0;
+ 414              		.loc 1 55 3 is_stmt 1 view .LVU138
+  57:Src/app_cam.c ****   ret = CMW_CAMERA_SetPipeConfig(DCMIPP_PIPE1, &dcmipp_conf, &hw_pitch);
+ 415              		.loc 1 57 3 view .LVU139
+ 416 00d4 FFF7FEFF 		bl	CAM_InitCropConfig
+ 417              	.LVL35:
+  58:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 418              		.loc 1 58 3 view .LVU140
+  58:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 419              		.loc 1 58 9 is_stmt 0 view .LVU141
+ 420 00d8 2846     		mov	r0, r5
+ 421 00da 01AA     		add	r2, sp, #4
+ 422 00dc 09A9     		add	r1, sp, #36
+ 423 00de FFF7FEFF 		bl	CMW_CAMERA_SetPipeConfig
+ 424              	.LVL36:
+  59:Src/app_cam.c ****   assert(hw_pitch == dcmipp_conf.output_width * dcmipp_conf.output_bpp);
+ 425              		.loc 1 59 3 is_stmt 1 view .LVU142
+ 426 00e2 18B1     		cbz	r0, .L27
+  59:Src/app_cam.c ****   assert(hw_pitch == dcmipp_conf.output_width * dcmipp_conf.output_bpp);
+ 427              		.loc 1 59 3 is_stmt 0 discriminator 1 view .LVU143
+ 428 00e4 3B21     		movs	r1, #59
+ 429 00e6 264B     		ldr	r3, .L35+12
+ 430 00e8 274A     		ldr	r2, .L35+20
+ 431 00ea 93E7     		b	.L34
+ 432              	.L27:
+  60:Src/app_cam.c **** }
+ 433              		.loc 1 60 3 is_stmt 1 view .LVU144
+ 434 00ec 0C9A     		ldr	r2, [sp, #48]
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 13
+
+
+ 435 00ee 099B     		ldr	r3, [sp, #36]
+ 436 00f0 5343     		muls	r3, r2, r3
+ 437 00f2 019A     		ldr	r2, [sp, #4]
+ 438 00f4 9342     		cmp	r3, r2
+ 439 00f6 03D0     		beq	.L28
+  60:Src/app_cam.c **** }
+ 440              		.loc 1 60 3 is_stmt 0 discriminator 1 view .LVU145
+ 441 00f8 3C21     		movs	r1, #60
+ 442 00fa 244B     		ldr	r3, .L35+24
+ 443 00fc 224A     		ldr	r2, .L35+20
+ 444 00fe 89E7     		b	.L34
+ 445              	.L28:
+ 446              	.LVL37:
+  60:Src/app_cam.c **** }
+ 447              		.loc 1 60 3 discriminator 1 view .LVU146
+ 448              	.LBE15:
+ 449              	.LBE14:
+ 150:Src/app_cam.c ****   DCMIPP_PipeInitNn(cam_conf.width, cam_conf.height);
+ 450              		.loc 1 150 3 is_stmt 1 view .LVU147
+ 451              	.LBB16:
+ 452              	.LBI16:
+  63:Src/app_cam.c **** {
+ 453              		.loc 1 63 13 view .LVU148
+ 454              	.LBB17:
+  65:Src/app_cam.c ****   uint32_t hw_pitch;
+ 455              		.loc 1 65 3 view .LVU149
+  66:Src/app_cam.c ****   int ret;
+ 456              		.loc 1 66 3 view .LVU150
+  67:Src/app_cam.c **** 
+ 457              		.loc 1 67 3 view .LVU151
+  69:Src/app_cam.c ****   /* Keep screen aspect ratio. Consequence is that bottom of palm detector input will be black */
+ 458              		.loc 1 69 3 view .LVU152
+  71:Src/app_cam.c ****   dcmipp_conf.output_height = (int) (STAI_PALM_DETECTOR_IN_1_HEIGHT * ((float)LCD_BG_HEIGHT / LCD_B
+ 459              		.loc 1 71 3 view .LVU153
+  72:Src/app_cam.c ****   dcmipp_conf.output_format = NN_FORMAT;
+ 460              		.loc 1 72 29 is_stmt 0 view .LVU154
+ 461 0100 C022     		movs	r2, #192
+ 462 0102 7323     		movs	r3, #115
+  74:Src/app_cam.c ****   dcmipp_conf.mode = CMW_Aspect_ratio_manual_roi;
+ 463              		.loc 1 74 26 view .LVU155
+ 464 0104 CDE90B06 		strd	r0, r6, [sp, #44]
+  72:Src/app_cam.c ****   dcmipp_conf.output_format = NN_FORMAT;
+ 465              		.loc 1 72 29 view .LVU156
+ 466 0108 CDE90923 		strd	r2, r3, [sp, #36]
+  73:Src/app_cam.c ****   dcmipp_conf.output_bpp = STAI_PALM_DETECTOR_IN_1_CHANNEL;
+ 467              		.loc 1 73 3 is_stmt 1 view .LVU157
+  75:Src/app_cam.c ****   dcmipp_conf.enable_swap = 1;
+ 468              		.loc 1 75 3 view .LVU158
+  78:Src/app_cam.c ****   ret = CMW_CAMERA_SetPipeConfig(DCMIPP_PIPE2, &dcmipp_conf, &hw_pitch);
+ 469              		.loc 1 78 3 is_stmt 0 view .LVU159
+ 470 010c DDE90512 		ldrd	r1, r2, [sp, #20]
+  77:Src/app_cam.c ****   CAM_InitCropConfig(&dcmipp_conf.manual_conf, sensor_width, sensor_height);
+ 471              		.loc 1 77 39 view .LVU160
+ 472 0110 CDE90D50 		strd	r5, r0, [sp, #52]
+  78:Src/app_cam.c ****   ret = CMW_CAMERA_SetPipeConfig(DCMIPP_PIPE2, &dcmipp_conf, &hw_pitch);
+ 473              		.loc 1 78 3 view .LVU161
+ 474 0114 10A8     		add	r0, sp, #64
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 14
+
+
+  75:Src/app_cam.c ****   dcmipp_conf.enable_swap = 1;
+ 475              		.loc 1 75 20 view .LVU162
+ 476 0116 0F96     		str	r6, [sp, #60]
+  76:Src/app_cam.c ****   dcmipp_conf.enable_gamma_conversion = 0;
+ 477              		.loc 1 76 3 is_stmt 1 view .LVU163
+  78:Src/app_cam.c ****   ret = CMW_CAMERA_SetPipeConfig(DCMIPP_PIPE2, &dcmipp_conf, &hw_pitch);
+ 478              		.loc 1 78 3 view .LVU164
+ 479 0118 FFF7FEFF 		bl	CAM_InitCropConfig
+ 480              	.LVL38:
+  79:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 481              		.loc 1 79 3 view .LVU165
+  79:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 482              		.loc 1 79 9 is_stmt 0 view .LVU166
+ 483 011c 2046     		mov	r0, r4
+ 484 011e 01AA     		add	r2, sp, #4
+ 485 0120 09A9     		add	r1, sp, #36
+ 486 0122 FFF7FEFF 		bl	CMW_CAMERA_SetPipeConfig
+ 487              	.LVL39:
+  80:Src/app_cam.c ****   assert(hw_pitch == dcmipp_conf.output_width * dcmipp_conf.output_bpp);
+ 488              		.loc 1 80 3 is_stmt 1 view .LVU167
+ 489 0126 18B1     		cbz	r0, .L29
+  80:Src/app_cam.c ****   assert(hw_pitch == dcmipp_conf.output_width * dcmipp_conf.output_bpp);
+ 490              		.loc 1 80 3 is_stmt 0 discriminator 1 view .LVU168
+ 491 0128 5021     		movs	r1, #80
+ 492 012a 154B     		ldr	r3, .L35+12
+ 493 012c 184A     		ldr	r2, .L35+28
+ 494 012e 71E7     		b	.L34
+ 495              	.L29:
+  81:Src/app_cam.c **** }
+ 496              		.loc 1 81 3 is_stmt 1 view .LVU169
+ 497 0130 0C9A     		ldr	r2, [sp, #48]
+ 498 0132 099B     		ldr	r3, [sp, #36]
+ 499 0134 5343     		muls	r3, r2, r3
+ 500 0136 019A     		ldr	r2, [sp, #4]
+ 501 0138 9342     		cmp	r3, r2
+ 502 013a 03D0     		beq	.L30
+  81:Src/app_cam.c **** }
+ 503              		.loc 1 81 3 is_stmt 0 discriminator 1 view .LVU170
+ 504 013c 5121     		movs	r1, #81
+ 505 013e 134B     		ldr	r3, .L35+24
+ 506 0140 134A     		ldr	r2, .L35+28
+ 507 0142 67E7     		b	.L34
+ 508              	.L30:
+ 509              	.LVL40:
+  81:Src/app_cam.c **** }
+ 510              		.loc 1 81 3 discriminator 1 view .LVU171
+ 511              	.LBE17:
+ 512              	.LBE16:
+ 151:Src/app_cam.c ****   DCMIPP_ReduceSpurious(CMW_CAMERA_GetDCMIPPHandle());
+ 513              		.loc 1 151 3 is_stmt 1 view .LVU172
+ 514 0144 FFF7FEFF 		bl	CMW_CAMERA_GetDCMIPPHandle
+ 515              	.LVL41:
+ 516              	.LBB18:
+ 517              	.LBB19:
+ 114:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 518              		.loc 1 114 9 is_stmt 0 view .LVU173
+ 519 0148 4FF46042 		mov	r2, #57344
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 15
+
+
+ 520 014c 2946     		mov	r1, r5
+ 521              	.LBE19:
+ 522              	.LBE18:
+ 523              		.loc 1 151 3 view .LVU174
+ 524 014e 0446     		mov	r4, r0
+ 525              	.LVL42:
+ 526              	.LBB21:
+ 527              	.LBI18:
+ 110:Src/app_cam.c **** {
+ 528              		.loc 1 110 13 is_stmt 1 view .LVU175
+ 529              	.LBB20:
+ 112:Src/app_cam.c **** 
+ 530              		.loc 1 112 3 view .LVU176
+ 114:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 531              		.loc 1 114 3 view .LVU177
+ 114:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 532              		.loc 1 114 9 is_stmt 0 view .LVU178
+ 533 0150 FFF7FEFF 		bl	HAL_DCMIPP_PIPE_EnableLineEvent
+ 534              	.LVL43:
+ 115:Src/app_cam.c ****   ret = HAL_DCMIPP_PIPE_DisableLineEvent(hdcmipp, DCMIPP_PIPE1);
+ 535              		.loc 1 115 3 is_stmt 1 view .LVU179
+ 536 0154 18B1     		cbz	r0, .L31
+ 115:Src/app_cam.c ****   ret = HAL_DCMIPP_PIPE_DisableLineEvent(hdcmipp, DCMIPP_PIPE1);
+ 537              		.loc 1 115 3 is_stmt 0 discriminator 1 view .LVU180
+ 538 0156 7321     		movs	r1, #115
+ 539 0158 094B     		ldr	r3, .L35+12
+ 540 015a 0E4A     		ldr	r2, .L35+32
+ 541 015c 5AE7     		b	.L34
+ 542              	.L31:
+ 116:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 543              		.loc 1 116 3 is_stmt 1 view .LVU181
+ 116:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 544              		.loc 1 116 9 is_stmt 0 view .LVU182
+ 545 015e 0121     		movs	r1, #1
+ 546 0160 2046     		mov	r0, r4
+ 547              	.LVL44:
+ 116:Src/app_cam.c ****   assert(ret == HAL_OK);
+ 548              		.loc 1 116 9 view .LVU183
+ 549 0162 FFF7FEFF 		bl	HAL_DCMIPP_PIPE_DisableLineEvent
+ 550              	.LVL45:
+ 117:Src/app_cam.c **** }
+ 551              		.loc 1 117 3 is_stmt 1 view .LVU184
+ 552 0166 18B1     		cbz	r0, .L20
+ 117:Src/app_cam.c **** }
+ 553              		.loc 1 117 3 is_stmt 0 discriminator 1 view .LVU185
+ 554 0168 7521     		movs	r1, #117
+ 555 016a 054B     		ldr	r3, .L35+12
+ 556 016c 094A     		ldr	r2, .L35+32
+ 557 016e 51E7     		b	.L34
+ 558              	.L20:
+ 559              	.LBE20:
+ 560              	.LBE21:
+ 152:Src/app_cam.c **** }
+ 561              		.loc 1 152 1 view .LVU186
+ 562 0170 15B0     		add	sp, sp, #84
+ 563              		.cfi_def_cfa_offset 20
+ 564              		@ sp needed
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 16
+
+
+ 565 0172 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 566              	.LVL46:
+ 567              	.L36:
+ 568              		.loc 1 152 1 view .LVU187
+ 569              		.align	2
+ 570              	.L35:
+ 571 0174 00000000 		.word	.LC3
+ 572 0178 00000000 		.word	__func__.8
+ 573 017c 0B000000 		.word	.LC1
+ 574 0180 16000000 		.word	.LC4
+ 575 0184 00000000 		.word	__func__.7
+ 576 0188 00000000 		.word	__func__.6
+ 577 018c 24000000 		.word	.LC5
+ 578 0190 00000000 		.word	__func__.4
+ 579 0194 00000000 		.word	__func__.3
+ 580              		.cfi_endproc
+ 581              	.LFE3418:
+ 583              		.section	.text.CAM_DisplayPipe_Start,"ax",%progbits
+ 584              		.align	1
+ 585              		.global	CAM_DisplayPipe_Start
+ 586              		.syntax unified
+ 587              		.thumb
+ 588              		.thumb_func
+ 590              	CAM_DisplayPipe_Start:
+ 591              	.LVL47:
+ 592              	.LFB3419:
+ 153:Src/app_cam.c **** 
+ 154:Src/app_cam.c **** void CAM_DisplayPipe_Start(uint8_t *display_pipe_dst, uint32_t cam_mode)
+ 155:Src/app_cam.c **** {
+ 593              		.loc 1 155 1 is_stmt 1 view -0
+ 594              		.cfi_startproc
+ 595              		@ args = 0, pretend = 0, frame = 0
+ 596              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156:Src/app_cam.c ****   int ret;
+ 597              		.loc 1 156 3 view .LVU189
+ 157:Src/app_cam.c **** 
+ 158:Src/app_cam.c ****   ret = CMW_CAMERA_Start(DCMIPP_PIPE1, display_pipe_dst, cam_mode);
+ 598              		.loc 1 158 3 view .LVU190
+ 155:Src/app_cam.c ****   int ret;
+ 599              		.loc 1 155 1 is_stmt 0 view .LVU191
+ 600 0000 0A46     		mov	r2, r1
+ 601 0002 08B5     		push	{r3, lr}
+ 602              		.cfi_def_cfa_offset 8
+ 603              		.cfi_offset 3, -8
+ 604              		.cfi_offset 14, -4
+ 605              		.loc 1 158 9 view .LVU192
+ 606 0004 0146     		mov	r1, r0
+ 607              	.LVL48:
+ 608              		.loc 1 158 9 view .LVU193
+ 609 0006 0120     		movs	r0, #1
+ 610              	.LVL49:
+ 611              		.loc 1 158 9 view .LVU194
+ 612 0008 FFF7FEFF 		bl	CMW_CAMERA_Start
+ 613              	.LVL50:
+ 159:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 614              		.loc 1 159 3 is_stmt 1 view .LVU195
+ 615 000c 28B1     		cbz	r0, .L37
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 17
+
+
+ 616              		.loc 1 159 3 is_stmt 0 discriminator 1 view .LVU196
+ 617 000e 9F21     		movs	r1, #159
+ 618 0010 024B     		ldr	r3, .L39
+ 619 0012 034A     		ldr	r2, .L39+4
+ 620 0014 0348     		ldr	r0, .L39+8
+ 621              	.LVL51:
+ 622              		.loc 1 159 3 discriminator 1 view .LVU197
+ 623 0016 FFF7FEFF 		bl	__assert_func
+ 624              	.LVL52:
+ 625              	.L37:
+ 160:Src/app_cam.c **** }
+ 626              		.loc 1 160 1 view .LVU198
+ 627 001a 08BD     		pop	{r3, pc}
+ 628              	.L40:
+ 629              		.align	2
+ 630              	.L39:
+ 631 001c 00000000 		.word	.LC3
+ 632 0020 00000000 		.word	__func__.2
+ 633 0024 0B000000 		.word	.LC1
+ 634              		.cfi_endproc
+ 635              	.LFE3419:
+ 637              		.section	.text.CAM_NNPipe_Start,"ax",%progbits
+ 638              		.align	1
+ 639              		.global	CAM_NNPipe_Start
+ 640              		.syntax unified
+ 641              		.thumb
+ 642              		.thumb_func
+ 644              	CAM_NNPipe_Start:
+ 645              	.LVL53:
+ 646              	.LFB3420:
+ 161:Src/app_cam.c **** 
+ 162:Src/app_cam.c **** void CAM_NNPipe_Start(uint8_t *nn_pipe_dst, uint32_t cam_mode)
+ 163:Src/app_cam.c **** {
+ 647              		.loc 1 163 1 is_stmt 1 view -0
+ 648              		.cfi_startproc
+ 649              		@ args = 0, pretend = 0, frame = 0
+ 650              		@ frame_needed = 0, uses_anonymous_args = 0
+ 164:Src/app_cam.c ****   int ret;
+ 651              		.loc 1 164 3 view .LVU200
+ 165:Src/app_cam.c **** 
+ 166:Src/app_cam.c ****   ret = CMW_CAMERA_Start(DCMIPP_PIPE2, nn_pipe_dst, cam_mode);
+ 652              		.loc 1 166 3 view .LVU201
+ 163:Src/app_cam.c ****   int ret;
+ 653              		.loc 1 163 1 is_stmt 0 view .LVU202
+ 654 0000 0A46     		mov	r2, r1
+ 655 0002 08B5     		push	{r3, lr}
+ 656              		.cfi_def_cfa_offset 8
+ 657              		.cfi_offset 3, -8
+ 658              		.cfi_offset 14, -4
+ 659              		.loc 1 166 9 view .LVU203
+ 660 0004 0146     		mov	r1, r0
+ 661              	.LVL54:
+ 662              		.loc 1 166 9 view .LVU204
+ 663 0006 0220     		movs	r0, #2
+ 664              	.LVL55:
+ 665              		.loc 1 166 9 view .LVU205
+ 666 0008 FFF7FEFF 		bl	CMW_CAMERA_Start
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 18
+
+
+ 667              	.LVL56:
+ 167:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 668              		.loc 1 167 3 is_stmt 1 view .LVU206
+ 669 000c 28B1     		cbz	r0, .L41
+ 670              		.loc 1 167 3 is_stmt 0 discriminator 1 view .LVU207
+ 671 000e A721     		movs	r1, #167
+ 672 0010 024B     		ldr	r3, .L43
+ 673 0012 034A     		ldr	r2, .L43+4
+ 674 0014 0348     		ldr	r0, .L43+8
+ 675              	.LVL57:
+ 676              		.loc 1 167 3 discriminator 1 view .LVU208
+ 677 0016 FFF7FEFF 		bl	__assert_func
+ 678              	.LVL58:
+ 679              	.L41:
+ 168:Src/app_cam.c **** }
+ 680              		.loc 1 168 1 view .LVU209
+ 681 001a 08BD     		pop	{r3, pc}
+ 682              	.L44:
+ 683              		.align	2
+ 684              	.L43:
+ 685 001c 00000000 		.word	.LC3
+ 686 0020 00000000 		.word	__func__.1
+ 687 0024 0B000000 		.word	.LC1
+ 688              		.cfi_endproc
+ 689              	.LFE3420:
+ 691              		.section	.text.CAM_IspUpdate,"ax",%progbits
+ 692              		.align	1
+ 693              		.global	CAM_IspUpdate
+ 694              		.syntax unified
+ 695              		.thumb
+ 696              		.thumb_func
+ 698              	CAM_IspUpdate:
+ 699              	.LFB3421:
+ 169:Src/app_cam.c **** 
+ 170:Src/app_cam.c **** void CAM_IspUpdate(void)
+ 171:Src/app_cam.c **** {
+ 700              		.loc 1 171 1 is_stmt 1 view -0
+ 701              		.cfi_startproc
+ 702              		@ args = 0, pretend = 0, frame = 0
+ 703              		@ frame_needed = 0, uses_anonymous_args = 0
+ 172:Src/app_cam.c ****   int ret;
+ 704              		.loc 1 172 3 view .LVU211
+ 173:Src/app_cam.c **** 
+ 174:Src/app_cam.c ****   ret = CMW_CAMERA_Run();
+ 705              		.loc 1 174 3 view .LVU212
+ 171:Src/app_cam.c ****   int ret;
+ 706              		.loc 1 171 1 is_stmt 0 view .LVU213
+ 707 0000 08B5     		push	{r3, lr}
+ 708              		.cfi_def_cfa_offset 8
+ 709              		.cfi_offset 3, -8
+ 710              		.cfi_offset 14, -4
+ 711              		.loc 1 174 9 view .LVU214
+ 712 0002 FFF7FEFF 		bl	CMW_CAMERA_Run
+ 713              	.LVL59:
+ 175:Src/app_cam.c ****   assert(ret == CMW_ERROR_NONE);
+ 714              		.loc 1 175 3 is_stmt 1 view .LVU215
+ 715 0006 28B1     		cbz	r0, .L45
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 19
+
+
+ 716              		.loc 1 175 3 is_stmt 0 discriminator 1 view .LVU216
+ 717 0008 AF21     		movs	r1, #175
+ 718 000a 034B     		ldr	r3, .L47
+ 719 000c 034A     		ldr	r2, .L47+4
+ 720 000e 0448     		ldr	r0, .L47+8
+ 721              	.LVL60:
+ 722              		.loc 1 175 3 discriminator 1 view .LVU217
+ 723 0010 FFF7FEFF 		bl	__assert_func
+ 724              	.LVL61:
+ 725              	.L45:
+ 176:Src/app_cam.c **** }
+ 726              		.loc 1 176 1 view .LVU218
+ 727 0014 08BD     		pop	{r3, pc}
+ 728              	.L48:
+ 729 0016 00BF     		.align	2
+ 730              	.L47:
+ 731 0018 00000000 		.word	.LC3
+ 732 001c 00000000 		.word	__func__.0
+ 733 0020 0B000000 		.word	.LC1
+ 734              		.cfi_endproc
+ 735              	.LFE3421:
+ 737              		.section	.text.CMW_CAMERA_PIPE_ErrorCallback,"ax",%progbits
+ 738              		.align	1
+ 739              		.global	CMW_CAMERA_PIPE_ErrorCallback
+ 740              		.syntax unified
+ 741              		.thumb
+ 742              		.thumb_func
+ 744              	CMW_CAMERA_PIPE_ErrorCallback:
+ 745              	.LVL62:
+ 746              	.LFB3422:
+ 177:Src/app_cam.c **** 
+ 178:Src/app_cam.c **** void CMW_CAMERA_PIPE_ErrorCallback(uint32_t pipe)
+ 179:Src/app_cam.c **** {
+ 747              		.loc 1 179 1 is_stmt 1 view -0
+ 748              		.cfi_startproc
+ 749              		@ args = 0, pretend = 0, frame = 0
+ 750              		@ frame_needed = 0, uses_anonymous_args = 0
+ 751              		@ link register save eliminated.
+ 180:Src/app_cam.c ****   /* FIXME : Need to tune sensor/ipplug so we can remove this implementation */
+ 181:Src/app_cam.c **** }
+ 752              		.loc 1 181 1 view .LVU220
+ 753 0000 7047     		bx	lr
+ 754              		.cfi_endproc
+ 755              	.LFE3422:
+ 757              		.section	.rodata.__func__.0,"a"
+ 760              	__func__.0:
+ 761 0000 43414D5F 		.ascii	"CAM_IspUpdate\000"
+ 761      49737055 
+ 761      70646174 
+ 761      6500
+ 762              		.section	.rodata.__func__.1,"a"
+ 765              	__func__.1:
+ 766 0000 43414D5F 		.ascii	"CAM_NNPipe_Start\000"
+ 766      4E4E5069 
+ 766      70655F53 
+ 766      74617274 
+ 766      00
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 20
+
+
+ 767              		.section	.rodata.__func__.2,"a"
+ 770              	__func__.2:
+ 771 0000 43414D5F 		.ascii	"CAM_DisplayPipe_Start\000"
+ 771      44697370 
+ 771      6C617950 
+ 771      6970655F 
+ 771      53746172 
+ 772              		.section	.rodata.__func__.3,"a"
+ 775              	__func__.3:
+ 776 0000 44434D49 		.ascii	"DCMIPP_ReduceSpurious\000"
+ 776      50505F52 
+ 776      65647563 
+ 776      65537075 
+ 776      72696F75 
+ 777              		.section	.rodata.__func__.4,"a"
+ 780              	__func__.4:
+ 781 0000 44434D49 		.ascii	"DCMIPP_PipeInitNn\000"
+ 781      50505F50 
+ 781      69706549 
+ 781      6E69744E 
+ 781      6E00
+ 782              		.section	.rodata.__func__.5,"a"
+ 785              	__func__.5:
+ 786 0000 43414D5F 		.ascii	"CAM_InitCropConfig\000"
+ 786      496E6974 
+ 786      43726F70 
+ 786      436F6E66 
+ 786      696700
+ 787              		.section	.rodata.__func__.6,"a"
+ 790              	__func__.6:
+ 791 0000 44434D49 		.ascii	"DCMIPP_PipeInitDisplay\000"
+ 791      50505F50 
+ 791      69706549 
+ 791      6E697444 
+ 791      6973706C 
+ 792              		.section	.rodata.__func__.7,"a"
+ 795              	__func__.7:
+ 796 0000 44434D49 		.ascii	"DCMIPP_IpPlugInit\000"
+ 796      50505F49 
+ 796      70506C75 
+ 796      67496E69 
+ 796      7400
+ 797              		.section	.rodata.__func__.8,"a"
+ 800              	__func__.8:
+ 801 0000 43414D5F 		.ascii	"CAM_Init\000"
+ 801      496E6974 
+ 801      00
+ 802              		.text
+ 803              	.Letext0:
+ 804              		.file 2 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 805              		.file 3 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ 806              		.file 4 "STM32Cube_FW_N6/Drivers/CMSIS/Device/ST/STM32N6xx/Include/stm32n657xx.h"
+ 807              		.file 5 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_def.h"
+ 808              		.file 6 "STM32Cube_FW_N6/Drivers/STM32N6xx_HAL_Driver/Inc/stm32n6xx_hal_dcmipp.h"
+ 809              		.file 7 "Lib/Camera_Middleware/cmw_camera.h"
+ 810              		.file 8 "C:\\ST\\STM32CubeIDE_1.18.1\\STM32CubeIDE\\plugins\\com.st.stm32cube.ide.mcu.externaltool
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 21
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 app_cam.c
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:33     .text.CAM_InitCropConfig:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:38     .text.CAM_InitCropConfig:00000000 CAM_InitCropConfig
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:176    .text.CAM_InitCropConfig:000000b0 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:785    .rodata.__func__.5:00000000 __func__.5
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:195    .text.CAM_Init:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:201    .text.CAM_Init:00000000 CAM_Init
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:571    .text.CAM_Init:00000174 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:800    .rodata.__func__.8:00000000 __func__.8
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:795    .rodata.__func__.7:00000000 __func__.7
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:790    .rodata.__func__.6:00000000 __func__.6
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:780    .rodata.__func__.4:00000000 __func__.4
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:775    .rodata.__func__.3:00000000 __func__.3
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:584    .text.CAM_DisplayPipe_Start:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:590    .text.CAM_DisplayPipe_Start:00000000 CAM_DisplayPipe_Start
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:631    .text.CAM_DisplayPipe_Start:0000001c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:770    .rodata.__func__.2:00000000 __func__.2
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:638    .text.CAM_NNPipe_Start:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:644    .text.CAM_NNPipe_Start:00000000 CAM_NNPipe_Start
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:685    .text.CAM_NNPipe_Start:0000001c $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:765    .rodata.__func__.1:00000000 __func__.1
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:692    .text.CAM_IspUpdate:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:698    .text.CAM_IspUpdate:00000000 CAM_IspUpdate
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:731    .text.CAM_IspUpdate:00000018 $d
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:760    .rodata.__func__.0:00000000 __func__.0
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:738    .text.CMW_CAMERA_PIPE_ErrorCallback:00000000 $t
+C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s:744    .text.CMW_CAMERA_PIPE_ErrorCallback:00000000 CMW_CAMERA_PIPE_ErrorCallback
+                           .group:00000000 wm4.0.c530a555507323ed657a04d5a22acbf4
+                           .group:00000000 wm4._newlib_version.h.4.411db44ea2338a62eca2f0777f81481b
+                           .group:00000000 wm4.newlib.h.27.a82728f74da661df333d09507bfef510
+                           .group:00000000 wm4.ieeefp.h.77.bd5feb87d9990dd328793ced294f6a87
+                           .group:00000000 wm4.features.h.22.9dfb1293666eb4caf24cccb81c86a551
+                           .group:00000000 wm4.config.h.224.10ee1ad185d877c6e334e6581faab44d
+                           .group:00000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:00000000 wm4.assert.h.11.db24e541f16414db224bf986d21017e2
+                           .group:00000000 wm4.ll_aton_config.h.20.27cfa9f6f5afc4105991355367358a39
+                           .group:00000000 wm4.stdbool.h.29.c08aa3eec75cf5b9b5003883f43253f0
+                           .group:00000000 wm4.stddef.h.39.0dc9006b34572d4d9cae4c8b422c4971
+                           .group:00000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:00000000 wm4._intsup.h.10.48bafbb683905c4daa4565a85aeeb264
+                           .group:00000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:00000000 wm4.stdint.h.23.d53047a68f4a85177f80b422d52785ed
+                           .group:00000000 wm4.ll_aton_attributes.h.20.26d469460cb32db5740effdc8cc403f3
+                           .group:00000000 wm4.ll_aton_cipher.h.20.e98fdae11c912f4036a83cedb835e14e
+                           .group:00000000 wm4.assert.h.11.d99a111e320bc5106fc4046225782672
+                           .group:00000000 wm4.errno.h.2.ba016d646105af6cad23be83630b6a3f
+                           .group:00000000 wm4.cdefs.h.49.70fc7af612f78ddcace70fdd90b5623b
+                           .group:00000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:00000000 wm4.stddef.h.158.6f8e08a347b1cff664332fa350bfceb3
+                           .group:00000000 wm4._types.h.127.3bdfe3ff8ea2d0985b03d9cbe93480e3
+                           .group:00000000 wm4.reent.h.18.25503cdc8b7e55dd0d6ea7b3e5af7a03
+                           .group:00000000 wm4.lock.h.2.1461d1fff82dffe8bfddc23307f6484f
+                           .group:00000000 wm4.reent.h.78.6b87466b04591b1f1cb88c14fdf2ba9e
+                           .group:00000000 wm4.errno.h.18.87873c1c5b242e8a4fdc43daa9aad824
+                           .group:00000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:00000000 wm4.stddef.h.158.eec8bf00b5213f43d095cb984c5f22e3
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 22
+
+
+                           .group:00000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:00000000 wm4.stdio.h.47.dc31ec4674d7bcb103c9f08809549f45
+                           .group:00000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:00000000 wm4.stdio.h.87.a1e20d2651f9bfb66e51bfbe849db00a
+                           .group:00000000 wm4.ll_aton_util.h.34.9098eaa90d3d72b819973556e3e5fe44
+                           .group:00000000 wm4.FreeRTOS.h.59.647b1b0da38e4e98108aae13c8abe9ee
+                           .group:00000000 wm4.FreeRTOSConfig.h.59.2629c72cff9e6dbe880a2dc225eae516
+                           .group:00000000 wm4.FreeRTOS.h.80.7742fabaf5accf3762dc12f7f259a8a0
+                           .group:00000000 wm4.projdefs.h.30.55a824156f299c075c33148a9fdadb99
+                           .group:00000000 wm4.portmacro.h.30.cbb4b2da41f551c2a9904f0d03a1ce3e
+                           .group:00000000 wm4.portmacrocommon.h.30.d5cb67896ab50a95311be7e023da5c4f
+                           .group:00000000 wm4.portmacro.h.68.4051ecf710d074fb55b16d91dfebeeaa
+                           .group:00000000 wm4.portable.h.61.d557c57974d490f056246a26cdcddd6c
+                           .group:00000000 wm4.mpu_wrappers.h.30.ccc5f1a6903f941a88c268f5f62af3fe
+                           .group:00000000 wm4.portable.h.189.522b8bd52a171d3fd1432ef06d0caa63
+                           .group:00000000 wm4.FreeRTOS.h.102.fb871f3e464d99c5a57b3115545a02ad
+                           .group:00000000 wm4.list.h.59.bce6419520cd4f5f98779a1530bf2118
+                           .group:00000000 wm4.task.h.56.84290139c73b47f5b9aac361361a2a31
+                           .group:00000000 wm4.queue.h.68.219f47fba8b59640449b84d04c5bd6d8
+                           .group:00000000 wm4.semphr.h.40.c1a9c6f5bf0feb4da0b6a45d234a79d0
+                           .group:00000000 wm4.ll_aton_platform.h.20.8f1d4e7781c282794886ffdd00ccd30b
+                           .group:00000000 wm4.stm32n6xx.h.34.c523a1ffdf274a69e8802892c6776332
+                           .group:00000000 wm4.stm32n657xx.h.26.acd272cb67318cc1a4791ce2f0720ca6
+                           .group:00000000 wm4.cmsis_version.h.30.d128735bf87720f7436b74fefeb5043c
+                           .group:00000000 wm4.core_cm55.h.67.25006a3ce7048d64bcddd2996d5fac93
+                           .group:00000000 wm4.arm_acle.h.28.ce8f475a5cc50333e54ae4adeb8c0298
+                           .group:00000000 wm4.cmsis_gcc.h.39.eba7438bc45fd1a6e6376b63ffe44436
+                           .group:00000000 wm4.cmsis_gcc_m.h.24.e590ec51aeda3a1242400351d73f5dce
+                           .group:00000000 wm4.core_cm55.h.213.0528f46a674315ef8d35c4477e230358
+                           .group:00000000 wm4.armv8m_mpu.h.24.bf28cc25bee30a7ff9d2f7a44a5e2230
+                           .group:00000000 wm4.armv8m_pmu.h.24.6ded195d2625055391fd378c0e1d2519
+                           .group:00000000 wm4.core_cm55.h.4477.396e822ef855bcfb932819ad48de1c4c
+                           .group:00000000 wm4.armv7m_cachel1.h.24.936dd92d6e204a8d0b17d5e4ea4a356e
+                           .group:00000000 wm4.stm32n657xx.h.575.78d331c417ec710388ced647138f735f
+                           .group:00000000 wm4.stm32n6xx.h.116.b4247d9785590e7c5ec9234ffb2153bf
+                           .group:00000000 wm4.ll_aton_platform.h.205.098bebcb126012e5dfc0544db0a7d4c8
+                           .group:00000000 wm4.inttypes.h.14.b28deb26920e51e0da310220ef0f9003
+                           .group:00000000 wm4.inttypes.h.28.684aa7736e7ecc9a6ffc44acc61c7a90
+                           .group:00000000 wm4.syslimits.h.34.de5cbd310098bc5895998b6bde577ed2
+                           .group:00000000 wm4.limits.h.9.70fb0ada6f71b16202a66baaa6d8ea70
+                           .group:00000000 wm4.limits.h.60.56a1ae353e2028a24298ec6463b8b593
+                           .group:00000000 wm4.string.h.8.c4b8571ce60dff2817f43fec8b86aecd
+                           .group:00000000 wm4.string.h.177.59a005921fa78485abc80a0267de5752
+                           .group:00000000 wm4.ATONidxs.h.16.969ebf3fd32e13543179e6907b3869c9
+                           .group:00000000 wm4.ATON.h.19.0bce86f27eb7ac354272c44c1804cd24
+                           .group:00000000 wm4.ll_aton_rcompat.h.22.4788366561a5f8dfb37661f794bdd403
+                           .group:00000000 wm4.ll_aton_platform.h.279.2fa1ab569e6816db5b603cc3ef09d875
+                           .group:00000000 wm4.ll_aton_osal_freertos.h.63.1e66f105894f6ee9e5e9ee361a3df896
+                           .group:00000000 wm4.ll_aton_osal.h.117.70ff644e90427fadc04622c387869938
+                           .group:00000000 wm4.ll_aton_rt_user_api.h.71.52957347efa02883c6e8b1a7f756d297
+                           .group:00000000 wm4.stai.h.24.a274645e79490de4e05332b397550d1f
+                           .group:00000000 wm4.stai_debug.h.37.4be079c70c66033549ba26b63a31db94
+                           .group:00000000 wm4.ll_aton_stai_internal.h.35.4ede4d59178f196dca4b635c5600498b
+                           .group:00000000 wm4.stai_palm_detector.h.57.debf59e73409726805ff914e3324d286
+                           .group:00000000 wm4.arm_math_types.h.28.9e71aea5cdf6aebdd83091bf39b4832a
+                           .group:00000000 wm4.math.h.13.47cfc34cae8a1153323939c4d32cf7c2
+                           .group:00000000 wm4.float.h.29.0e9d9baf95ec39f9555dc80c6e28186b
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 23
+
+
+                           .group:00000000 wm4.arm_math_types.h.116.3e44bd031718f65bdb345972ddc8cf86
+                           .group:00000000 wm4.arm_mve.h.38.47b22bbd301ce82bc6dafd1a387f65a3
+                           .group:00000000 wm4.arm_math_types.h.605.32c5d7843b3dcaa8f5174feea7de7445
+                           .group:00000000 wm4.arm_math_memory.h.28.3ee75b06517df8378241b72d6c61e5b0
+                           .group:00000000 wm4.none.h.185.db055cca83e83f96d8d0bb450fbdf4bb
+                           .group:00000000 wm4.utils.h.41.820d6032ed1c0d7dd5bd2ed80938ee65
+                           .group:00000000 wm4.fast_math_functions.h.28.aa389abd5521cfceab0e76a6af3dd2e2
+                           .group:00000000 wm4.matrix_functions.h.28.8fc8488c73b2d6f328b0946db3460102
+                           .group:00000000 wm4.controller_functions.h.28.388735b97ccd96442b0ac9e554629f36
+                           .group:00000000 wm4.filtering_functions.h.46.6cf1424fb1f86d5f9958d208b83340a1
+                           .group:00000000 wm4.postprocess_conf.h.23.752829cd21603d5967ee3777a73fb300
+                           .group:00000000 wm4.app.h.24.11ed4dd78e1aed779d2f7dc0772ffb1e
+                           .group:00000000 wm4.cmw_errno.h.21.91021ac9b2627a1ce6b8517d105715d1
+                           .group:00000000 wm4.stm32n6xx_hal_conf.h.21.004a06df6e15ac197e03f723792da58a
+                           .group:00000000 wm4.arm_cmse.h.103.a0d15a79c4c9a67da8d5831704d7248e
+                           .group:00000000 wm4.stm32_hal_legacy.h.22.e62aae2fd3ae33360b6781c8a72e5b18
+                           .group:00000000 wm4.stm32n6xx_hal_def.h.63.2cbbf1954826c09c874c4e06e42e8b71
+                           .group:00000000 wm4.stm32n6xx_ll_bus.h.38.2366a295ee4cdb04833997d3787fcd2d
+                           .group:00000000 wm4.stm32n6xx_ll_rcc.h.21.656bd5637db608589ad16ea57d39430c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.194.69b522b1afdf59a82d05a1f71efe03c7
+                           .group:00000000 wm4.stm32n6xx_hal_rcc_ex.h.21.cc6be0a7d168882a1a6f470236ba784c
+                           .group:00000000 wm4.stm32n6xx_hal_rcc.h.4361.4b490a4a19722e68c21f88cb8a774a30
+                           .group:00000000 wm4.stm32n6xx_hal_gpio.h.21.89d54af663b98eb8fc098192053f7eeb
+                           .group:00000000 wm4.stm32n6xx_hal_gpio_ex.h.22.f7e795fb05a69a19b87d946b47c8db8b
+                           .group:00000000 wm4.stm32n6xx_hal_rif.h.21.33f2c553a8a3fc14dca8c470b213ab19
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.21.61e48c5c2e8d25d22177834b232fe45c
+                           .group:00000000 wm4.stm32n6xx_hal_dma_ex.h.21.82f854ecdb6a463b06d0b4e5c217c368
+                           .group:00000000 wm4.stm32n6xx_hal_dma.h.1020.87e2180c009560b617c1f8208140c950
+                           .group:00000000 wm4.stm32n6xx_hal_cortex.h.21.f493623cc58f9454ab4eae41e395c5cc
+                           .group:00000000 wm4.stm32n6xx_hal_bsec.h.21.1ee89319140541f82434908b4267aa30
+                           .group:00000000 wm4.stm32n6xx_hal_dcmipp.h.21.e2b87dce83d7d722d696a597f6ac56bf
+                           .group:00000000 wm4.stm32n6xx_hal_dma2d.h.21.75c8d46cdbb72970123b3f34ae2043d7
+                           .group:00000000 wm4.stm32n6xx_hal_exti.h.21.e0efb23591051684dc14f1f2431c6aab
+                           .group:00000000 wm4.stm32n6xx_hal_gfxmmu.h.21.9784a9103143d48bd3c37389d0e0b8e6
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.21.3f483626ff64c5bf027265bb2e1d1331
+                           .group:00000000 wm4.stm32n6xx_hal_i2c_ex.h.21.79e9196c22282cdaf6b4047893638c45
+                           .group:00000000 wm4.stm32n6xx_hal_i2c.h.741.1084702632703acc669e4282b3043372
+                           .group:00000000 wm4.stm32n6xx_hal_icache.h.21.194b4ec6e76f32b14f65c85616854850
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.21.ae1eb09930e7e550e48e418ac5849e4d
+                           .group:00000000 wm4.stm32n6xx_hal_ltdc.h.1002.b13ede7fc94ed5ad1c6768a157d2149a
+                           .group:00000000 wm4.stm32n6xx_ll_usb.h.21.daaf86158046f2cf02166c495d637480
+                           .group:00000000 wm4.stm32n6xx_hal_pcd.h.155.27040aac6844effe2af8c180caf1dd2e
+                           .group:00000000 wm4.stm32n6xx_hal_pwr.h.21.cdb73e4869c3fed3fc84f901ec0e5f0a
+                           .group:00000000 wm4.stm32n6xx_hal_pwr_ex.h.21.1a673224a58b0c1e5fad8eeda6514208
+                           .group:00000000 wm4.stm32n6xx_hal_ramcfg.h.21.a62dfbb4d2c14e9a8c634a215e37bd3d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.21.9f810303326e2d91749800e9911f8e4d
+                           .group:00000000 wm4.stm32n6xx_hal_spi.h.906.8ad9375f39dce09dc0a4db0025ee7a76
+                           .group:00000000 wm4.stm32n6xx_hal_tim.h.21.839dd2b2a70382fb2c44f8f293a84d5f
+                           .group:00000000 wm4.stm32n6xx_hal_tim_ex.h.21.e372d5ac63c13441211ea4ecbd353150
+                           .group:00000000 wm4.stm32n6xx_hal_uart.h.21.230f549bfa0d5ebfd77bfb311b2aca15
+                           .group:00000000 wm4.stm32n6xx_hal_uart_ex.h.21.a0d5511e1d0703b7b5278c8f5472b96d
+                           .group:00000000 wm4.stm32n6xx_hal_xspi.h.21.7fd922d3bdb871475cf18436a68935bb
+                           .group:00000000 wm4.stm32n6xx_hal_cacheaxi.h.21.7c3375b7903ec42376e4883320997f74
+                           .group:00000000 wm4.stm32n6xx_hal_gpu2d.h.21.48d0249122abad294a630c39cc4ebaed
+                           .group:00000000 wm4.stm32n6xx_hal.h.81.e79d59262ba173c33cf1d69281830d15
+                           .group:00000000 wm4.stm32n6570_discovery_conf.h.21.f52c8202689527a3dc0d9c6cba9c0416
+                           .group:00000000 wm4.stm32n6570_discovery_errno.h.22.80e523b09444a11ebe4b6e24ae914f0e
+ARM GAS  C:\Users\DJESSOU\AppData\Local\Temp\ccLvdHKX.s 			page 24
+
+
+                           .group:00000000 wm4.stm32n6570_discovery_bus.h.62.3b5b2c6837f7adeb489604fa214cd371
+                           .group:00000000 wm4.isp_conf.h.21.bfb1d020517608810095aa56acf25d1e
+                           .group:00000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:00000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:00000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:00000000 wm4.isp_core.h.110.8c4344a3506ac8fadc31ee17c3f6f7d7
+                           .group:00000000 wm4.cmw_camera.h.33.3e21b0797a1f24d8d61aeb33a948c5cd
+                           .group:00000000 wm4.app_cam.h.19.2495a46447d71a1025370e29864418f5
+                           .group:00000000 wm4.app_config.h.19.88dee04c97f3e42d3acfeeca22b174e5
+                           .group:00000000 wm4.utils.h.19.22178da25852ffacf19b506b4ce6f226
+
+UNDEFINED SYMBOLS
+__assert_func
+CMW_CAMERA_GetSensorName
+CMW_CAMERA_SetDefaultSensorValues
+CMW_CAMERA_Init
+CMW_CAMERA_GetDCMIPPHandle
+HAL_DCMIPP_SetIPPlugConfig
+CMW_CAMERA_SetPipeConfig
+HAL_DCMIPP_PIPE_EnableLineEvent
+HAL_DCMIPP_PIPE_DisableLineEvent
+CMW_CAMERA_Start
+CMW_CAMERA_Run

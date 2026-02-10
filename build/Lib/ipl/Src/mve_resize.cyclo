@@ -1,0 +1,2 @@
+Lib/ipl/Src/mve_resize.c:78:6:mve_resize_bilinear_iu8ou8_with_strides	13
+Lib/ipl/Src/mve_resize.c:227:6:mve_resize_nearest_iu8ou8_with_strides	16
